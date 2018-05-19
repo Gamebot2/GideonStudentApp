@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Update Record</title>
+		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
+		<link rel = "stylesheet" type = "text/css" href="RecordStyle.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+  		<script src = "app.js"></script>
+	</head>
+	<body>		
+			<div ng-app = "updateApp" ng-controller = "updateCtrl">
+				<h1>Update Record</h1>
+				<!--Form for updating records for students who already are in the system-->
+				<form>
+						<label for = "name">Name</label><br>
+						<input list="studentNames" id="clientSelect" name = "client" ng-model = "selectedStudent">
+          					<datalist id="studentNames">
+          						<option ng-repeat="v in names" value = "{{v}}">{{v}}</option>
+  							</datalist><br><br><br>
+						<br>
+						<label for = "title">Record</label><br>
+
+						<!--Only displays incomplete records-->
+							<select id = "title" ng-model = "selectedRecord" ng-options = "y for y in displayRecords | filter: selectedStudent">
+							</select><br>
+						<h3> You selected {{selectedRecord}}</h3>
+						<br>
+
+						<!--Allows user to enter the ending date-->
+						<label for = "dateSelect">End Date</label><br>
+						<input type = "date" name = "endDate" id = "dateSelect" ng-model = "endDate"><br>
+
+						<!--Submits form data-->
+						<input type = "submit" value = "Submit" class = "button" ng-click = "updateRecord()">
+				</form>
+			</div>
+	</body>
+</html>

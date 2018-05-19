@@ -1,0 +1,14 @@
+package com.ansh.maven.HelloWorld;
+
+import java.util.*;
+import com.ansh.maven.HelloWorld.*;
+
+
+public interface BookService {
+
+	List<Book> getAllBooks();
+	Book getBookById(int book_id);
+	List<String> getSubcategories(String category);
+	List<String> getTitles(String subcategory);
+	List<String> getDataSubcategories(int StudentId, String category);
+}

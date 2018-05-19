@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Student List</title>
+		<link rel = "stylesheet" type = "text/css" href="ListStyle.css">	
+		<script src ="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+		<script src = "app.js"></script>
+	</head>
+	<body>
+		<!--Selection buttons in the header to move to insert and update pages-->
+		<button type = "button" id = "insertBtn" onclick = "location.href='InsertRecord.html'">Insert Record</button>
+		<button type = "button" id = "updateBtn" onclick = "location.href='UpdateRecord.html'">Update Record</button>
+		<br/>
+		<!--List for displaying all students in the database that have book data-->
+		<div ng-app="studentApp" ng-controller = "studentCtrl">
+			<h1>List of Students</h1>
+			<p id = "filterText">Filter by Name or Email: </p>
+			<input id = "textFilter" name = "textFilter" type = "text" ng-model="test">
+			<br>
+			<br>
+			<div class = "tbl-header">
+				<table>
+					<thead>
+						<tr>
+							<th width = "20%">Client</th>
+							<th width = "50%">Email</th>
+							<th width = "10%">Grade</th>
+					</thead>
+				</table>
+			</div>
+			<div class = "tbl-content">
+				<tbody>
+					<table>
+						<tr ng-repeat = "student in students | filter: test" ng-click = "logStudent(student.studentId, student.client)">
+							<td width = "20%">{{student.client}} + {{student.studentId}}</td>
+							<td width = "50%">{{student.email}}</td>
+							<td width = "10%">{{student.grade}}</td>
+						</tr>
+					</table>
+				</tbody>
+			</div>
+		</div>
+	</body>
+</html>
