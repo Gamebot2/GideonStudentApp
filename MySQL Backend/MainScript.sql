@@ -1,0 +1,48 @@
+SHOW databases;
+use gideon;
+show tables;
+SELECT * FROM book;
+SELECT * FROM records;
+SELECT * from students;
+SELECT DISTINCT students.StudentId, students.Client, students.Email, students.ClientId, students.CurrentPasses, students.FirstName,
+students.Gender, students.Grade, students.LastName, students.MiddleName, students.PrimaryStaffMember
+FROM students RIGHT JOIN records ON records.StudentId = students.StudentId;
+DESCRIBE students;
+
+UPDATE records SET endDate = null, TestTime = 12, mistakes = 12 WHERE RecordId = 277;
+
+SELECT DISTINCT subcategory, book_id, subject, category, title, gradeLevel, test, timeAllowed, mistakesAllowed, sequence, sequenceLarge FROM book WHERE category = 'Comprehension';
+
+SELECT * FROM students WHERE StudentId = "3";
+
+UPDATE records SET endDate = "2018-04-03 00:00:00" WHERE RecordId = 195;
+UPDATE records SET endDate = '2018-08-08' WHERE RecordId = 1;
+
+DROP TABLE book;
+DROP TABLE records;
+DROP TABLE newrecordsheet;
+SELECT records.RecordId, records.StudentId, records.BookId, records.StartDate, records.EndDate, records.Rep, records.Test, records.TestTime, records.Mistakes, students.Client FROM records
+INNER JOIN students ON records.StudentId = students.StudentId WHERE records.StudentId = 3 ;
+
+SELECT * FROM records;
+DELETE FROM records WHERE RecordId = 277;
+SELECT * FROM records INNER JOIN book ON records.BookId = book.book_id INNER JOIN students ON records.StudentId = students.StudentId WHERE records.StudentId = 3 AND book.category = 'Grammar';
+
+SELECT * FROM records INNER JOIN book ON records.BookId = book.book_id INNER JOIN students ON records.StudentId = students.StudentId WHERE records.EndDate IS NULL;
+
+UPDATE records SET StartDate = '2016-10-05' WHERE RecordId = 1;
+
+INSERT INTO records (StudentId, BookId, StartDate, EndDate, Rep, Test, TestTime, Mistakes) 
+VALUES (10000, 10000, null, null, 1, 1, null, null);
+
+INSERT INTO records (StudentId, BookId, StartDate, EndDate, Rep, Test, TestTime, Mistakes) VALUES (3, 264, '2018-03-02', null, 1, 0, null, null);
+
+INSERT INTO records (StudentId, BookId, StartDate, EndDate, Rep, Test, TestTime, Mistakes) VALUES (3, 264, 'Fri Mar 02 00:00:00 CST 2018', null, 1, null, null, null);
+
+SELECT * FROM records INNER JOIN book ON records.BookId = book.book_id INNER JOIN students ON records.StudentId = students.StudentId;
+
+SELECT * FROM records INNER JOIN book ON records.BookId = book.book_id INNER JOIN students ON records.StudentId = students.StudentId WHERE records.StudentId = 3 AND book.category = "Grammar" AND records.Rep = 1 AND book.subcategory = "Grammar 1";
+
+SELECT * FROM records INNER JOIN book ON records.BookId = book.book_id INNER JOIN students ON records.StudentId = students.StudentId WHERE records.StudentId = 3;
+
+SELECT DISTINCT book.category FROM records INNER JOIN students ON records.StudentId = students.StudentId INNER JOIN book ON records.BookId = book.book_id WHERE students.StudentId = 3;
