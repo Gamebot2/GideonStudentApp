@@ -47,15 +47,15 @@ public class RecordServiceImpl implements RecordService{
 	}
 
 	@Override
-	public int addRecord(String Client, String category, String subcategory, String title, Date startDate, int testTime, int mistakes, int rep) {
+	public int addRecord(String Client, String category, String subcategory, String title, Date startDate, int rep) {
 		// TODO Auto-generated method stub
-		return recordDao.addRecord(Client, category, subcategory, title, startDate, testTime, mistakes, rep);
+		return recordDao.addRecord(Client, category, subcategory, title, startDate, rep);
 	}
 
 	@Override
-	public int updateRecord(String record, Date endDate) {
+	public int updateRecord(String record, Date endDate, int testTime, int minutes) {
 		// TODO Auto-generated method stub
-		return recordDao.updateRecord(record, endDate);
+		return recordDao.updateRecord(record, endDate, testTime, minutes);
 	}
 
 	@Override

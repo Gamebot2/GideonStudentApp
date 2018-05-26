@@ -10,8 +10,6 @@ public class Master {
 	private String subcategory;
 	private String title;
 	private Date startDate;
-	private int testTime;
-	private int mistakes;
 	private int rep;
 	
 
@@ -19,16 +17,13 @@ public class Master {
 		super();
 	}
 	
-	public Master(String client, String category, String subcategory, String title, Date startDate, int testTime,
-			int mistakes, int rep) {
+	public Master(String client, String category, String subcategory, String title, Date startDate, int rep) {
 		super();
 		Client = client;
 		this.category = category;
 		this.subcategory = subcategory;
 		this.title = title;
 		this.startDate = startDate;
-		this.testTime = testTime;
-		this.mistakes = mistakes;
 		this.rep = rep;
 	}
 
@@ -72,21 +67,6 @@ public class Master {
 		this.startDate = startDate;
 	}
 	
-	public int getTestTime() {
-		return testTime;
-	}
-
-	public void setTestTime(int testTime) {
-		this.testTime = testTime;
-	}
-
-	public int getMistakes() {
-		return mistakes;
-	}
-
-	public void setMistakes(int mistakes) {
-		this.mistakes = mistakes;
-	}
 	
 	public int getRep() {
 		return rep;

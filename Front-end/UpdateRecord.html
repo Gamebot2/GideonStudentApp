@@ -11,6 +11,8 @@
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
   		<script src = "app.js"></script>
+  		<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
 	</head>
 	<body>		
 			<div ng-app = "updateApp" ng-controller = "updateCtrl">
@@ -33,7 +35,15 @@
 
 						<!--Allows user to enter the ending date-->
 						<label for = "dateSelect">End Date</label><br>
-						<input type = "date" name = "endDate" id = "dateSelect" ng-model = "endDate"><br>
+						<input type = "date" name = "endDate" id = "dateSelect" ng-model = "endDate"><br><br>
+
+						<!--Simple number picker for instructors to enter the test time-->
+						<label for = "testTime" id = "testTime">Test Time</label>
+							<input type = "number" name = "testTime" min = "0" max = "1000" ng-model = "testTime">
+
+						<!--Simple number picker for instructors to enter the number of mistakes-->	
+						<label for = "mistakes" id = "mistakes">Mistakes</label>
+							<input type = "number" name = "mistakes" min = "0" max = "1000" ng-model = "mistakes"><br><br>
 
 						<!--Submits form data-->
 						<input type = "submit" value = "Submit" class = "button" ng-click = "updateRecord()">

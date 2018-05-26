@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.h2.util.IntArray;
 import org.hibernate.validator.internal.util.privilegedactions.GetAnnotationParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -127,16 +128,22 @@ public class HelloController {
 	@RequestMapping("/addRecord")
 	public int addRecord(@RequestBody(required=false) Master master) {
 		System.out.println("Method addRecord() called");
-		int a = recordService.addRecord(master.getClient(), master.getCategory(), master.getSubcategory(), master.getTitle(), master.getStartDate(), master.getTestTime(), master.getMistakes(), master.getRep());
+		int a;
+		try {
+			a = recordService.addRecord(master.getClient(), master.getCategory(), master.getSubcategory(), master.getTitle(), master.getStartDate(), master.getRep());
+		} catch (java.lang.NullPointerException e) {
+			a = -1;
+		}
 		return a;
 	}
 	
 	//Updates an existing record in the database
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/updateRecord")
-	public int updateRecord(@RequestParam("record") String record, @RequestParam("endDate") Date endDate) {
+	public int updateRecord(@RequestParam("record") String record, @RequestParam("endDate") Date endDate, @RequestParam("testTime") int testTime, @RequestParam("mistakes") int mistakes) {
 		System.out.println("Method updateRecord() called");
-		int a = recordService.updateRecord(record, endDate);
+		System.out.println(testTime + " " + mistakes);
+		int a = recordService.updateRecord(record, endDate, testTime, mistakes);
 		return a;
 	}
 	

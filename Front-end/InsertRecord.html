@@ -11,6 +11,8 @@
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
   		<script src = "app.js"></script>
+  		<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
 	</head>
 	<body>
 		<div ng-app = "insertApp" ng-controller = "insertCtrl">
@@ -19,44 +21,36 @@
 		<form name = "insertForm">
 			<!--Displays list of all current students upon selection-->
 			<label for = "client">Full Name</label>
-          		<input list="studentNames" id="clientSelect" name = "client" ng-model = "Client">
+          		<input list="studentNames" id="clientSelect" name = "client" ng-model = "Client" required>
           		<datalist id="studentNames">
           			<option ng-repeat="v in names" value = "{{v}}">{{v}}</option>
   				</datalist><br><br>
 
   			<!--Displays all possible book categories-->
 			<label for = "category">Book Category</label><br>
-				<select id = "category" ng-model = "selectedCategory" ng-options = "x for x in categories" ng-change = "getSubcategories()">
+				<select id = "category" ng-model = "selectedCategory" ng-options = "x for x in categories" ng-change = "getSubcategories()" required>
 					<option value = "" selected disabled hidden>Choose category</option>
 				</select><br><br>
 
 			<!--Displays all subcategories for a selected category-->
 			<label for = "subCategory">Book Sub-Category</label><br>
-				<select id = "subCategory" ng-model = "selectedSubCategory" ng-options = "y for y in subcategories" ng-change = "getTitles()">
+				<select id = "subCategory" ng-model = "selectedSubCategory" ng-options = "y for y in subcategories" ng-change = "getTitles()" required>
 					<option value = "">Choose subcategory</option>
 				</select><br><br>
 
 			<!--Displays all book titles for a given subcategory-->
 			<label for = "title">Book Title</label><br>
-				<select id = "title" ng-model = "selectedTitle" ng-options = "z for z in titles">
+				<select id = "title" ng-model = "selectedTitle" ng-options = "z for z in titles" required>
 					<option value = "">Choose title</option>
 				</select><br><br>
 
 			<!--Simple datePicker for instructors to enter the startDate-->
 			<label for = "dateSelect">Start Date</label><br>
-				<input type = "date" name = "startDate" id ="dateSelect" ng-model = "startDate"><br><br>
+				<input type = "date" name = "startDate" id ="dateSelect" ng-model = "startDate" required><br><br>
 
 			<!--Simple number picker for instructors to enter the repetition number-->
 			<label for = "reps" id = "reps">Repetition</label>
-				<input type = "number" name = "reps" min = "1" max = "5" ng-model = "rep">
-			
-			<!--Simple number picker for instructors to enter the test time-->
-			<label for = "testTime" id = "testTime">Test Time</label>
-				<input type = "number" name = "testTime" min = "0" max = "1000" ng-model = "testTime">
-
-			<!--Simple number picker for instructors to enter the number of mistakes-->	
-			<label for = "mistakes" id = "mistakes">Mistakes</label>
-				<input type = "number" name = "mistakes" min = "0" max = "1000" ng-model = "mistakes"><br><br>
+				<input type = "number" name = "reps" min = "1" max = "5" ng-model = "rep" required>
 			
 			<!--Submit button: runs the insertTask function-->
 			<input type = "submit" value = "Submit" class = "button" ng-click = "createRecord()">

@@ -54,7 +54,7 @@ public class RecordDaoImpl implements RecordDao{
 	}
 
 	@Override
-	public int addRecord(String Client, String category, String subcategory, String title, Date startDate, int testTime, int mistakes, int rep) {
+	public int addRecord(String Client, String category, String subcategory, String title, Date startDate, int rep) {
 		// TODO Auto-generated method stub
 		int bookId = 0, studentId = 0;
 		boolean test = false;
@@ -83,7 +83,7 @@ public class RecordDaoImpl implements RecordDao{
 		}
 		
 		if(test) {
-			cap = ", 1, " + testTime + ", " + mistakes + ")";
+			cap = ", 1, null, null)";
 		} else {
 			cap = ", 0, null, null)";
 		}
@@ -97,7 +97,7 @@ public class RecordDaoImpl implements RecordDao{
 	}
 
 	@Override
-	public int updateRecord(String record, Date endDate) {
+	public int updateRecord(String record, Date endDate, int testTime, int mistakes) {
 		
 		String[] brokenRecord = record.split(" ");
 		String recordId = brokenRecord[brokenRecord.length-1];
@@ -105,7 +105,15 @@ public class RecordDaoImpl implements RecordDao{
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 		String formatted = format1.format(endDate);
 		
-		String updateSql = "UPDATE records SET endDate = '" + formatted + "' WHERE RecordId = " + recordId;
+		String midString;
+		
+		if(testTime < 0 || mistakes < 0) {
+			midString = "', TestTime = null, mistakes = null";
+		} else {
+			midString = "', TestTime = '" + testTime + "', mistakes = '" + mistakes + "' ";
+		}
+		
+		String updateSql = "UPDATE records SET endDate = '" + formatted + midString + " WHERE RecordId = " + recordId;
 		System.out.println(updateSql);
 		this.jdbcTemplate.update(updateSql);
 		return 0;

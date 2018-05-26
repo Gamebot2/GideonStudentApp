@@ -14,13 +14,9 @@ public class Book {
 	private int sequence;
 	private int sequenceLarge;
 	
-	
-	
 	public Book() {
 		super();
 	}
-
-
 
 	public Book(int book_id, String subject, String category, String subcategory, String title, int gradeLevel,
 			int test, int timeAllowed, int mistakesAllowed, int sequence, int sequenceLarge) {
@@ -38,8 +34,6 @@ public class Book {
 		this.sequenceLarge = sequenceLarge;
 	}
 
-	
-	
 	public int getBook_id() {
 		return book_id;
 	}
