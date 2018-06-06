@@ -84,22 +84,18 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			Chart.defaults.global.defaultFontSize = 18;
 			Chart.defaults.global.defaultFontColor = '#000';
 
+			console.log(books);
 			console.log(dates);
 			console.log(values);
-
-			var test = [];
-			for(b = 0; b < books.length; b++) {
-				test[b] = books[b];
-			}
 
 			let exampleChart = new Chart(myChart,{
 				type: 'line',
 				data:{
 					xLabels: dates,
-					yLabels: books.reverse(),
+					yLabels: books,
 					datasets:[{
 						label: $scope.first.name,
-						data: test,
+						data: values,
 						backgroundColor: "rgba(255, 0, 0, 0.4)",
 						borderColor: "rgba(255, 0, 0, 0.4)",
 						fill: false,
@@ -115,7 +111,6 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 					]
 				},
 				options: {
-					responsive: true,
 					title: {
 						display: true,
 						text: $scope.first.name,
@@ -132,22 +127,11 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 					},
 					scales: {
 						xAxes: [{
-							display: true,
-							scaleLabel: {
-								display: true,
-								labelString: "Date"
-							},
+							distribution: 'linear',
 							ticks: {
-								autoSkip: false
-							}
-						}],
-						yAxes: [{
-							type: 'category',
-							position: 'left',
-							display: true,
-							scaleLabel: {
-								display: true,
-								labelString: 'Book Title'
+								autoSkip: false,
+								maxTicksLimit:10,
+								source: 'auto'
 							}
 						}]
 					}

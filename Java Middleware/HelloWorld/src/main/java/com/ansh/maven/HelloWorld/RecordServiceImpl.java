@@ -1,11 +1,9 @@
 package com.ansh.maven.HelloWorld;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.validator.internal.util.privilegedactions.GetAnnotationParameter;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
