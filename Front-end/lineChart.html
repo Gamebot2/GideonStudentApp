@@ -39,7 +39,9 @@
 			<br>
 
 			<!--HTML element for the generated chart-->
-			<img id = "logo" src = "img/gideon-logo.jpg" height = "60" width = "160" ng-hide="errorMessage">
+			<div id = "logoDiv">
+				<img id = "logo" src = "img/gideon-logo.jpg" height = "60" width = "160" ng-hide="errorMessage">
+			</div>
 			<canvas id = "lineChart" ng-hide="errorMessage"></canvas>
 		</div>
 	</body>

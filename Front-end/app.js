@@ -19,7 +19,8 @@ app.controller('studentCtrl', function($scope, $http, $window) {
 
 //Controller used for lineChart.html: responsible for creating and displaying students' graphs
 app.controller('chartCtrl', function($scope, $http, $window) {
-
+		var logo = document.getElementById("logoDiv");
+		logo.style.display = "none";
 		$scope.studentName = $window.localStorage.getItem(1);
 
 		//Retrieves all categories the selected student is working in
@@ -50,6 +51,13 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 		//Generates the lineChart based on instructor specifications
 		$scope.generateChart = function() {
 				//console.log($scope.selectedRep);
+				var logo = document.getElementById("logoDiv");
+				if (logo.style.display === "none") {
+       				logo.style.display = "block";
+    			} else {
+        			logo.style.display = "none";
+    			}
+
 				var selectedStudentId = $window.localStorage.getItem(0);
 				var b = document.getElementById("months").value;
 				$scope.trueGrade = $scope.currentGrade;
@@ -111,13 +119,20 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			for(k = $scope.months; k > $scope.months2; k--) {
 				var currentMonth = moment().subtract(k, 'months');
 				var currentMonthString = currentMonth.month() + 1 + " " + currentMonth.year();
-				//console.log(recordDatesCounter);
+
 				var d = new Date($scope.records[recordDatesCounter].startDate);
 				var displayed = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
 				var recordDateString = moment(displayed).format('M YYYY');
-				//console.log(recordDateString);
-				//console.log(currentMonthString);
-				console.log($scope.records);
+
+				if(recordDatesCounter != 0) {
+					var d2 = new Date($scope.records[recordDatesCounter-1].startDate);
+					var displayed2 = (d2.getMonth()+1) + "/" + d2.getDate() + "/" + d2.getFullYear();
+					var recordDateString2 = moment(displayed2).format('M YYYY');
+					if(recordDateString2 == recordDateString) {
+					currentMonthString = currentMonth.month() + " " + currentMonth.year();
+				}
+				}
+
 				if(recordDateString == currentMonthString) {
 					if($scope.selectedCategory == "Comprehension") {
 						newBooks.push($scope.records[bookCounter].subcategory + " " + $scope.records[bookCounter].bookTitle);
@@ -128,6 +143,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 						recordDatesCounter++;
 						bookCounter++;
 					}
+
 				} else {
 					if($scope.selectedCategory == "Comprehension") {
 						newBooks.push($scope.records[bookCounter].subcategory + " " + $scope.records[bookCounter].bookTitle);
@@ -248,7 +264,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 									var grade = label.split(" ")[2];
 									if(month == "2") {
 										if(grade == "0") {
-											return "Kinder";
+											return "Kindergarten";
 										} else if(grade == "1") {
 											return "1st Grade";
 										} else if(grade == "2") {
