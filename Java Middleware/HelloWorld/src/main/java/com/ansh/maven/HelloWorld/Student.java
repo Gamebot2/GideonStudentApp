@@ -10,7 +10,7 @@ public class Student {
 	private String FirstName;
 	private String MiddleName;
 	private String LastName;
-	private int Grade;
+	private String Grade;
 	private String Gender;
 	private int ClientId;
 	
@@ -19,7 +19,7 @@ public class Student {
 	}
 
 	public Student(int studentId, String client, String email, String currentPasses, String primaryStaffMember,
-			String firstName, String middleName, String lastName, int grade, String gender, int clientId) {
+			String firstName, String middleName, String lastName, String grade, String gender, int clientId) {
 		super();
 		StudentId = studentId;
 		Client = client;
@@ -98,11 +98,11 @@ public class Student {
 		LastName = lastName;
 	}
 
-	public int getGrade() {
+	public String getGrade() {
 		return Grade;
 	}
 
-	public void setGrade(int grade) {
+	public void setGrade(String grade) {
 		Grade = grade;
 	}
 

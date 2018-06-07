@@ -78,10 +78,18 @@ public class HelloController {
 	
 	//Returns all categories that a student is working in
 	@CrossOrigin(origins = webOrigin)
-	@RequestMapping("categoriesByStudent")
+	@RequestMapping("/categoriesByStudent")
 	public List<String> getCategories(@RequestParam("Id") int StudentId) {
 		System.out.println("Method getCategories() called for Student ID " + StudentId);
 		return studentService.getCategories(StudentId);
+	}
+	
+	//Returns grade of the student as an integer value
+	@CrossOrigin(origins = webOrigin)
+	@RequestMapping("/gradeOfStudent")
+	public int getGrade(@RequestParam("Id") int StudentId) {
+		System.out.println("Method getGrade() called for Student ID " + StudentId);
+		return studentService.getGrade(StudentId);
 	}
 	
 	//Returns all records in the record database
@@ -104,15 +112,16 @@ public class HelloController {
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/recordsById")
 	@ResponseBody
-	public List<Record> getRecordsById(@RequestParam("StudentId") int StudentId, @RequestParam("Category") String category, @RequestParam("Months") String months, @RequestParam("Reps") String whichReps) {
+	public List<Record> getRecordsById(@RequestParam("StudentId") int StudentId, @RequestParam("Category") String category, @RequestParam("Months") String months, @RequestParam("Reps") String whichReps, @RequestParam("Until") String until) {
 		int monthNumber;
 		if(months.equals(null) || months.isEmpty()) {
 			monthNumber = 12;
 		} else {
 			monthNumber = Integer.parseInt(months);
 		}
-		System.out.println("Method getRecordsById() called for Student ID " + StudentId + ", category " + category + ", month number " + months + ", and rep number " + whichReps);
-		return recordService.getRecordsById(StudentId, category, monthNumber, whichReps);
+		System.out.println("Method getRecordsById() called for Student ID " + StudentId + ", category " + category + ", month number " + months + ", and rep number " + whichReps + ", and until " + until);
+		int untilNum = Integer.parseInt(until);
+		return recordService.getRecordsById(StudentId, category, monthNumber, whichReps, untilNum);
 	}
 	
 	//Returns all records for a given student and a given category

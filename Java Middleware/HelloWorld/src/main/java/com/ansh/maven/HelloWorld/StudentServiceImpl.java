@@ -35,5 +35,13 @@ public class StudentServiceImpl implements StudentService{
 		// TODO Auto-generated method stub
 		return studentDao.getCategories(StudentId);
 	}
+
+	@Override
+	public int getGrade(int StudentId) {
+		Student obj = studentDao.getStudentById(StudentId);
+		String gradeString = obj.getGrade();
+		int grade = Integer.parseInt(gradeString.substring(0, 1));
+		return grade;
+	}
 	
 }

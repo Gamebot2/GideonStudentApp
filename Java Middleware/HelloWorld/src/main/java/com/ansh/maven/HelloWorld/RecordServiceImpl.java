@@ -25,13 +25,14 @@ public class RecordServiceImpl implements RecordService{
 	}
 
 	@Override
-	public List<Record> getRecordsById(int RecordId, String category, int months, String whichReps) {
+	public List<Record> getRecordsById(int RecordId, String category, int months, String whichReps, int until) {
 		// TODO Auto-generated method stub
 		List<Record> records = recordDao.getRecordsById(RecordId, category, whichReps);
 		List<Record> returnRecords = new ArrayList<Record>();
 		Date monthsAgo = new DateTime().minusMonths(months).toDate();
+		Date untilDate = new DateTime().minusMonths(until).toDate();
 		for(Record r: records) {
-			if(r.getStartDate().compareTo(monthsAgo) > 0) {
+			if(r.getStartDate().compareTo(monthsAgo) > 0 && r.getStartDate().compareTo(untilDate) < 0) {
 				returnRecords.add(r);
 			}
 		}

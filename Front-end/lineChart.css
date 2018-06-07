@@ -6,7 +6,7 @@ canvas {
 
 body {
 	font-family: 'Roboto', sans-serif;
-	background: linear-gradient(to right, #FFD700, #FFA500) no-repeat bottom;
+	background: linear-gradient(to right, #FFF, #FFF) no-repeat bottom;
 	background-size: 100%;
 	height: 1000px;
 	color: black;
@@ -15,4 +15,10 @@ body {
 h1 {
 	font-weight: normal;
 	text-align: center;
+}
+
+#logo {
+	margin-left: 7%;
+	margin-top: 5%;
+	margin-bottom: 0;
 }
