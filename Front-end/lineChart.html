@@ -6,6 +6,14 @@
 		<meta http-equiv="x-ua-compatible" content="ie=edge">
 		<meta name = "description" content = "">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<!--link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"-->
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+		<link rel="manifest" href="/site.webmanifest">
+		<meta name="msapplication-TileColor" content="#da532c">
+		<meta name="theme-color" content="#ffffff">
+
 		<script src = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
 		<script src = "moment.js"></script>
 		<script src ="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
@@ -30,9 +38,10 @@
 			<p>Included repetitions: 
 				<select id = "repNumbers" name = "repNumbers" ng-model = "selectedRep" ng-options = "x for x in repOptions"></select>
 			</p>
+			
 
 			<!--Button to generate chart and submit all data-->
-			<button type="button" ng-click="generateChart()">Generate Chart</button>
+			<button type="button" ng-click="generateChart();validateForm()">Generate Chart</button>
 
 			<!--Error message in case no data is retrieved-->
 			<h6 ng-show="errorMessage" style = "color:red;">Error: No data found</h6>

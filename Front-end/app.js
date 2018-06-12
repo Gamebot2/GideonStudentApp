@@ -23,6 +23,13 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 		logo.style.display = "none";
 		$scope.studentName = $window.localStorage.getItem(1);
 
+		//To help Materialize.js and Materialize.css with the select element (repetitions)
+		document.addEventListener('DOMContentLoaded', function() {
+  			//var elems = document.querySelectorAll('select');
+    		//var instances = M.FormSelect.init(elems, options);
+  		});
+
+
 		//Retrieves all categories the selected student is working in
 		$http.get("http://localhost:8080/categoriesByStudent?Id=" + $window.localStorage.getItem(0))
 		.then(function(response) {
@@ -41,12 +48,22 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 		$scope.getReps = function() {
 			if($scope.selectedCategory == "Calculation") {
 				//console.log("Calculation is selected");
-				$scope.repOptions = ["1", "2", "3", "4", "5", "All"];
+				$scope.repOptions = ["1", "2", "3", "4", "5"];
 			} else {
 				//console.log("Something besides Calculation is selected");
-				$scope.repOptions = ["1", "2", "All"]
+				$scope.repOptions = ["1", "2"]
 			}
 		}
+
+		//Validates the form before chart data submission to ensure that the month values compare favorably to one another
+		$scope.validateForm = function() {
+			//console.log($scope.months);
+			//console.log($scope.months2);
+			if($scope.months < $scope.months2) {
+				alert("Your month values are inadequate. Please ensure you are selecting an appropriate range.");
+			}
+		}
+
 
 		//Generates the lineChart based on instructor specifications
 		$scope.generateChart = function() {
@@ -75,8 +92,9 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			var grades = [];
 			var books = [];
 
-			//Helps display error message if there is no data
+			//Helps display error message if there is no data, couldn't find a better solution for some reason
 			var a = 0;
+
 			var recordDatesCounter = 0;
 			var bookCounter = 0;
 			var newBooks = [];
@@ -196,6 +214,9 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 					},
 					legend: {
 						position: 'right'
+					},
+					tooltips: {
+						enabled: false
 					},
 					layout: {
 						padding: {
