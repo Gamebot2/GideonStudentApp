@@ -52,6 +52,14 @@ public class HelloController {
 		return bookService.getTitles(subcategory);
 	}
 	
+	//Returns all books between two sequence large values given a category
+	@CrossOrigin(origins = webOrigin)
+	@RequestMapping("/booksInRange")
+	public List<Book> getBooksInRange(@RequestParam("Category") String category, @RequestParam("StartSequence") int startSequence, @RequestParam("EndSequence") int endSequence) {
+		System.out.println("Method getBooksInRange() called for category " + category + " and range " + startSequence + " to " + endSequence);
+		return bookService.getBooksInRange(category, startSequence, endSequence);
+	}
+	
 	//Returns all students in the student database
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/students")

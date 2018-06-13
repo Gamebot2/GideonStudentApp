@@ -23,42 +23,29 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 		logo.style.display = "none";
 		$scope.studentName = $window.localStorage.getItem(1);
 
-		//To help Materialize.js and Materialize.css with the select element (repetitions)
-		document.addEventListener('DOMContentLoaded', function() {
-  			//var elems = document.querySelectorAll('select');
-    		//var instances = M.FormSelect.init(elems, options);
-  		});
-
-
 		//Retrieves all categories the selected student is working in
 		$http.get("http://localhost:8080/categoriesByStudent?Id=" + $window.localStorage.getItem(0))
 		.then(function(response) {
 			$scope.categoriesOfStudent = response.data;
-			//console.log($scope.categoriesOfStudent);
 		});
 
 		//Retrieves all data from the student's corresponding record in the database
 			$http.get("http://localhost:8080/gradeOfStudent?Id=" + $window.localStorage.getItem(0))
 			.then(function(response) {
-				//console.log(response.data);
 				$scope.currentGrade = response.data;
 			});
 
 		//Retrieves possible repetition selection options for the selected category
 		$scope.getReps = function() {
 			if($scope.selectedCategory == "Calculation") {
-				//console.log("Calculation is selected");
 				$scope.repOptions = ["1", "2", "3", "4", "5"];
 			} else {
-				//console.log("Something besides Calculation is selected");
 				$scope.repOptions = ["1", "2"]
 			}
 		}
 
 		//Validates the form before chart data submission to ensure that the month values compare favorably to one another
 		$scope.validateForm = function() {
-			//console.log($scope.months);
-			//console.log($scope.months2);
 			if($scope.months < $scope.months2) {
 				alert("Your month values are inadequate. Please ensure you are selecting an appropriate range.");
 			}
@@ -67,7 +54,6 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 
 		//Generates the lineChart based on instructor specifications
 		$scope.generateChart = function() {
-				//console.log($scope.selectedRep);
 				var logo = document.getElementById("logoDiv");
 				if (logo.style.display === "none") {
        				logo.style.display = "block";
@@ -80,7 +66,6 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 				$scope.trueGrade = $scope.currentGrade;
 		$http.get("http://localhost:8080/recordsById?StudentId=" + selectedStudentId + "&Category=" + $scope.selectedCategory + "&Months=" + b + "&Reps=" + $scope.selectedRep + "&Until=" + $scope.months2)
 		.then(function(response) {
-			//console.log(response.data);
 			$scope.records = response.data;
 			$scope.first = $scope.records[0];
 
@@ -118,9 +103,12 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 				labelDatesWithGrades.push(labelDates[u] + " " + grades[inverseU]);
 			}
 
+			var lastBookSequenceLarge;
+
 			for(i = 0; i < $scope.records.length; i++) {
 				if($scope.records[i].startDate != null) {
 					var d = new Date($scope.records[i].startDate);
+					//console.log($scope.records[i]);
 					var displayed = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
 					dates.push(moment(displayed).format('M YYYY'));
 					if($scope.selectedCategory == "Comprehension") {
@@ -128,19 +116,45 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 					} else {
 						books.push($scope.records[i].bookTitle);
 					}
+					if(i == $scope.records.length - 1) {
+						lastBookSequenceLarge = $scope.records[i].sequenceLarge;
+					}
 					a++;
 				}
 			}
 
-			console.log($scope.currentGrade);
+			$scope.testSequenceLarge = 26;
+			let extraBooks = new Array();
+			
+			if($scope.testSequenceLarge > lastBookSequenceLarge) {
+					$http.get("http://localhost:8080/booksInRange?Category=" + $scope.selectedCategory + "&StartSequence=" + lastBookSequenceLarge + "&EndSequence=" + 25)
+					.then(function(response) {
+						let booksInRange = response.data;
+						//console.log($scope.booksInRange)
+						for(y = 0; y < booksInRange.length; y++) {
+							extraBooks.push(booksInRange[y].title);
+							books.push(booksInRange[y].title);
+							console.log(extraBooks);
+						}
+					});
+			}
+			console.log(extraBooks);
+
 			var k;
+			var firstMonthWithRecord;
+
 			for(k = $scope.months; k > $scope.months2; k--) {
 				var currentMonth = moment().subtract(k, 'months');
 				var currentMonthString = currentMonth.month() + 1 + " " + currentMonth.year();
+				//console.log(currentMonthString);
 
 				var d = new Date($scope.records[recordDatesCounter].startDate);
 				var displayed = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
 				var recordDateString = moment(displayed).format('M YYYY');
+				
+				if(k == $scope.months) {
+					firstMonthWithRecord = recordDateString;
+				}
 
 				if(recordDatesCounter != 0) {
 					var d2 = new Date($scope.records[recordDatesCounter-1].startDate);
@@ -171,35 +185,45 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 				}
 			}
 
-			//console.log(newBooks);
 
 			$scope.errorMessage = true;
 			if(a > 0) {
 				$scope.errorMessage = false;
 			} 	
 
-			//Chart.defaults.global.defaultFontFamily ='Lato';
 			Chart.defaults.global.defaultFontSize = 18;
 			Chart.defaults.global.defaultFontColor = '#000';
 
-			var test = [];
+			var newBooks2 = [];
+			var newBooks3 = [];
 			for(b = 0; b < newBooks.length; b++) {
-				test[b] = newBooks[b];
+				newBooks2[b] = newBooks[b];
+				newBooks3[b] = newBooks[b];
+				if(b == newBooks.length - 1) {
+					newBooks3[b] = "3 - A";
+				}
 			}
 
-			console.log(dates);
+			console.log(books);
+			
 
 			let exampleChart = new Chart(myChart,{
 				type: 'line',
 				data:{
-					//xLabels: dates,
 					xLabels: labelDatesWithGrades,
 					yLabels: books.reverse(),
 					datasets:[{
 						label: $scope.first.name,
-						data: test,
+						data: newBooks2,
 						backgroundColor: "rgba(255, 0, 0, 0.4)",
 						borderColor: "rgba(255, 0, 0, 0.4)",
+						fill: false,
+						lineTension: 0
+					}, {
+						label: "Testing",
+						data: newBooks3,
+						backgroundColor: "rgba(0, 0, 255, 0.4)",
+						borderColor: "rgba(0, 0, 255, 0.4)",
 						fill: false,
 						lineTension: 0
 					}	
@@ -297,7 +321,6 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 										} else {
 											return grade + "th Grade";
 										}
-										//return "Ki";
 									} else if (month == "8") {
 										return "|";
 									}
@@ -367,7 +390,6 @@ var app2 = angular.module('insertApp', ['ngMaterial']);
 			}
 		}
 
-		//$http.defaults.headers.post["Content-Type"] = "application/json";
 		//Creates JSON for the record based on form data
 		$scope.createRecord = function() {
 			var newRecordDetails = JSON.stringify({

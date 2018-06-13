@@ -66,6 +66,22 @@ public class BookServiceImpl implements BookService {
 		return subcategories;
 		
 	}
+
+	@Override
+	public List<Book> getBooksInRange(String category, int startSequence, int endSequence) {
+		
+		List<Book> bookList = bookDao.getAllBooks();
+		List<Book> returnList = new ArrayList<Book>();
+		for(int i = 0; i < bookList.size(); i++) {
+			Book b = bookList.get(i);
+			if(b.getCategory().equalsIgnoreCase(category)) {
+				if (b.getSequenceLarge() > startSequence && b.getSequenceLarge() <= endSequence) {
+					returnList.add(b);
+				}
+			}
+		}
+		return returnList;
+	}
 	
 	
 	
