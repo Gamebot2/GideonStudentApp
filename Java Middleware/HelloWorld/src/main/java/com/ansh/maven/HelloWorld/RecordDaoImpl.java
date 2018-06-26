@@ -23,6 +23,7 @@ public class RecordDaoImpl implements RecordDao{
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
+	//Retrieves all records from every student in the database
 	@Override
 	public List<Record> getAllRecords() {
 		// TODO Auto-generated method stub
@@ -31,6 +32,7 @@ public class RecordDaoImpl implements RecordDao{
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
 
+	//Returns all records of a student in a specific category and a specific repetition number
 	@Override
 	public List<Record> getRecordsById(int RecordId, String category, String whichReps) {
 		// TODO Auto-generated method stub
@@ -47,12 +49,14 @@ public class RecordDaoImpl implements RecordDao{
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
 
+	//Unwritten and unused: returns whether or not a record exists given its ID
 	@Override
 	public boolean recordExists(int RecordId) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
+	//Adds a new record to the record database with all of the following information, formats the appropriate SQL string
 	@Override
 	public int addRecord(String Client, String category, String subcategory, String title, Date startDate, int rep) {
 		// TODO Auto-generated method stub
@@ -96,6 +100,7 @@ public class RecordDaoImpl implements RecordDao{
 		return 0;
 	}
 
+	//Updates an already existing record
 	@Override
 	public int updateRecord(String record, Date endDate, int testTime, int mistakes) {
 		
@@ -119,6 +124,7 @@ public class RecordDaoImpl implements RecordDao{
 		return 0;
 	}
 
+	//Returns all records that have start dates, but do not have end dates
 	@Override
 	public List<Record> getIncompleteRecords() {
 		// TODO Auto-generated method stub
@@ -127,6 +133,7 @@ public class RecordDaoImpl implements RecordDao{
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
 
+	//Returns all records for a certain student and a certain category
 	@Override
 	public List<Record> getAllRecordsById(int StudentId, String category) {
 		// TODO Auto-generated method stub

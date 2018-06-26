@@ -18,12 +18,14 @@ public class RecordServiceImpl implements RecordService{
 	@Autowired
 	JdbcTemplate template;
 	
+	//Returns all records
 	@Override
 	public List<Record> getAllRecords() {
 		// TODO Auto-generated method stub
 		return recordDao.getAllRecords();
 	}
-
+	
+	//Gets all records for a certain student, including time and repetition constraints: used for graphing
 	@Override
 	public List<Record> getRecordsById(int RecordId, String category, int months, String whichReps, int until) {
 		// TODO Auto-generated method stub
