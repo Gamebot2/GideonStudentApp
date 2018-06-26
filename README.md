@@ -1,4 +1,19 @@
-# GideonStudentApp
+# Gideon Student Application
+
 ![Gideon Logo](http://www.gideonmathandreading.com/wp-content/uploads/2015/09/gideon_smLogo.jpg)
 
-App for creating graphs based on student data for Gideon's online students, set up with a Java web server, MySQL Database, and AngularJS Client.
+Application for storing student books completion data for the subjects of Math and Reading for Gideon. The data stored is for online students and the applicaton is meant to retrieve data based on user specification and create progress charts for easier viewing. It is also meant to make it easier for instructors and managers to enter and retrieve information.
+
+## Built With
+
+* [AngularJS](https://angular.io/) - Web Framework Used
+* [Maven](https://maven.apache.org/) - Dependency Management
+* [MySQL](https://www.mysql.com/) - Database Management
+
+## Code of Conduct
+
+Please read [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for details on our code of conduct.
+
+## License
+
+This project is licensed under the MIT license - see the [License.md](License.md) file for details
