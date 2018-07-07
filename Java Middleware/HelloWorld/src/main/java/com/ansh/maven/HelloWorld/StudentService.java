@@ -9,4 +9,5 @@ public interface StudentService {
 	int getGrade(int StudentId);
 	List<Student> getStudentsWithData();
 	List<String> getCategories(int StudentId);
+	int addStudent(String Client, String Grade, String Gender);
 }

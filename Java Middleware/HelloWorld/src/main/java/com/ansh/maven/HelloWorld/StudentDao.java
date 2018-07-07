@@ -8,4 +8,5 @@ public interface StudentDao {
 	boolean studentExists(String firstName, String lastName);
 	List<Student> getStudentsWithData();
 	List<String> getCategories(int StudentId);
+	int addStudent(String Client, String Grade, String Gender);
 }

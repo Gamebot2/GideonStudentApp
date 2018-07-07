@@ -56,6 +56,15 @@ public class StudentDaoImpl implements StudentDao {
 		return this.jdbcTemplate.queryForList(sql, String.class);
 	
 	}
+
+	@Override
+	public int addStudent(String Client, String Grade, String Gender) {
+		// TODO Auto-generated method stub
+		StudentMaster student1 = new StudentMaster(Client, Grade, Gender);
+		String sql = "INSERT INTO students (Client, FirstName, LastName, Grade, Gender) VALUES (\"" + Client + "\", \"" + student1.getFirstName() + "\", \"" + student1.getLastName() + "\", \"" + student1.getGrade() + "\", \"" + student1.getGender() + "\");";
+		this.jdbcTemplate.update(sql);
+		return 0;
+	}
 	
 	
 	

@@ -43,5 +43,11 @@ public class StudentServiceImpl implements StudentService{
 		int grade = Integer.parseInt(gradeString.substring(0, 1));
 		return grade;
 	}
+
+	@Override
+	public int addStudent(String Client, String Grade, String Gender) {
+		// TODO Auto-generated method stub
+		return studentDao.addStudent(Client, Grade, Gender);
+	}
 	
 }
