@@ -63,6 +63,7 @@ public class StudentDaoImpl implements StudentDao {
 		StudentMaster student1 = new StudentMaster(Client, Grade, Gender);
 		String sql = "INSERT INTO students (Client, FirstName, LastName, Grade, Gender) VALUES (\"" + Client + "\", \"" + student1.getFirstName() + "\", \"" + student1.getLastName() + "\", \"" + student1.getGrade() + "\", \"" + student1.getGender() + "\");";
 		this.jdbcTemplate.update(sql);
+		//System.out.println(sql);
 		return 0;
 	}
 	

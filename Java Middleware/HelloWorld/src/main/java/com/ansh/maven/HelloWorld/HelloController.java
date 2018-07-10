@@ -100,14 +100,6 @@ public class HelloController {
 		return studentService.getGrade(StudentId);
 	}
 	
-	//Adds a new student to the students database
-	@CrossOrigin(origins = webOrigin)
-	@RequestMapping("/addStudent")
-	public int addStudent() {
-		System.out.println("Method addStudent() called");
-		return studentService.addStudent("Deez Nuts", "5th", "Male");
-	}
-	
 	//Returns all records in the record database
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/records")
@@ -161,6 +153,14 @@ public class HelloController {
 		}
 		return a;
 	}
+	
+	//Adds a new student to the students database
+		@CrossOrigin(origins = webOrigin)
+		@RequestMapping("/addStudent")
+		public int addStudent(@RequestBody(required=false) StudentMaster student) {
+			System.out.println("Method addStudent() called");
+			return studentService.addStudent(student.getClient(), student.getGrade(), student.getGender());
+		}
 	
 	//Updates an existing record in the database
 	@CrossOrigin(origins = webOrigin)

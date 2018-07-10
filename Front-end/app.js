@@ -4,7 +4,7 @@ var app = angular.module('studentApp', []);
 //Controller used for StudentList.html: mainly to display students who have data for selection
 app.controller('studentCtrl', function($scope, $http, $window) {
 	//Retrieves students with data
-	$http.get("http://localhost:8080/dataStudents")
+	$http.get("http://localhost:8090/dataStudents")
 	.then(function(response) {
 		$scope.students = response.data;
 	});
@@ -24,13 +24,13 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 		$scope.studentName = $window.localStorage.getItem(1);
 
 		//Retrieves all categories the selected student is working in
-		$http.get("http://localhost:8080/categoriesByStudent?Id=" + $window.localStorage.getItem(0))
+		$http.get("http://localhost:8090/categoriesByStudent?Id=" + $window.localStorage.getItem(0))
 		.then(function(response) {
 			$scope.categoriesOfStudent = response.data;
 		});
 
 		//Retrieves all data from the student's corresponding record in the database
-			$http.get("http://localhost:8080/gradeOfStudent?Id=" + $window.localStorage.getItem(0))
+			$http.get("http://localhost:8090/gradeOfStudent?Id=" + $window.localStorage.getItem(0))
 			.then(function(response) {
 				$scope.currentGrade = response.data;
 			});
@@ -64,7 +64,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 				var selectedStudentId = $window.localStorage.getItem(0);
 				var b = document.getElementById("months").value;
 				$scope.trueGrade = $scope.currentGrade;
-		$http.get("http://localhost:8080/recordsById?StudentId=" + selectedStudentId + "&Category=" + $scope.selectedCategory + "&Months=" + b + "&Reps=" + $scope.selectedRep + "&Until=" + $scope.months2)
+		$http.get("http://localhost:8090/recordsById?StudentId=" + selectedStudentId + "&Category=" + $scope.selectedCategory + "&Months=" + b + "&Reps=" + $scope.selectedRep + "&Until=" + $scope.months2)
 		.then(function(response) {
 			$scope.records = response.data;
 			$scope.first = $scope.records[0];
@@ -127,7 +127,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			let extraBooks = new Array();
 			
 			if($scope.testSequenceLarge > lastBookSequenceLarge) {
-					$http.get("http://localhost:8080/booksInRange?Category=" + $scope.selectedCategory + "&StartSequence=" + lastBookSequenceLarge + "&EndSequence=" + 25)
+					$http.get("http://localhost:8090/booksInRange?Category=" + $scope.selectedCategory + "&StartSequence=" + lastBookSequenceLarge + "&EndSequence=" + 25)
 					.then(function(response) {
 						let booksInRange = response.data;
 						//console.log($scope.booksInRange)
@@ -220,8 +220,8 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 						fill: false,
 						lineTension: 0
 					}, {
-						label: "Testing",
-						data: newBooks3,
+						//label: "Testing",
+						//data: newBooks3,
 						backgroundColor: "rgba(0, 0, 255, 0.4)",
 						borderColor: "rgba(0, 0, 255, 0.4)",
 						fill: false,
@@ -350,7 +350,7 @@ var app2 = angular.module('insertApp', ['ngMaterial']);
 	app2.controller('insertCtrl', function($scope, $http){
 
 	//Returns a list of all students for easy name selection	
-	$http.get("http://localhost:8080/students")
+	$http.get("http://localhost:8090/students")
 	.then(function(response) {
 		$scope.students = response.data;
 
@@ -363,7 +363,7 @@ var app2 = angular.module('insertApp', ['ngMaterial']);
 
 	//Returns a list of subcategories based on the selected category
 	$scope.getSubcategories = function() {
-		$http.get("http://localhost:8080/subcategories?Category=" + $scope.selectedCategory)
+		$http.get("http://localhost:8090/subcategories?Category=" + $scope.selectedCategory)
 		.then(function(response) {
 			console.log(response.data);
 			$scope.subcategories = response.data;
@@ -372,14 +372,14 @@ var app2 = angular.module('insertApp', ['ngMaterial']);
 
 	//Returns a list of titles based on the selected subCategory
 	$scope.getTitles = function() {
-		$http.get("http://localhost:8080/titles?Subcategory=" + $scope.selectedSubCategory)
+		$http.get("http://localhost:8090/titles?Subcategory=" + $scope.selectedSubCategory)
 		.then(function(response) {
 			$scope.titles = response.data;
 		});
 	}
 
 	//Returns all books
-	$http.get("http://localhost:8080/books")
+	$http.get("http://localhost:8090/books")
 	.then(function(response) {
 		$scope.books = response.data;
 		$scope.categories = [];
@@ -404,7 +404,7 @@ var app2 = angular.module('insertApp', ['ngMaterial']);
 			});
 			//Inserts the record with an HTTP post call
 			$http({
-				url: 'http://localhost:8080/addRecord',
+				url: 'http://localhost:8090/addRecord',
 				method: 'POST',
 				headers: {
 					"Content-Type": "application/json",
@@ -425,7 +425,7 @@ var app3 = angular.module('updateApp', []);
 app3.controller('updateCtrl', function($scope, $http){
 
 	//Returns all student names for easy selection
-	$http.get("http://localhost:8080/students")
+	$http.get("http://localhost:8090/students")
 	.then(function(response) {
 		$scope.students = response.data;
 		$scope.names = [];
@@ -435,7 +435,7 @@ app3.controller('updateCtrl', function($scope, $http){
 	});
 
 	//Retrieves incomplete records for instructors to choose from
-	$http.get("http://localhost:8080/incompleteRecords")
+	$http.get("http://localhost:8090/incompleteRecords")
 	.then(function(response) {
 		$scope.records = response.data;
 		$scope.displayRecords = [];
@@ -456,9 +456,36 @@ app3.controller('updateCtrl', function($scope, $http){
 	//Updates an incomplete record based on instructor data
 	$scope.updateRecord = function() {
 		console.log($scope.endDate);
-		$http.get("http://localhost:8080/updateRecord?record=" + $scope.selectedRecord + "&endDate=" + $scope.endDate)
+		$http.get("http://localhost:8090/updateRecord?record=" + $scope.selectedRecord + "&endDate=" + $scope.endDate)
 		.then(function(response) {
 			window.location.href = "StudentList.html"
 		})	
 	}
+});
+
+//App for inserting a new student through InsertStudent.html
+var app4 = angular.module('insertStudentApp', []);
+
+app4.controller('insertStudentCtrl', function($scope, $http) {
+
+	//Creates JSON for the student based on form data
+		$scope.createStudent = function() {
+			var newStudentDetails = JSON.stringify({
+				client: $scope.Client,
+				grade: $scope.Grade,
+				gender: $scope.Gender
+			});
+			//Inserts the record with an HTTP post call
+			$http({
+				url: 'http://localhost:8090/addStudent',
+				method: 'POST',
+				headers: {
+					"Content-Type": "application/json",
+					"Accept": "application/json"
+				},
+				data:newStudentDetails
+			}).then(function(response) {
+				alert(response.data);
+			});
+		}
 });

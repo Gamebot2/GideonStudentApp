@@ -51,7 +51,7 @@ table {
 	to{opacity: 1;}
 }
 
-#insertBtn, #updateBtn {
+#insertBtn, #updateBtn, #studentBtn {
 	width: 200px;
 }
 
@@ -80,11 +80,17 @@ button {
 
 #updateBtn {
 	position: relative;
-	left: 77%;
+	left: 50%;
 	top: 20%;
 }
 
-#insertBtn:hover, #updateBtn:hover {
+#studentBtn {
+	position: relative;
+	left: 2%;
+	top: 1;
+}
+
+#insertBtn:hover, #updateBtn:hover, #studentBtn:hover {
 	background-color: orange;
 	color: white;
 	border: 1px solid black;

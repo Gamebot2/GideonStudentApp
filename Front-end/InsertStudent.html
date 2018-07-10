@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Insert Record</title>
+		<title>Insert Student</title>
 		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
 		<link rel = "stylesheet" type = "text/css" href="RecordStyle.css">
@@ -24,11 +24,27 @@
 		<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
 	</head>
 	<body>
-		<div ng-app = "insertApp" ng-controller = "insertCtrl">
-			<h1>Insert Record</h1>
-			<!--Form used for adding a new record for an existing student into the database-->
-		<form name = "insertForm">
-			
+		<div ng-app = "insertStudentApp" ng-controller = "insertStudentCtrl">
+			<h1>Insert Student</h1>
+			<!--Form used for adding a new student into the database-->
+		<form name = "studentForm">
+			<!--Simple text box for instructors to enter the new student's full name-->
+			<label for = "student">Full Student Name</label><br>
+				<input type = "text" name = "student" id = "nameBox" ng-model = "Client" required><br><br>
+
+			<!--Simple text box for instructors to enter the new student's grade-->
+			<label for = "grade">Student's Grade (e.g. "1st", "2nd", "Kinder")</label><br>
+				<input type = "text" name = "grade" id = "gradeBox" ng-model = "Grade" required><br><br>
+
+			<!--Simple selection field for instructors to enter the new student's gender-->
+			<label for = "gender">Student's Gender</label><br>
+				<select name = "gender" id = "genderBox" ng-model = "Gender"><br><br>
+					<option value = "Male">Male</option>
+					<option value = "Female">Female</option>
+				</select>
+
+			<!--Submit button: runs the insertStudent function-->
+			<input type = "submit" value="Submit" class = "button" ng-click = "createStudent()">
 		</form>
 	</div>
 	</body>

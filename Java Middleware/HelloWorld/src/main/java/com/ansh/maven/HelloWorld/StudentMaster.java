@@ -7,6 +7,12 @@ public class StudentMaster {
 	private String Grade;
 	private String Gender;
 	
+	
+	
+	public StudentMaster() {
+		super();
+	}
+	
 	public StudentMaster(String client, String grade, String gender) {
 		super();
 		Client = client;
