@@ -4,10 +4,21 @@ var app = angular.module('studentApp', []);
 //Controller used for StudentList.html: mainly to display students who have data for selection
 app.controller('studentCtrl', function($scope, $http, $window) {
 	//Retrieves students with data
-	$http.get("http://localhost:8090/dataStudents")
-	.then(function(response) {
-		$scope.students = response.data;
-	});
+	$scope.getStudents = function() {
+		$http.get("http://localhost:8080/" + ($scope.dataOn ? "dataStudents" : "students"))
+		.then(function(response) {
+			$scope.students = response.data;
+		});
+		$scope.toggleButtonText = $scope.dataOn ? "Display All Students" : "Display Students with Records";
+	}
+
+	$scope.toggleData = function() {
+		$scope.dataOn = !$scope.dataOn;
+		$scope.getStudents();
+	}
+
+	$scope.dataOn = false;
+	$scope.getStudents();
 
 	//Function for selecting a student and going to the chart page
 	$scope.logStudent = function(id, name) {
@@ -24,16 +35,16 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 		$scope.studentName = $window.localStorage.getItem(1);
 
 		//Retrieves all categories the selected student is working in
-		$http.get("http://localhost:8090/categoriesByStudent?Id=" + $window.localStorage.getItem(0))
+		$http.get("http://localhost:8080/categoriesByStudent?Id=" + $window.localStorage.getItem(0))
 		.then(function(response) {
 			$scope.categoriesOfStudent = response.data;
 		});
 
 		//Retrieves all data from the student's corresponding record in the database
-			$http.get("http://localhost:8090/gradeOfStudent?Id=" + $window.localStorage.getItem(0))
-			.then(function(response) {
-				$scope.currentGrade = response.data;
-			});
+		$http.get("http://localhost:8080/gradeOfStudent?Id=" + $window.localStorage.getItem(0))
+		.then(function(response) {
+			$scope.currentGrade = response.data;
+		});
 
 		//Retrieves possible repetition selection options for the selected category
 		$scope.getReps = function() {
@@ -64,283 +75,284 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 				var selectedStudentId = $window.localStorage.getItem(0);
 				var b = document.getElementById("months").value;
 				$scope.trueGrade = $scope.currentGrade;
-		$http.get("http://localhost:8090/recordsById?StudentId=" + selectedStudentId + "&Category=" + $scope.selectedCategory + "&Months=" + b + "&Reps=" + $scope.selectedRep + "&Until=" + $scope.months2)
-		.then(function(response) {
-			$scope.records = response.data;
-			$scope.first = $scope.records[0];
 
-			let myChart = document.getElementById('lineChart').getContext('2d');
+			$http.get("http://localhost:8080/recordsById?StudentId=" + selectedStudentId + "&Category=" + $scope.selectedCategory + "&Months=" + b + "&Reps=" + $scope.selectedRep + "&Until=" + $scope.months2)
+			.then(function(response) {
+				$scope.records = response.data;
+				$scope.first = $scope.records[0];
 
-			var dates = [];
-			var labelDates = [];
-			var labelDatesWithGrades = [];
-			var grades = [];
-			var books = [];
+				let myChart = document.getElementById('lineChart').getContext('2d');
 
-			//Helps display error message if there is no data, couldn't find a better solution for some reason
-			var a = 0;
+				var dates = [];
+				var labelDates = [];
+				var labelDatesWithGrades = [];
+				var grades = [];
+				var books = [];
 
-			var recordDatesCounter = 0;
-			var bookCounter = 0;
-			var newBooks = [];
-			var newDates = [];
-			var now = moment().date() + " " + moment().year();
+				//Helps display error message if there is no data, couldn't find a better solution for some reason
+				var a = 0;
 
-			for(j = $scope.months; j > $scope.months2; j--) {
-				var currentMonth = moment().subtract(j, 'months');
-				var currentMonthString = currentMonth.month() + 1 + " " + currentMonth.year();
-				labelDates.push(currentMonthString);
-				var inverseMonth = $scope.months-u;
-				var currentInverseMonth = moment().subtract(inverseMonth, 'months').month() + 1;
-				if(currentMonth.month() == 8) {
-					$scope.trueGrade--;
-				}
-				grades.push($scope.trueGrade);
-			}
+				var recordDatesCounter = 0;
+				var bookCounter = 0;
+				var newBooks = [];
+				var newDates = [];
+				var now = moment().date() + " " + moment().year();
 
-			for(var u = 0; u < labelDates.length; u++) {
-				var inverseU = labelDates.length-u-1;
-				labelDatesWithGrades.push(labelDates[u] + " " + grades[inverseU]);
-			}
-
-			var lastBookSequenceLarge;
-
-			for(i = 0; i < $scope.records.length; i++) {
-				if($scope.records[i].startDate != null) {
-					var d = new Date($scope.records[i].startDate);
-					//console.log($scope.records[i]);
-					var displayed = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
-					dates.push(moment(displayed).format('M YYYY'));
-					if($scope.selectedCategory == "Comprehension") {
-						books.push($scope.records[i].subcategory + " " + $scope.records[i].bookTitle);
-					} else {
-						books.push($scope.records[i].bookTitle);
+				for(j = $scope.months; j > $scope.months2; j--) {
+					var currentMonth = moment().subtract(j, 'months');
+					var currentMonthString = currentMonth.month() + 1 + " " + currentMonth.year();
+					labelDates.push(currentMonthString);
+					var inverseMonth = $scope.months-u;
+					var currentInverseMonth = moment().subtract(inverseMonth, 'months').month() + 1;
+					if(currentMonth.month() == 8) {
+						$scope.trueGrade--;
 					}
-					if(i == $scope.records.length - 1) {
-						lastBookSequenceLarge = $scope.records[i].sequenceLarge;
-					}
-					a++;
+					grades.push($scope.trueGrade);
 				}
-			}
 
-			$scope.testSequenceLarge = 26;
-			let extraBooks = new Array();
-			
-			if($scope.testSequenceLarge > lastBookSequenceLarge) {
-					$http.get("http://localhost:8090/booksInRange?Category=" + $scope.selectedCategory + "&StartSequence=" + lastBookSequenceLarge + "&EndSequence=" + 25)
-					.then(function(response) {
-						let booksInRange = response.data;
-						//console.log($scope.booksInRange)
-						for(y = 0; y < booksInRange.length; y++) {
-							extraBooks.push(booksInRange[y].title);
-							books.push(booksInRange[y].title);
-							console.log(extraBooks);
+				for(var u = 0; u < labelDates.length; u++) {
+					var inverseU = labelDates.length-u-1;
+					labelDatesWithGrades.push(labelDates[u] + " " + grades[inverseU]);
+				}
+
+				var lastBookSequenceLarge;
+
+				for(i = 0; i < $scope.records.length; i++) {
+					if($scope.records[i].startDate != null) {
+						var d = new Date($scope.records[i].startDate);
+						//console.log($scope.records[i]);
+						var displayed = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
+						dates.push(moment(displayed).format('M YYYY'));
+						if($scope.selectedCategory == "Comprehension") {
+							books.push($scope.records[i].subcategory + " " + $scope.records[i].bookTitle);
+						} else {
+							books.push($scope.records[i].bookTitle);
 						}
-					});
-			}
-			console.log(extraBooks);
+						if(i == $scope.records.length - 1) {
+							lastBookSequenceLarge = $scope.records[i].sequenceLarge;
+						}
+						a++;
+					}
+				}
 
-			var k;
-			var firstMonthWithRecord;
-
-			for(k = $scope.months; k > $scope.months2; k--) {
-				var currentMonth = moment().subtract(k, 'months');
-				var currentMonthString = currentMonth.month() + 1 + " " + currentMonth.year();
-				//console.log(currentMonthString);
-
-				var d = new Date($scope.records[recordDatesCounter].startDate);
-				var displayed = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
-				var recordDateString = moment(displayed).format('M YYYY');
+				$scope.testSequenceLarge = 26;
+				let extraBooks = new Array();
 				
-				if(k == $scope.months) {
-					firstMonthWithRecord = recordDateString;
+				if($scope.testSequenceLarge > lastBookSequenceLarge) {
+						$http.get("http://localhost:8080/booksInRange?Category=" + $scope.selectedCategory + "&StartSequence=" + lastBookSequenceLarge + "&EndSequence=" + 25)
+						.then(function(response) {
+							let booksInRange = response.data;
+							//console.log($scope.booksInRange)
+							for(y = 0; y < booksInRange.length; y++) {
+								extraBooks.push(booksInRange[y].title);
+								books.push(booksInRange[y].title);
+								console.log(extraBooks);
+							}
+						});
 				}
+				console.log(extraBooks);
 
-				if(recordDatesCounter != 0) {
-					var d2 = new Date($scope.records[recordDatesCounter-1].startDate);
-					var displayed2 = (d2.getMonth()+1) + "/" + d2.getDate() + "/" + d2.getFullYear();
-					var recordDateString2 = moment(displayed2).format('M YYYY');
-					if(recordDateString2 == recordDateString) {
-					currentMonthString = currentMonth.month() + " " + currentMonth.year();
-				}
-				}
+				var k;
+				var firstMonthWithRecord;
 
-				if(recordDateString == currentMonthString) {
-					if($scope.selectedCategory == "Comprehension") {
-						newBooks.push($scope.records[bookCounter].subcategory + " " + $scope.records[bookCounter].bookTitle);
-					} else {
-						newBooks.push($scope.records[bookCounter].bookTitle);
+				for(k = $scope.months; k > $scope.months2; k--) {
+					var currentMonth = moment().subtract(k, 'months');
+					var currentMonthString = currentMonth.month() + 1 + " " + currentMonth.year();
+					//console.log(currentMonthString);
+
+					var d = new Date($scope.records[recordDatesCounter].startDate);
+					var displayed = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
+					var recordDateString = moment(displayed).format('M YYYY');
+					
+					if(k == $scope.months) {
+						firstMonthWithRecord = recordDateString;
 					}
-					if(recordDatesCounter != $scope.records.length - 1) {
-						recordDatesCounter++;
-						bookCounter++;
+
+					if(recordDatesCounter != 0) {
+						var d2 = new Date($scope.records[recordDatesCounter-1].startDate);
+						var displayed2 = (d2.getMonth()+1) + "/" + d2.getDate() + "/" + d2.getFullYear();
+						var recordDateString2 = moment(displayed2).format('M YYYY');
+						if(recordDateString2 == recordDateString) {
+						currentMonthString = currentMonth.month() + " " + currentMonth.year();
+					}
 					}
 
-				} else {
-					if($scope.selectedCategory == "Comprehension") {
-						newBooks.push($scope.records[bookCounter].subcategory + " " + $scope.records[bookCounter].bookTitle);
-					} else {
-						newBooks.push($scope.records[bookCounter].bookTitle);
-					}
-				}
-			}
-
-
-			$scope.errorMessage = true;
-			if(a > 0) {
-				$scope.errorMessage = false;
-			} 	
-
-			Chart.defaults.global.defaultFontSize = 18;
-			Chart.defaults.global.defaultFontColor = '#000';
-
-			var newBooks2 = [];
-			var newBooks3 = [];
-			for(b = 0; b < newBooks.length; b++) {
-				newBooks2[b] = newBooks[b];
-				newBooks3[b] = newBooks[b];
-				if(b == newBooks.length - 1) {
-					newBooks3[b] = "3 - A";
-				}
-			}
-
-			console.log(books);
-			
-
-			let exampleChart = new Chart(myChart,{
-				type: 'line',
-				data:{
-					xLabels: labelDatesWithGrades,
-					yLabels: books.reverse(),
-					datasets:[{
-						label: $scope.first.name,
-						data: newBooks2,
-						backgroundColor: "rgba(255, 0, 0, 0.4)",
-						borderColor: "rgba(255, 0, 0, 0.4)",
-						fill: false,
-						lineTension: 0
-					}, {
-						//label: "Testing",
-						//data: newBooks3,
-						backgroundColor: "rgba(0, 0, 255, 0.4)",
-						borderColor: "rgba(0, 0, 255, 0.4)",
-						fill: false,
-						lineTension: 0
-					}	
-					]
-				},
-				options: {
-					responsive: true,
-					title: {
-						display: true,
-						text: $scope.first.name,
-						fontSize: 25
-					},
-					legend: {
-						position: 'right'
-					},
-					tooltips: {
-						enabled: false
-					},
-					layout: {
-						padding: {
-							left: 10,
-							bottom: 5
+					if(recordDateString == currentMonthString) {
+						if($scope.selectedCategory == "Comprehension") {
+							newBooks.push($scope.records[bookCounter].subcategory + " " + $scope.records[bookCounter].bookTitle);
+						} else {
+							newBooks.push($scope.records[bookCounter].bookTitle);
 						}
-					},
-					scales: {
-						xAxes: [{
-							id:"xAxis1",
-							scaleLabel: {
-								display: false,
-								padding: -5
-							},
-							ticks: {
-								dislay: false,
-								autoSkip: true,
-								callback:function(label){
-									var month = label.split(" ")[0];
-									var year = label.split(" ")[1];
-									var grade = label.split(" ")[2];
-									return month;
-								}
-							}
-						}, {
-							id: "xAxis2",
-							gridLines: {
-								display: false,
-								drawBorder: true
-							},
-							scaleLabel: {
-								display: false,
-								padding: 0
-							},
-							ticks: {
-								autoSkip: false,
-								callback:function(label){
-									var month = label.split(" ")[0];
-									var year = label.split(" ")[1];
-									var grade = label.split(" ")[2];
-									if(month == "6") {
-										return year;
-									} else if ( month == "12"){
-										return "|";
-									}
-								},
-								maxRotation: 0,
-								padding: 0
-							}
+						if(recordDatesCounter != $scope.records.length - 1) {
+							recordDatesCounter++;
+							bookCounter++;
+						}
 
-						}, {
-							id: "xAxis3",
-							gridLines: {
-								display: false,
-								drawBorder: true,
-								drawOnChartArea: false
-							},
-							scaleLabel: {
-								display: false
-							},
-							ticks: {
-								autoSkip: false,
-								callback:function(label){
-									var month = label.split(" ")[0];
-									var year = label.split(" ")[1];
-									var grade = label.split(" ")[2];
-									if(month == "2") {
-										if(grade == "0") {
-											return "Kindergarten";
-										} else if(grade == "1") {
-											return "1st Grade";
-										} else if(grade == "2") {
-											return "2nd Grade";
-										} else if(grade == "3") {
-											return "3rd Grade";
-										} else if(grade == "-1") {
-											return "Pre-K";
-										} else {
-											return grade + "th Grade";
-										}
-									} else if (month == "8") {
-										return "|";
-									}
-								},
-								maxRotation: 0,
-							}
-						}],
-						yAxes: [{
-							type: 'category',
-							position: 'left',
-							display: true,
-							scaleLabel: {
-								display: true,
-								labelString: $scope.selectedCategory
-							}
-						}]
+					} else {
+						if($scope.selectedCategory == "Comprehension") {
+							newBooks.push($scope.records[bookCounter].subcategory + " " + $scope.records[bookCounter].bookTitle);
+						} else {
+							newBooks.push($scope.records[bookCounter].bookTitle);
+						}
 					}
 				}
-			});
-		});	
+
+
+				$scope.errorMessage = true;
+				if(a > 0) {
+					$scope.errorMessage = false;
+				} 	
+
+				Chart.defaults.global.defaultFontSize = 18;
+				Chart.defaults.global.defaultFontColor = '#000';
+
+				var newBooks2 = [];
+				var newBooks3 = [];
+				for(b = 0; b < newBooks.length; b++) {
+					newBooks2[b] = newBooks[b];
+					newBooks3[b] = newBooks[b];
+					if(b == newBooks.length - 1) {
+						newBooks3[b] = "3 - A";
+					}
+				}
+
+				console.log(books);
+				
+
+				let exampleChart = new Chart(myChart,{
+					type: 'line',
+					data:{
+						xLabels: labelDatesWithGrades,
+						yLabels: books.reverse(),
+						datasets:[{
+							label: $scope.first.name,
+							data: newBooks2,
+							backgroundColor: "rgba(255, 0, 0, 0.4)",
+							borderColor: "rgba(255, 0, 0, 0.4)",
+							fill: false,
+							lineTension: 0
+						}, {
+							//label: "Testing",
+							//data: newBooks3,
+							backgroundColor: "rgba(0, 0, 255, 0.4)",
+							borderColor: "rgba(0, 0, 255, 0.4)",
+							fill: false,
+							lineTension: 0
+						}	
+						]
+					},
+					options: {
+						responsive: true,
+						title: {
+							display: true,
+							text: $scope.first.name,
+							fontSize: 25
+						},
+						legend: {
+							position: 'right'
+						},
+						tooltips: {
+							enabled: false
+						},
+						layout: {
+							padding: {
+								left: 10,
+								bottom: 5
+							}
+						},
+						scales: {
+							xAxes: [{
+								id:"xAxis1",
+								scaleLabel: {
+									display: false,
+									padding: -5
+								},
+								ticks: {
+									dislay: false,
+									autoSkip: true,
+									callback:function(label){
+										var month = label.split(" ")[0];
+										var year = label.split(" ")[1];
+										var grade = label.split(" ")[2];
+										return month;
+									}
+								}
+							}, {
+								id: "xAxis2",
+								gridLines: {
+									display: false,
+									drawBorder: true
+								},
+								scaleLabel: {
+									display: false,
+									padding: 0
+								},
+								ticks: {
+									autoSkip: false,
+									callback:function(label){
+										var month = label.split(" ")[0];
+										var year = label.split(" ")[1];
+										var grade = label.split(" ")[2];
+										if(month == "6") {
+											return year;
+										} else if ( month == "12"){
+											return "|";
+										}
+									},
+									maxRotation: 0,
+									padding: 0
+								}
+
+							}, {
+								id: "xAxis3",
+								gridLines: {
+									display: false,
+									drawBorder: true,
+									drawOnChartArea: false
+								},
+								scaleLabel: {
+									display: false
+								},
+								ticks: {
+									autoSkip: false,
+									callback:function(label){
+										var month = label.split(" ")[0];
+										var year = label.split(" ")[1];
+										var grade = label.split(" ")[2];
+										if(month == "2") {
+											if(grade == "0") {
+												return "Kindergarten";
+											} else if(grade == "1") {
+												return "1st Grade";
+											} else if(grade == "2") {
+												return "2nd Grade";
+											} else if(grade == "3") {
+												return "3rd Grade";
+											} else if(grade == "-1") {
+												return "Pre-K";
+											} else {
+												return grade + "th Grade";
+											}
+										} else if (month == "8") {
+											return "|";
+										}
+									},
+									maxRotation: 0,
+								}
+							}],
+							yAxes: [{
+								type: 'category',
+								position: 'left',
+								display: true,
+								scaleLabel: {
+									display: true,
+									labelString: $scope.selectedCategory
+								}
+							}]
+						}
+					}
+				});
+			});	
 		};			
 	});
 
@@ -350,7 +362,7 @@ var app2 = angular.module('insertApp', ['ngMaterial']);
 	app2.controller('insertCtrl', function($scope, $http){
 
 	//Returns a list of all students for easy name selection	
-	$http.get("http://localhost:8090/students")
+	$http.get("http://localhost:8080/students")
 	.then(function(response) {
 		$scope.students = response.data;
 
@@ -363,7 +375,7 @@ var app2 = angular.module('insertApp', ['ngMaterial']);
 
 	//Returns a list of subcategories based on the selected category
 	$scope.getSubcategories = function() {
-		$http.get("http://localhost:8090/subcategories?Category=" + $scope.selectedCategory)
+		$http.get("http://localhost:8080/subcategories?Category=" + $scope.selectedCategory)
 		.then(function(response) {
 			console.log(response.data);
 			$scope.subcategories = response.data;
@@ -372,14 +384,14 @@ var app2 = angular.module('insertApp', ['ngMaterial']);
 
 	//Returns a list of titles based on the selected subCategory
 	$scope.getTitles = function() {
-		$http.get("http://localhost:8090/titles?Subcategory=" + $scope.selectedSubCategory)
+		$http.get("http://localhost:8080/titles?Subcategory=" + $scope.selectedSubCategory)
 		.then(function(response) {
 			$scope.titles = response.data;
 		});
 	}
 
 	//Returns all books
-	$http.get("http://localhost:8090/books")
+	$http.get("http://localhost:8080/books")
 	.then(function(response) {
 		$scope.books = response.data;
 		$scope.categories = [];
@@ -404,7 +416,7 @@ var app2 = angular.module('insertApp', ['ngMaterial']);
 			});
 			//Inserts the record with an HTTP post call
 			$http({
-				url: 'http://localhost:8090/addRecord',
+				url: 'http://localhost:8080/addRecord',
 				method: 'POST',
 				headers: {
 					"Content-Type": "application/json",
@@ -425,7 +437,7 @@ var app3 = angular.module('updateApp', []);
 app3.controller('updateCtrl', function($scope, $http){
 
 	//Returns all student names for easy selection
-	$http.get("http://localhost:8090/students")
+	$http.get("http://localhost:8080/students")
 	.then(function(response) {
 		$scope.students = response.data;
 		$scope.names = [];
@@ -435,7 +447,7 @@ app3.controller('updateCtrl', function($scope, $http){
 	});
 
 	//Retrieves incomplete records for instructors to choose from
-	$http.get("http://localhost:8090/incompleteRecords")
+	$http.get("http://localhost:8080/incompleteRecords")
 	.then(function(response) {
 		$scope.records = response.data;
 		$scope.displayRecords = [];
@@ -456,7 +468,7 @@ app3.controller('updateCtrl', function($scope, $http){
 	//Updates an incomplete record based on instructor data
 	$scope.updateRecord = function() {
 		console.log($scope.endDate);
-		$http.get("http://localhost:8090/updateRecord?record=" + $scope.selectedRecord + "&endDate=" + $scope.endDate)
+		$http.get("http://localhost:8080/updateRecord?record=" + $scope.selectedRecord + "&endDate=" + $scope.endDate)
 		.then(function(response) {
 			window.location.href = "StudentList.html"
 		})	
@@ -477,7 +489,7 @@ app4.controller('insertStudentCtrl', function($scope, $http) {
 			});
 			//Inserts the record with an HTTP post call
 			$http({
-				url: 'http://localhost:8090/addStudent',
+				url: 'http://localhost:8080/addStudent',
 				method: 'POST',
 				headers: {
 					"Content-Type": "application/json",

@@ -80,7 +80,7 @@ button {
 
 #updateBtn {
 	position: relative;
-	left: 50%;
+	left: 65%;
 	top: 20%;
 }
 
@@ -90,7 +90,13 @@ button {
 	top: 1;
 }
 
-#insertBtn:hover, #updateBtn:hover, #studentBtn:hover {
+#dataToggleBtn {
+	position: relative;
+	left:30%;
+	width:40%;
+}
+
+.hoverable:hover {
 	background-color: orange;
 	color: white;
 	border: 1px solid black;

@@ -20,15 +20,22 @@
 	</head>
 	<body>
 		<!--Selection buttons in the header to move to insert and update pages-->
-		<button type = "button" id = "studentBtn" onclick = "location.href='InsertStudent.html'">Insert Student</button>
-		<button type = "button" id = "insertBtn" onclick = "location.href='InsertRecord.html'">Insert Record</button>
-		<button type = "button" id = "updateBtn" onclick = "location.href='UpdateRecord.html'">Update Record</button>
+		<button type = "button" class = "hoverable" id = "studentBtn" onclick = "location.href='InsertStudent.html'">Insert Student</button>
+		<button type = "button" class = "hoverable" id = "updateBtn" onclick = "location.href='UpdateRecord.html'">Update Record</button>
+		<button type = "button" class = "hoverable" id = "insertBtn" onclick = "location.href='InsertRecord.html'">Insert Record</button>
 		<br/>
 		<!--List for displaying all students in the database that have book data-->
 		<div ng-app="studentApp" ng-controller = "studentCtrl">
 			<h1>List of Students</h1>
-			<p id = "filterText">Filter by Name or Email: </p>
-			<input id = "textFilter" name = "textFilter" type = "text" ng-model="test">
+			<p id = "filterText">Filter by Name: </p>
+			<input id = "textFilter" name = "textFilter" type = "text" ng-model="clientFilter">
+			<br>
+			<br>
+			<p id = "filterText">Filter by Email: </p>
+			<input id = "textFilter" name = "textFilter" type = "text" ng-model="emailFilter">
+			<br>
+			<br>
+			<button type = "button" class = "hoverable" id = "dataToggleBtn" ng-click = "toggleData()">{{toggleButtonText}}</button>
 			<br>
 			<br>
 			<div class = "tbl-header">
@@ -44,8 +51,8 @@
 			<div class = "tbl-content">
 				<tbody>
 					<table>
-						<tr ng-repeat = "student in students | filter: test" ng-click = "logStudent(student.studentId, student.client)">
-							<td width = "20%">{{student.client}} + {{student.studentId}}</td>
+						<tr ng-repeat = "student in students | filter: {client: clientFilter, email: emailFilter}" ng-click = "logStudent(student.studentId, student.client)">
+							<td width = "20%">{{student.client}} (ID: {{student.studentId}})</td>
 							<td width = "50%">{{student.email}}</td>
 							<td width = "10%">{{student.grade}}</td>
 						</tr>
