@@ -6,7 +6,7 @@
 
 body {
 	font-family: 'Roboto', sans-serif;
-	background: linear-gradient(to bottom, #FFD700, #FFA500) no-repeat bottom;
+    background: linear-gradient(to bottom, #FFD700, #FFA500) no-repeat bottom;
 	background-size: 100%;
 	height: 1000px;
 	color: black;

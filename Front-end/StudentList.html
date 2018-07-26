@@ -3,6 +3,7 @@
 	<head>
 		<title>Student List</title>
 		<link rel = "stylesheet" type = "text/css" href="ListStyle.css">	
+		<link rel = "stylesheet" type = "text/css" href="multiColumn.css">
 
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -20,19 +21,27 @@
 	</head>
 	<body>
 		<!--Selection buttons in the header to move to insert and update pages-->
-		<button type = "button" class = "hoverable" id = "studentBtn" onclick = "location.href='InsertStudent.html'">Insert Student</button>
-		<button type = "button" class = "hoverable" id = "updateBtn" onclick = "location.href='UpdateRecord.html'">Update Record</button>
-		<button type = "button" class = "hoverable" id = "insertBtn" onclick = "location.href='InsertRecord.html'">Insert Record</button>
+		<div id = "header">
+			<button type = "button" class = "hoverable" id = "studentBtn" onclick = "location.href='InsertStudent.html'">Insert Student</button>
+			<button type = "button" class = "hoverable" id = "updateBtn" onclick = "location.href='UpdateRecord.html'">Update Record</button>
+			<button type = "button" class = "hoverable" id = "insertBtn" onclick = "location.href='InsertRecord.html'">Insert Record</button>
+		</div>
 		<br/>
 		<!--List for displaying all students in the database that have book data-->
 		<div ng-app="studentApp" ng-controller = "studentCtrl">
 			<h1>List of Students</h1>
-			<p id = "filterText">Filter by Name: </p>
-			<input id = "textFilter" name = "textFilter" type = "text" ng-model="clientFilter">
-			<br>
-			<br>
-			<p id = "filterText">Filter by Email: </p>
-			<input id = "textFilter" name = "textFilter" type = "text" ng-model="emailFilter">
+			<!--Filter text blocks-->
+			<div class = "columnContainer" id = "filterContainer">
+				<div class = "twoColumn">
+					<p id = "filterText">Filter by Name: </p>
+					<input id = "textFilter" name = "textFilter" type = "text" ng-model="clientFilter">
+				</div>
+				<div class = "twoColumn">
+					<p id = "filterText">Filter by Email: </p>
+					<input id = "textFilter" name = "textFilter" type = "text" ng-model="emailFilter">
+				</div>
+			</div>
+
 			<br>
 			<br>
 			<button type = "button" class = "hoverable" id = "dataToggleBtn" ng-click = "toggleData()">{{toggleButtonText}}</button>
@@ -42,7 +51,7 @@
 				<table>
 					<thead>
 						<tr>
-							<th width = "20%">Client</th>
+							<th width = "20%">Name</th>
 							<th width = "50%">Email</th>
 							<th width = "10%">Grade</th>
 					</thead>

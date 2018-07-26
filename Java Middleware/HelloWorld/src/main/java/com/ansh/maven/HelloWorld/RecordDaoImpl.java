@@ -73,7 +73,7 @@ public class RecordDaoImpl implements RecordDao{
 				studentFoundFlag = true;
 			}
 		}
-		if (!studentFoundFlag) {
+		if (!studentFoundFlag) {	// If the client name is not in the database, return an error (would probably help if we could return more than just a number)
 			return -1;
 		}
 		
@@ -91,7 +91,11 @@ public class RecordDaoImpl implements RecordDao{
 			}
 		}
 		
-		String cap = ", " + (test ? 1 : 0) + ", null, null)";
+		String cap = ", #, null, null)";
+		if (test)
+			cap = cap.replaceAll("#", "1");
+		else
+			cap = cap.replaceAll("#", "0");
 		
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 		String formatted = format1.format(startDate);

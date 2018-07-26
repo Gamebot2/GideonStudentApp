@@ -51,7 +51,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			if($scope.selectedCategory == "Calculation") {
 				$scope.repOptions = ["1", "2", "3", "4", "5"];
 			} else {
-				$scope.repOptions = ["1", "2"]
+				$scope.repOptions = ["1", "2"];
 			}
 		}
 
@@ -293,9 +293,9 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 										var month = label.split(" ")[0];
 										var year = label.split(" ")[1];
 										var grade = label.split(" ")[2];
-										if(month == "6") {
+										if(month == "7") {
 											return year;
-										} else if ( month == "12"){
+										} else if ( month == "1"){
 											return "|";
 										}
 									},
@@ -353,7 +353,8 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 					}
 				});
 			});	
-		};			
+		};
+	
 	});
 
 //App for inserting data through insertRecord.html
@@ -468,7 +469,7 @@ app3.controller('updateCtrl', function($scope, $http){
 	//Updates an incomplete record based on instructor data
 	$scope.updateRecord = function() {
 		console.log($scope.endDate);
-		$http.get("http://localhost:8080/updateRecord?record=" + $scope.selectedRecord + "&endDate=" + $scope.endDate)
+		$http.get("http://localhost:8080/updateRecord?record=" + $scope.selectedRecord + "&endDate=" + $scope.endDate + "&testTime=" + $scope.testTime + "&mistakes=" + $scope.mistakes)
 		.then(function(response) {
 			window.location.href = "StudentList.html"
 		})	
@@ -481,23 +482,23 @@ var app4 = angular.module('insertStudentApp', []);
 app4.controller('insertStudentCtrl', function($scope, $http) {
 
 	//Creates JSON for the student based on form data
-		$scope.createStudent = function() {
-			var newStudentDetails = JSON.stringify({
-				client: $scope.Client,
-				grade: $scope.Grade,
-				gender: $scope.Gender
-			});
-			//Inserts the record with an HTTP post call
-			$http({
-				url: 'http://localhost:8080/addStudent',
-				method: 'POST',
-				headers: {
-					"Content-Type": "application/json",
-					"Accept": "application/json"
-				},
-				data:newStudentDetails
-			}).then(function(response) {
-				alert(response.data);
-			});
-		}
+	$scope.createStudent = function() {
+		var newStudentDetails = JSON.stringify({
+			client: $scope.Client,
+			grade: $scope.Grade,
+			gender: $scope.Gender
+		});
+		//Inserts the record with an HTTP post call
+		$http({
+			url: 'http://localhost:8080/addStudent',
+			method: 'POST',
+			headers: {
+				"Content-Type": "application/json",
+				"Accept": "application/json"
+			},
+			data:newStudentDetails
+		}).then(function(response) {
+			alert(response.data);
+		});
+	}
 });
