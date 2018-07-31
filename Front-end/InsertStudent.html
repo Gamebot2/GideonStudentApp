@@ -29,15 +29,15 @@
 			<!--Form used for adding a new student into the database-->
 			<form name = "studentForm">
 				<!--Simple text box for instructors to enter the new student's full name-->
-				<label for = "student">Full Student Name</label><br>
+				<label for = "student">Full Name</label><br>
 					<input type = "text" name = "student" id = "nameBox" ng-model = "Client" required><br><br>
 
 				<!--Simple text box for instructors to enter the new student's grade-->
 				<label for = "grade">Grade</label><br>
 					<!--<input type = "text" name = "grade" id = "gradeBox" ng-model = "Grade" required><br><br>-->
 					<select name = "grade" id = "gradeBox" ng-model = "Grade"><br><br>
-						<option value = "-1th">Pre-K</option>
-						<option value = "0th">Kinder</option>
+						<option value = "PreK (-1)">PreK</option>
+						<option value = "Kinder (0)">Kinder</option>
 						<option value = "1st">1st</option>
 						<option value = "2nd">2nd</option>
 						<option value = "3rd">3rd</option>
@@ -50,12 +50,10 @@
 						<option value = "10th">10th</option>
 						<option value = "11th">11th</option>
 						<option value = "12th">12th</option>
-					</select>
-				<br><br>
-
+					</select><br><br>
 
 				<!--Simple selection field for instructors to enter the new student's gender-->
-				<label for = "gender">Student's Gender</label><br>
+				<label for = "gender">Gender</label><br>
 					<select name = "gender" id = "genderBox" ng-model = "Gender"><br><br>
 						<option value = "Male">Male</option>
 						<option value = "Female">Female</option>

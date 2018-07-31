@@ -116,7 +116,7 @@ public class HelloController {
 		return recordService.getIncompleteRecords();
 	}
 	
-	//Returns all records for a given student
+	//Returns all records for a given student and a given category with time and repetition constraints (NOTE: includes one record before the start time, useful for graphing)
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/recordsById")
 	@ResponseBody
@@ -155,12 +155,12 @@ public class HelloController {
 	}
 	
 	//Adds a new student to the students database
-		@CrossOrigin(origins = webOrigin)
-		@RequestMapping("/addStudent")
-		public int addStudent(@RequestBody(required=false) StudentMaster student) {
-			System.out.println("Method addStudent() called");
-			return studentService.addStudent(student.getClient(), student.getGrade(), student.getGender());
-		}
+	@CrossOrigin(origins = webOrigin)
+	@RequestMapping("/addStudent")
+	public int addStudent(@RequestBody(required=false) StudentMaster student) {
+		System.out.println("Method addStudent() called");
+		return studentService.addStudent(student.getClient(), student.getGrade(), student.getGender());
+	}
 	
 	//Updates an existing record in the database
 	@CrossOrigin(origins = webOrigin)

@@ -25,7 +25,7 @@ public class RecordServiceImpl implements RecordService{
 		return recordDao.getAllRecords();
 	}
 	
-	//Gets all records for a certain student, including time and repetition constraints: used for graphing
+	//Gets all records for a certain student, including time and repetition constraints (NOTE: includes one record preceeding the specified timeframe, used for graphing)
 	@Override
 	public List<Record> getRecordsById(int RecordId, String category, int months, String whichReps, int until) {
 		// TODO Auto-generated method stub
@@ -33,11 +33,19 @@ public class RecordServiceImpl implements RecordService{
 		List<Record> returnRecords = new ArrayList<Record>();
 		Date monthsAgo = new DateTime().minusMonths(months).toDate();
 		Date untilDate = new DateTime().minusMonths(until).toDate();
-		for(Record r: records) {
-			if(r.getStartDate().compareTo(monthsAgo) > 0 && r.getStartDate().compareTo(untilDate) < 0) {
-				returnRecords.add(r);
+		
+		boolean firstRecordFlag = true;
+		for(int r = 0; r < records.size(); r++) {
+			Record currentRecord = records.get(r);
+			if(currentRecord.getStartDate().compareTo(monthsAgo) > 0 && currentRecord.getStartDate().compareTo(untilDate) < 0) {
+				if (firstRecordFlag && r > 0) {
+					returnRecords.add(records.get(r-1));
+				}
+				returnRecords.add(currentRecord);
+				firstRecordFlag = false;
 			}
 		}
+		
 		return returnRecords;
 	}
 	

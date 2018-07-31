@@ -30,21 +30,22 @@
 			<h1>Progress Chart for {{studentName}}</h1>
 			<br>
 
-			<!--Allows user to select specific category to graph based on what student has-->
-			<label for="category">Category</label><br>
-				<select id = "category" name = "category" ng-model = "selectedCategory" ng-options = "y for y in categoriesOfStudent" ng-change = "getReps()">
-				</select>
-			<br><br>
-
 			<div class="columnContainer">
+				<!--Allows user to select specific category to graph based on what student has-->
+				<div class="threeColumn">
+				<label for="category">Category</label><br>
+					<select id = "category" name = "category" ng-model = "selectedCategory" ng-options = "y for y in categoriesOfStudent" ng-change = "getReps()">
+					</select>
+				</div>
+			
 				<!--Allows user to select month specificatons for the graph up to 5 years ago-->
-				<div class="twoColumn">
+				<div class="threeColumn">
 				<label for="months">Time Range</label><br>
-					From <input type = "number" id = "months" name = "months" value = "12" ng-model = "months" min = "1" max = "60" required> months ago to <input type = "number" id = "months" name = "months" value = "12" ng-model = "months2" min = "1" max = "60" required> months ago
+					<div id="timeText"><input type = "number" id = "months" name = "months" value = "12" ng-model = "months" min = "1" max = "60" required> months ago to <input type = "number" id = "months" name = "months" value = "12" ng-model = "months2" min = "1" max = "60" required> months ago</div>
 				</div>
 
 				<!--Allows user to select which specific repetitions to display-->
-				<div class="twoColumn">
+				<div class="threeColumn">
 				<label for="reptitions">Included repetitions</label><br>
 					<select id = "repNumbers" name = "repNumbers" ng-model = "selectedRep" ng-options = "x for x in repOptions"></select>
 				</div>

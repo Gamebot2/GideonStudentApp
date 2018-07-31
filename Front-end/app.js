@@ -74,140 +74,99 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 
 				var selectedStudentId = $window.localStorage.getItem(0);
 				var b = document.getElementById("months").value;
-				$scope.trueGrade = $scope.currentGrade;
+				var currentGradeOffset = 0;
 
+			//// GIANT CHART GENERATION METHOD ////
 			$http.get("http://localhost:8080/recordsById?StudentId=" + selectedStudentId + "&Category=" + $scope.selectedCategory + "&Months=" + b + "&Reps=" + $scope.selectedRep + "&Until=" + $scope.months2)
 			.then(function(response) {
 				$scope.records = response.data;
 				$scope.first = $scope.records[0];
+				
+				let getBookTitleAt = function(index) { // function that draws a book title out of a specified record, for use on the y axis
+					if ($scope.selectedCategory == "Comprehension")
+						return $scope.records[index].subcategory + " " + $scope.records[index].bookTitle;
+					else
+						return $scope.records[index].bookTitle;
+				}
+				let getStartDateAt = function(index) { // function that draws a M YYYY date string from a specified record, for use in plotting points
+					var d = new Date($scope.records[index].startDate);
+					var displayed = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
+					return moment(displayed).format('M YYYY');
+				}
+				let getCurrentMonthString = function(subtraction) { // function that returns a M YYYY date string from a certain number of months in the past
+					var currentMonth = moment().subtract(subtraction, 'months');
+					return currentMonth.month() + 1 + " " + currentMonth.year();
+				}
 
 				let myChart = document.getElementById('lineChart').getContext('2d');
-
-				var dates = [];
+				
+				var labelDatesWithGrades = []; // main container of x axis labels, formatted M YYYY G
 				var labelDates = [];
-				var labelDatesWithGrades = [];
 				var grades = [];
+				
+				var dates = []; // containers for relevant data from each of the student's records
 				var books = [];
 
-				//Helps display error message if there is no data, couldn't find a better solution for some reason
-				var a = 0;
-
-				var recordDatesCounter = 0;
-				var bookCounter = 0;
-				var newBooks = [];
-				var newDates = [];
 				var now = moment().date() + " " + moment().year();
 
-				for(j = $scope.months; j > $scope.months2; j--) {
-					var currentMonth = moment().subtract(j, 'months');
-					var currentMonthString = currentMonth.month() + 1 + " " + currentMonth.year();
+				//// Calculates x-axis label data, to be formatted later ////
+				for(j = $scope.months; j >= $scope.months2; j--) {
+					var currentMonthString = getCurrentMonthString(j);
 					labelDates.push(currentMonthString);
-					var inverseMonth = $scope.months-u;
-					var currentInverseMonth = moment().subtract(inverseMonth, 'months').month() + 1;
-					if(currentMonth.month() == 8) {
-						$scope.trueGrade--;
-					}
-					grades.push($scope.trueGrade);
-				}
 
+					if(currentMonthString.split(" ")[0] == "8")
+						currentGradeOffset++;
+					grades.push(currentGradeOffset); // maps an offset value for the grade relating to each month, starting from 0 and increasing until the present
+				}
 				for(var u = 0; u < labelDates.length; u++) {
-					var inverseU = labelDates.length-u-1;
-					labelDatesWithGrades.push(labelDates[u] + " " + grades[inverseU]);
+					var actualGrade = $scope.currentGrade + grades[u] - currentGradeOffset; // uses the final grade offset and the known current grade to calculate the final grade value for each month
+					labelDatesWithGrades.push(labelDates[u] + " " + actualGrade);
 				}
 
+				//// Extracts the date and book title for each of the student's records ////
 				var lastBookSequenceLarge;
-
+				var a = 0; // Helps display error message if there is no data, couldn't find a better solution for some reason: this value will increase for every existing record
 				for(i = 0; i < $scope.records.length; i++) {
 					if($scope.records[i].startDate != null) {
-						var d = new Date($scope.records[i].startDate);
-						//console.log($scope.records[i]);
-						var displayed = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
-						dates.push(moment(displayed).format('M YYYY'));
-						if($scope.selectedCategory == "Comprehension") {
-							books.push($scope.records[i].subcategory + " " + $scope.records[i].bookTitle);
-						} else {
-							books.push($scope.records[i].bookTitle);
-						}
-						if(i == $scope.records.length - 1) {
-							lastBookSequenceLarge = $scope.records[i].sequenceLarge;
-						}
 						a++;
+
+						dates.push(getStartDateAt(i));
+						books.push(getBookTitleAt(i));
+
+						if(i == $scope.records.length - 1)
+							lastBookSequenceLarge = $scope.records[i].sequenceLarge;
 					}
 				}
+				$scope.errorMessage = (a <= 0);
 
-				$scope.testSequenceLarge = 26;
+				//// Extra books or something weird idk ////
 				let extraBooks = new Array();
-				
+				$scope.testSequenceLarge = 26;
 				if($scope.testSequenceLarge > lastBookSequenceLarge) {
-						$http.get("http://localhost:8080/booksInRange?Category=" + $scope.selectedCategory + "&StartSequence=" + lastBookSequenceLarge + "&EndSequence=" + 25)
-						.then(function(response) {
-							let booksInRange = response.data;
-							//console.log($scope.booksInRange)
-							for(y = 0; y < booksInRange.length; y++) {
-								extraBooks.push(booksInRange[y].title);
-								books.push(booksInRange[y].title);
-								console.log(extraBooks);
-							}
-						});
+					$http.get("http://localhost:8080/booksInRange?Category=" + $scope.selectedCategory + "&StartSequence=" + lastBookSequenceLarge + "&EndSequence=" + 25)
+					.then(function(response) {
+						let booksInRange = response.data;
+						for(y = 0; y < booksInRange.length; y++) {
+							extraBooks.push(booksInRange[y].title);
+							books.push(booksInRange[y].title);
+						}
+					});
 				}
 				console.log(extraBooks);
 
-				var k;
-				var firstMonthWithRecord;
+				//// Goes across the x axis and determines what book the student was working on at the start of that month using the dates and book titles of the records ////
+				var recordCounter = 0;
+				var newBooks = [];
+				for(var k = $scope.months; k >= $scope.months2; k--) {
+					var currentMonthString = getCurrentMonthString(k);
+					newBooks.push(books[recordCounter]);
 
-				for(k = $scope.months; k > $scope.months2; k--) {
-					var currentMonth = moment().subtract(k, 'months');
-					var currentMonthString = currentMonth.month() + 1 + " " + currentMonth.year();
-					//console.log(currentMonthString);
-
-					var d = new Date($scope.records[recordDatesCounter].startDate);
-					var displayed = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
-					var recordDateString = moment(displayed).format('M YYYY');
-					
-					if(k == $scope.months) {
-						firstMonthWithRecord = recordDateString;
-					}
-
-					if(recordDatesCounter != 0) {
-						var d2 = new Date($scope.records[recordDatesCounter-1].startDate);
-						var displayed2 = (d2.getMonth()+1) + "/" + d2.getDate() + "/" + d2.getFullYear();
-						var recordDateString2 = moment(displayed2).format('M YYYY');
-						if(recordDateString2 == recordDateString) {
-						currentMonthString = currentMonth.month() + " " + currentMonth.year();
-					}
-					}
-
-					if(recordDateString == currentMonthString) {
-						if($scope.selectedCategory == "Comprehension") {
-							newBooks.push($scope.records[bookCounter].subcategory + " " + $scope.records[bookCounter].bookTitle);
-						} else {
-							newBooks.push($scope.records[bookCounter].bookTitle);
-						}
-						if(recordDatesCounter != $scope.records.length - 1) {
-							recordDatesCounter++;
-							bookCounter++;
-						}
-
-					} else {
-						if($scope.selectedCategory == "Comprehension") {
-							newBooks.push($scope.records[bookCounter].subcategory + " " + $scope.records[bookCounter].bookTitle);
-						} else {
-							newBooks.push($scope.records[bookCounter].bookTitle);
-						}
-					}
+					while (dates[recordCounter + 1] == currentMonthString && recordCounter != $scope.records.length - 1)
+						recordCounter++;
 				}
 
-
-				$scope.errorMessage = true;
-				if(a > 0) {
-					$scope.errorMessage = false;
-				} 	
-
-				Chart.defaults.global.defaultFontSize = 18;
-				Chart.defaults.global.defaultFontColor = '#000';
-
-				var newBooks2 = [];
-				var newBooks3 = [];
+				var newBooks2 = []; // currently contains an exact copy of the point data previously calculated
+				var newBooks3 = []; // currently unused test modification of the data
 				for(b = 0; b < newBooks.length; b++) {
 					newBooks2[b] = newBooks[b];
 					newBooks3[b] = newBooks[b];
@@ -216,8 +175,9 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 					}
 				}
 
-				console.log(books);
-				
+				//// CHART SPECS ////
+				Chart.defaults.global.defaultFontSize = 18;
+				Chart.defaults.global.defaultFontColor = '#000';
 
 				let exampleChart = new Chart(myChart,{
 					type: 'line',
@@ -230,7 +190,8 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 							backgroundColor: "rgba(255, 0, 0, 0.4)",
 							borderColor: "rgba(255, 0, 0, 0.4)",
 							fill: false,
-							lineTension: 0
+							lineTension: 0,
+							hitRadius: 30
 						}, {
 							//label: "Testing",
 							//data: newBooks3,
@@ -318,17 +279,17 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 									callback:function(label){
 										var month = label.split(" ")[0];
 										var year = label.split(" ")[1];
-										var grade = label.split(" ")[2];
+										var grade = parseInt(label.split(" ")[2]);
 										if(month == "2") {
-											if(grade == "0") {
+											if(grade == 0) {
 												return "Kindergarten";
-											} else if(grade == "1") {
+											} else if(grade == 1) {
 												return "1st Grade";
-											} else if(grade == "2") {
+											} else if(grade == 2) {
 												return "2nd Grade";
-											} else if(grade == "3") {
+											} else if(grade == 3) {
 												return "3rd Grade";
-											} else if(grade == "-1") {
+											} else if(grade <= -1) {
 												return "Pre-K";
 											} else {
 												return grade + "th Grade";
