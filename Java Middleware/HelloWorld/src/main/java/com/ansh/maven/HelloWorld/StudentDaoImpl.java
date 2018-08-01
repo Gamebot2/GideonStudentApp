@@ -42,7 +42,7 @@ public class StudentDaoImpl implements StudentDao {
 	@Override
 	public List<Student> getStudentsWithData() {
 		// TODO Auto-generated method stub
-		String sql = "SELECT DISTINCT students.StudentId, students.Client, students.Email, students.ClientId, students.CurrentPasses, students.FirstName,\r\n" + 
+		String sql = "SELECT DISTINCT students.StudentId, students.Client, students.Email, students.Phone, students.Address, students.ClientId, students.CurrentPasses, students.FirstName,\r\n" + 
 				"students.Gender, students.Grade, students.LastName, students.MiddleName, students.PrimaryStaffMember\r\n" + 
 				"FROM students RIGHT JOIN records ON records.StudentId = students.StudentId;";
 		RowMapper<Student> rowMapper = new StudentRowMapper();

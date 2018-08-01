@@ -59,7 +59,7 @@ input[type=submit]:hover {
     color: white;
 }
 
-input[type=submit]:focus {
+input:focus, select:focus {
     outline: none;
 }
 
