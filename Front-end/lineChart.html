@@ -17,31 +17,43 @@
 		<script src = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
 		<script src = "moment.js"></script>
 		<script src ="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+		<script src ="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.js"></script>
 		<script src = "app.js"></script>
-		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+		<link rel = "stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 		<link rel = "stylesheet" type = "text/css" href="lineChart.css">
+		<link rel = "stylesheet" type = "text/css" href="multiColumn.css">
 	</head>
 	<body>
 		<br>
 		<!--Containing essentially a form for selected chart specifications-->
-		<div class="container" ng-app = "studentApp" ng-controller = "chartCtrl">
-			<!--Allows user to select specific category to graph based on what student has-->
-			<label for="category">Select a category to graph</label>
-				<select id = "category" name = "category" ng-model = "selectedCategory" ng-options = "y for y in categoriesOfStudent" ng-change = "getReps()">
-				</select>
+		<div class="chartspecs" ng-app = "studentApp" ng-controller = "chartCtrl">
+
+			<h1>Progress Chart for {{studentName}}</h1>
 			<br>
 
-			<!--Allows user to select month specificatons for the graph up to 5 years ago-->
-			<p>Show records from the past <input type = "number" id = "months" name = "months" required value = "12" ng-model = "months" min = "1" max = "60"> months to the past <input type = "number" id = "months" name = "months" required value = "12" ng-model = "months2" min = "1" max = "60"> months</p>
-
-			<!--Allows user to select which specific repetitions to display-->
-			<p>Included repetitions: 
-				<select id = "repNumbers" name = "repNumbers" ng-model = "selectedRep" ng-options = "x for x in repOptions"></select>
-			</p>
+			<div class="columnContainer">
+				<!--Allows user to select specific category to graph based on what student has-->
+				<div class="threeColumn">
+				<label for="category">Category</label><br>
+					<select id = "category" name = "category" ng-model = "selectedCategory" ng-options = "y for y in categoriesOfStudent" ng-change = "getReps()">
+					</select>
+				</div>
 			
+				<!--Allows user to select month specificatons for the graph up to 5 years ago-->
+				<div class="threeColumn">
+				<label for="months">Time Range</label><br>
+					<div id="timeText"><input type = "number" id = "months" name = "months" value = "12" ng-model = "months" min = "1" max = "60" required> months ago to <input type = "number" id = "months" name = "months" value = "12" ng-model = "months2" min = "1" max = "60" required> months ago</div>
+				</div>
+
+				<!--Allows user to select which specific repetitions to display-->
+				<div class="threeColumn">
+				<label for="reptitions">Included repetitions</label><br>
+					<select id = "repNumbers" name = "repNumbers" ng-model = "selectedRep" ng-options = "x for x in repOptions"></select>
+				</div>
+			</div>
 
 			<!--Button to generate chart and submit all data-->
-			<button type="button" ng-click="generateChart();validateForm()">Generate Chart</button>
+			<button type="submit" ng-click="validateForm()">Generate Chart</button>
 
 			<!--Error message in case no data is retrieved-->
 			<h6 ng-show="errorMessage" style = "color:red;">Error: No data found</h6>

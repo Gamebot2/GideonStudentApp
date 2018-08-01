@@ -16,6 +16,8 @@ public class StudentRowMapper implements RowMapper<Student>{
 		student.setClientId(row.getInt("ClientId"));
 		student.setCurrentPasses(row.getString("CurrentPasses"));
 		student.setEmail(row.getString("Email"));
+		student.setPhone(row.getString("Phone"));
+		student.setAddress(row.getString("Address"));
 		student.setFirstName(row.getString("FirstName"));
 		student.setGender(row.getString("Gender"));
 		student.setGrade(row.getString("Grade"));

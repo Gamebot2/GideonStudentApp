@@ -59,17 +59,28 @@ public class RecordDaoImpl implements RecordDao{
 	//Adds a new record to the record database with all of the following information, formats the appropriate SQL string
 	@Override
 	public int addRecord(String Client, String category, String subcategory, String title, Date startDate, int rep) {
-		// TODO Auto-generated method stub
 		int bookId = 0, studentId = 0;
-		boolean test = false;
-		String cap = "";
-		String booksql = "Select * FROM book";
-		RowMapper<Book> bookRowMapper = new BookRowMapper();
-		List<Book> bookList = this.jdbcTemplate.query(booksql, bookRowMapper);
+		boolean test = false, studentFoundFlag = false;
 		
+		// get student id
 		String studentsql = "SELECT * FROM students";
 		RowMapper<Student> studentRowMapper = new StudentRowMapper();
 		List<Student> studentList = this.jdbcTemplate.query(studentsql, studentRowMapper);
+		
+		for(Student s: studentList) {
+			if(s.getClient().equalsIgnoreCase(Client)) {
+				studentId = s.getStudentId();
+				studentFoundFlag = true;
+			}
+		}
+		if (!studentFoundFlag) {	// If the client name is not in the database, return an error (would probably help if we could return more than just a number)
+			return -1;
+		}
+		
+		// get book id
+		String booksql = "Select * FROM book";
+		RowMapper<Book> bookRowMapper = new BookRowMapper();
+		List<Book> bookList = this.jdbcTemplate.query(booksql, bookRowMapper);
 		
 		for(Book b: bookList) {
 			if(b.getTitle().equals(title) && b.getCategory().equals(category)) {
@@ -80,17 +91,11 @@ public class RecordDaoImpl implements RecordDao{
 			}
 		}
 		
-		for(Student s: studentList) {
-			if(s.getClient().equalsIgnoreCase(Client)) {
-				studentId = s.getStudentId();
-			}
-		}
-		
-		if(test) {
-			cap = ", 1, null, null)";
-		} else {
-			cap = ", 0, null, null)";
-		}
+		String cap = ", #, null, null)";
+		if (test)
+			cap = cap.replaceAll("#", "1");
+		else
+			cap = cap.replaceAll("#", "0");
 		
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 		String formatted = format1.format(startDate);

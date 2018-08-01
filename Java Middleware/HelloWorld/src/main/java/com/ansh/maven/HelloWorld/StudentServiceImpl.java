@@ -40,7 +40,7 @@ public class StudentServiceImpl implements StudentService{
 	public int getGrade(int StudentId) {
 		Student obj = studentDao.getStudentById(StudentId);
 		String gradeString = obj.getGrade();
-		int grade = Integer.parseInt(gradeString.substring(0, 1));
+		int grade = Integer.parseInt(gradeString.replaceAll("[^\\d.-]",""));
 		return grade;
 	}
 
