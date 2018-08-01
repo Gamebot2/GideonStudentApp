@@ -1,3 +1,8 @@
+@keyframes example {
+	from{opacity: 0;}
+	to{opacity: 1;}
+}
+
 h1 {
 	text-align: center;
 	font-family: 'Roboto', sans-serif;
@@ -13,43 +18,48 @@ body {
 	height: 1000%;
 }
 
-table, th, td {
-	border-bottom: 1px solid black;
-	border-collapse: collapse;
+#tableContent {
+	width: 78%;
+	left: 10%;
+	position: relative;
 	font-family: 'Roboto', sans-serif;
 	color: white;
 	animation-name: example;
 	animation-duration: .75s;
+	border-bottom: 1px solid black;
+	border-collapse: collapse;
 }
 
-th, td, tr {
+#tableHeaderContainer, #tableContainer {
 	padding: 15px 10px;
 	text-align: center;
-	color: white;
+	transition: 0.5s;
 }
 
-th {
+#tableHeaderContainer {
 	background-color: black;
-	color: white;
 }
 
-tr:hover , td:hover{
+#tableContainer:hover{
 	background-color: #FFA500;
-	text-color: white;
-}
-
-table {
-	width: 80%;
-	position: relative;
-	left: 10%;
-	text-align: center;
 }
 
 
-@keyframes example {
-	from{opacity: 0;}
-	to{opacity: 1;}
+#expandableContainer {
+	overflow-y: hidden;
+	word-wrap: break-word;
+	padding: 0px 10px;
+	transition: all cubic-bezier(0,0,0,1) 0.5s;
 }
+.collapsedContent {
+	height: 0px;
+	margin: 0px 10px;
+}
+.expandedContent {
+	height: 150px;
+	margin: 15px 10px;
+}
+
 
 #header {
 	top: 0;
@@ -76,7 +86,7 @@ button {
 	width: 200px;
 	cursor: pointer;
 	transition-duration: .4s;
-	border: 2px solid orange;
+	border: 0px;
 	border-radius: 4px;
 	margin-top: 20px;
 	margin-right: 30px;
@@ -92,7 +102,7 @@ button {
 
 #updateBtn {
 	position: absolute;
-	right: 200px;
+	right: 220px;
 	top: 1;
 }
 
@@ -108,10 +118,17 @@ button {
 	width:40%;
 }
 
+#lineChartButton {
+	animation-duration: 0s;
+}
+
 .hoverable:hover {
-	background-color: orange;
+	background-color: #ffa801;
 	color: white;
-	border: 1px solid black;
+}
+
+.hoverable:focus {
+	outline: none;
 }
 
 input {

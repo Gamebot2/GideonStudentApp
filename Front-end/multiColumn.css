@@ -17,6 +17,10 @@
 	width: 25%;
 }
 
+.customColumn {
+	float: left;
+}
+
 .threeColumn, .fourColumn {
 	padding: 10px;
 }

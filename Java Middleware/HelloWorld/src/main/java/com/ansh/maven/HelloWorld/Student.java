@@ -5,6 +5,8 @@ public class Student {
 	private int StudentId;
 	private String Client;
 	private String Email;
+	private String Phone;
+	private String Address;
 	private String CurrentPasses;
 	private String PrimaryStaffMember;
 	private String FirstName;
@@ -18,12 +20,14 @@ public class Student {
 		super();
 	}
 
-	public Student(int studentId, String client, String email, String currentPasses, String primaryStaffMember,
+	public Student(int studentId, String client, String email, String phone, String address, String currentPasses, String primaryStaffMember,
 			String firstName, String middleName, String lastName, String grade, String gender, int clientId) {
 		super();
 		StudentId = studentId;
 		Client = client;
 		Email = email;
+		Phone = phone;
+		Address = address;
 		CurrentPasses = currentPasses;
 		PrimaryStaffMember = primaryStaffMember;
 		FirstName = firstName;
@@ -56,6 +60,22 @@ public class Student {
 
 	public void setEmail(String email) {
 		Email = email;
+	}
+	
+	public String getPhone() {
+		return Phone;
+	}
+	
+	public void setPhone(String phone) {
+		Phone = phone;
+	}
+	
+	public String getAddress() {
+		return Address;
+	}
+	
+	public void setAddress(String address) {
+		Address = address;
 	}
 
 	public String getCurrentPasses() {
@@ -124,10 +144,10 @@ public class Student {
 
 	@Override
 	public String toString() {
-		return "Student [StudentId=" + StudentId + ", Client=" + Client + ", Email=" + Email + ", CurrentPasses="
-				+ CurrentPasses + ", PrimaryStaffMember=" + PrimaryStaffMember + ", FirstName=" + FirstName
-				+ ", MiddleName=" + MiddleName + ", LastName=" + LastName + ", Grade=" + Grade + ", Gender=" + Gender
-				+ ", ClientId=" + ClientId + "]";
+		return "Student [StudentId=" + StudentId + ", Client=" + Client + ", Email=" + Email + ", Phone=" + Phone +
+				", Address=" + Address + ", CurrentPasses=" + CurrentPasses + ", PrimaryStaffMember=" + PrimaryStaffMember +
+				", FirstName=" + FirstName + ", MiddleName=" + MiddleName + ", LastName=" + LastName + ", Grade=" + Grade +
+				", Gender=" + Gender + ", ClientId=" + ClientId + "]";
 	}
 	
 }

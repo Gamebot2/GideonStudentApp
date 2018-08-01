@@ -55,8 +55,12 @@ input[type=submit] {
 }
 
 input[type=submit]:hover {
-    background-color: blue;
+    background-color: orange;
     color: white;
+}
+
+input[type=submit]:focus {
+    outline: none;
 }
 
 div {

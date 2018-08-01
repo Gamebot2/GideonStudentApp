@@ -59,8 +59,12 @@ button[type=submit] {
 }
 
 button[type=submit]:hover {
-    background-color: blue;
+    background-color: orange;
     color: white;
+}
+
+button[type=submit]:focus {
+	outline: none;
 }
 
 #lineChart {

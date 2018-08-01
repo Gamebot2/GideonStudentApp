@@ -1,5 +1,5 @@
 //App for studentList and chart displays
-var app = angular.module('studentApp', []);
+var app = angular.module('studentApp', ['ngAnimate']);
 
 //Controller used for StudentList.html: mainly to display students who have data for selection
 app.controller('studentCtrl', function($scope, $http, $window) {
@@ -18,10 +18,19 @@ app.controller('studentCtrl', function($scope, $http, $window) {
 	}
 
 	$scope.dataOn = false;
+	$scope.active = false;
 	$scope.getStudents();
+
+	$scope.manageExpansion = function(student) {
+		if ($scope.expandedStudent == student)
+			$scope.expandedStudent = null;
+		else
+			$scope.expandedStudent = student;
+	}
 
 	//Function for selecting a student and going to the chart page
 	$scope.logStudent = function(id, name) {
+		console.log(name);
 		$window.localStorage.setItem(0, id);
 		$window.localStorage.setItem(1, name);
 		window.location.href = "lineChart.html"
@@ -57,9 +66,14 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 
 		//Validates the form before chart data submission to ensure that the month values compare favorably to one another
 		$scope.validateForm = function() {
-			if($scope.months < $scope.months2) {
-				alert("Your month values are inadequate. Please ensure you are selecting an appropriate range.");
-			}
+			if($scope.selectedCategory == undefined)
+				alert("Please select a category.");
+			else if($scope.months == undefined || $scope.months2 == undefined || $scope.months <= $scope.months2)
+				alert("Your month values are invalid. Be sure each number is between 1 and 60, and that the first number is earlier than the second.");
+			else if($scope.selectedRep == undefined)
+				alert("Please select the included repetitions.");
+			else
+				$scope.generateChart();
 		}
 
 

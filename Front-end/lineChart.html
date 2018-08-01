@@ -17,6 +17,7 @@
 		<script src = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
 		<script src = "moment.js"></script>
 		<script src ="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+		<script src ="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.js"></script>
 		<script src = "app.js"></script>
 		<link rel = "stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 		<link rel = "stylesheet" type = "text/css" href="lineChart.css">
@@ -52,7 +53,7 @@
 			</div>
 
 			<!--Button to generate chart and submit all data-->
-			<button type="submit" ng-click="generateChart();validateForm()">Generate Chart</button>
+			<button type="submit" ng-click="validateForm()">Generate Chart</button>
 
 			<!--Error message in case no data is retrieved-->
 			<h6 ng-show="errorMessage" style = "color:red;">Error: No data found</h6>
