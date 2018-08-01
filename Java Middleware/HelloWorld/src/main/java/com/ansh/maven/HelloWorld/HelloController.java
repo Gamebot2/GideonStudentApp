@@ -158,7 +158,7 @@ public class HelloController {
 		@CrossOrigin(origins = webOrigin)
 		@RequestMapping("/addStudent")
 		public int addStudent(@RequestBody(required=false) StudentMaster student) {
-			System.out.println("Method addStudent() called");
+			System.out.println("Method addStudent() called" );
 			return studentService.addStudent(student.getClient(), student.getGrade(), student.getGender());
 		}
 	
