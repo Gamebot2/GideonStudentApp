@@ -67,6 +67,22 @@ public class StudentDaoImpl implements StudentDao {
 		return 0;
 	}
 	
-	
-	
+	@Override
+	public int updateStudent(String studentId, String client, String email, String phone, String address, String grade, String gender, String currentPasses) {
+		if (client == null)
+			client = "";
+		if (email == null)
+			email = "";
+		if (phone == null)
+			phone = "";
+		if (address == null)
+			address = "";
+		if (currentPasses == null)
+			currentPasses = "";
+		
+		String updateSql = "UPDATE students SET Client = '" + client + "', Email = '" + email + "', Phone = '" + phone + "', Address = '" + address + "', Grade = '" + grade + "', Gender = '" + gender + "', CurrentPasses = '" + currentPasses + "' WHERE StudentId = " + studentId;
+		System.out.println(updateSql);
+		this.jdbcTemplate.update(updateSql);
+		return 0;
+	}
 }

@@ -172,4 +172,12 @@ public class HelloController {
 		return a;
 	}
 	
+	//Edits student data in the students database
+	@CrossOrigin(origins = webOrigin)
+	@RequestMapping("/updateStudent")
+	public int updateStudent(@RequestParam("studentId") String studentId, @RequestParam("client") String client, @RequestParam("email") String email, @RequestParam("phone") String phone, @RequestParam("address") String address, @RequestParam("grade") String grade, @RequestParam("gender") String gender, @RequestParam("currentPasses") String currentPasses) {
+		System.out.println("Method updateStudent() called");
+		return studentService.updateStudent(studentId, client, email, phone, address, grade, gender, currentPasses);
+	}
+	
 }

@@ -50,4 +50,9 @@ public class StudentServiceImpl implements StudentService{
 		return studentDao.addStudent(Client, Grade, Gender);
 	}
 	
+	@Override
+	public int updateStudent(String studentId, String client, String email, String phone, String address, String grade, String gender, String currentPasses) {
+		return studentDao.updateStudent(studentId, client, email, phone, address, grade, gender, currentPasses);
+	}
+	
 }

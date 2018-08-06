@@ -58,10 +58,15 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			$scope.categoriesOfStudent = response.data;
 		});
 
-		//Retrieves all data from the student's corresponding record in the database
+		//Retrieves the student's grade level
 		$http.get("http://localhost:8080/gradeOfStudent?Id=" + $window.localStorage.getItem(0))
 		.then(function(response) {
 			$scope.currentGrade = response.data;
+		});
+
+		$http.get("http://localhost:8080/books")
+		.then(function(response) {
+			$scope.allBooks = response.data;
 		});
 
 		//Retrieves possible repetition selection options for the selected category
@@ -85,6 +90,8 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 				$scope.generateChart();
 		}
 
+		var regen = false;
+		var exampleChart;
 
 		//Generates the lineChart based on instructor specifications
 		$scope.generateChart = function() {
@@ -105,12 +112,6 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 				$scope.records = response.data;
 				$scope.first = $scope.records[0];
 				
-				let getBookTitleAt = function(index) { // function that draws a book title out of a specified record, for use on the y axis
-					if ($scope.selectedCategory == "Comprehension")
-						return $scope.records[index].subcategory + " " + $scope.records[index].bookTitle;
-					else
-						return $scope.records[index].bookTitle;
-				}
 				let getStartDateAt = function(index) { // function that draws a M YYYY date string from a specified record, for use in plotting points
 					var d = new Date($scope.records[index].startDate);
 					var displayed = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
@@ -146,37 +147,18 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 					labelDatesWithGrades.push(labelDates[u] + " " + actualGrade);
 				}
 
-				//// Extracts the date and book title for each of the student's records ////
-				var lastBookSequenceLarge;
+				//// Extracts the date and book number for each of the student's records ////
 				var a = 0; // Helps display error message if there is no data, couldn't find a better solution for some reason: this value will increase for every existing record
 				for(i = 0; i < $scope.records.length; i++) {
 					if($scope.records[i].startDate != null) {
 						a++;
 
 						dates.push(getStartDateAt(i));
-						books.push(getBookTitleAt(i));
-
-						if(i == $scope.records.length - 1)
-							lastBookSequenceLarge = $scope.records[i].sequenceLarge;
+						books.push($scope.records[i].bookId);
 					}
 				}
 				$scope.errorMessage = (a <= 0);
 				console.log(dates + " " + books);
-
-				//// Extra books or something weird idk ////
-				let extraBooks = new Array();
-				$scope.testSequenceLarge = 26;
-				if($scope.testSequenceLarge > lastBookSequenceLarge) {
-					$http.get("http://localhost:8080/booksInRange?Category=" + $scope.selectedCategory + "&StartSequence=" + lastBookSequenceLarge + "&EndSequence=" + 25)
-					.then(function(response) {
-						let booksInRange = response.data;
-						for(y = 0; y < booksInRange.length; y++) {
-							extraBooks.push(booksInRange[y].title);
-							books.push(booksInRange[y].title);
-						}
-					});
-				}
-				//console.log(extraBooks);
 
 				//// Goes across the x axis and determines what book the student was working on at the start of that month using the dates and book titles of the records ////
 				var recordCounter = 0;
@@ -203,7 +185,9 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 				Chart.defaults.global.defaultFontSize = 18;
 				Chart.defaults.global.defaultFontColor = '#000';
 
-				let exampleChart = new Chart(myChart,{
+				if (regen)
+					exampleChart.destroy();
+				exampleChart = new Chart(myChart,{
 					type: 'line',
 					data:{
 						xLabels: labelDatesWithGrades,
@@ -254,7 +238,6 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 								},
 								ticks: {
 									dislay: false,
-									autoSkip: true,
 									callback:function(label){
 										var month = label.split(" ")[0];
 										var year = label.split(" ")[1];
@@ -322,21 +305,33 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 											return "|";
 										}
 									},
-									maxRotation: 0,
+									maxRotation: 0
 								}
 							}],
 							yAxes: [{
-								type: 'category',
+								type: 'linear',
 								position: 'left',
 								display: true,
 								scaleLabel: {
 									display: true,
 									labelString: $scope.selectedCategory
+								},
+								ticks: {
+									stepSize: 1,
+									autoSkip: false,
+									callback:function(label) {
+										if ($scope.selectedCategory == "Comprehension")
+											return $scope.allBooks[label-1].subcategory + " " + $scope.allBooks[label-1].title;
+										else
+											return $scope.allBooks[label-1].title;
+									}
 								}
 							}]
 						}
 					}
 				});
+
+				regen = true;
 			});	
 		};
 	
@@ -506,6 +501,9 @@ app5.controller('editStudentCtrl', function($scope, $http, $window) {
 	});
 
 	$scope.updateStudent = function() {
-		alert("to be implemented");
+		$http.get("http://localhost:8080/updateStudent?studentId=" + $scope.Id + "&client=" + $scope.Client + "&email=" + $scope.Email + "&phone=" + $scope.Phone + "&address=" + $scope.Address + "&grade=" + $scope.Grade + "&gender=" + $scope.Gender + "&currentPasses=" + $scope.CurrentPasses)
+		.then(function(response) {
+			alert(response.data);
+		});
 	}
 });

@@ -36,14 +36,14 @@ public class RecordDaoImpl implements RecordDao{
 	@Override
 	public List<Record> getRecordsById(int RecordId, String category, String whichReps) {
 		// TODO Auto-generated method stub
-		String cap = "'";
+		String rep = "'";
 		if(!whichReps.equalsIgnoreCase("All")) {
-			cap = "' AND records.Rep =  " + whichReps;
+			rep = "' AND records.Rep = " + whichReps;
 		} 
 		
 		String sql = "SELECT * FROM records INNER JOIN book ON records.BookId = book.book_id INNER JOIN students ON records.StudentId ="
 				+ " students.StudentId WHERE records.StudentId = " + RecordId + " AND book.category = '"
-						+ category + cap;
+						+ category + rep + " ORDER BY StartDate";
 
 		RowMapper<Record> rowMapper = new RecordRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
