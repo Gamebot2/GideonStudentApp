@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Edit Student</title>
+		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
+		<link rel = "stylesheet" type = "text/css" href="RecordStyle.css">
+		<link rel = "stylesheet" type = "text/css" href="siteStyle.css">
+
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+		<link rel="manifest" href="/site.webmanifest">
+		<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+		<meta name="msapplication-TileColor" content="#da532c">
+		<meta name="theme-color" content="#ffffff">
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+  		<script src = "app.js"></script>
+  		<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+	</head>
+	<body>
+		<div class = "exterior" ng-app = "editStudentApp" ng-controller = "editStudentCtrl">
+			<h1>Edit {{student.client}}</h1>
+			<!--Form used for editing a student in the database-->
+			<div class="columnContainer" id="editStudentRow">
+				<div class="threeColumn">
+					<label for = "student">Full Name</label><br>
+					<input type = "text" ng-model = "Client" required>
+				</div>
+				<div class="threeColumn">
+					<label for = "email">Email</label><br>
+					<input type = "text" ng-model = "Email">
+				</div>
+				<div class="threeColumn">
+					<label for = "email">Grade</label><br>
+					<select name = "grade" id = "gradeBox" ng-model = "Grade">
+							<option value = "PreK (-1)">PreK</option>
+							<option value = "Kinder (0)">Kinder</option>
+							<option value = "1st">1st</option>
+							<option value = "2nd">2nd</option>
+							<option value = "3rd">3rd</option>
+							<option value = "4th">4th</option>
+							<option value = "5th">5th</option>
+							<option value = "6th">6th</option>
+							<option value = "7th">7th</option>
+							<option value = "8th">8th</option>
+							<option value = "9th">9th</option>
+							<option value = "10th">10th</option>
+							<option value = "11th">11th</option>
+							<option value = "12th">12th</option>
+					</select>
+				</div>
+			</div><br>
+			<div class="columnContainer" id="editStudentRow">
+				<div class="twoColumn">
+					<label for = "email">Phone</label><br>
+					<input type = "text" ng-model = "Phone">
+				</div>
+				<div class="twoColumn">
+					<label for = "email">Address</label><br>
+					<input type = "text" ng-model = "Address">
+				</div>
+			</div><br>
+			<div class="columnContainer" id="editStudentRow">
+				<div class="twoColumn">
+					<label for = "email">Gender</label><br>
+					<select name = "gender" id = "genderBox" ng-model = "Gender">
+						<option value = "Male">Male</option>
+						<option value = "Female">Female</option>
+					</select>
+				</div>
+				<div class="twoColumn">
+					<label for = "email">Current Passes</label><br>
+					<input type = "text" ng-model = "CurrentPasses">
+				</div>
+			</div><br><br>
+
+			<button ng-click = "updateStudent()">Submit</button>
+		</div>
+	</body>
+</html>

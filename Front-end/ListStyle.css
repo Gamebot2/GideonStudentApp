@@ -1,31 +1,14 @@
-@keyframes example {
-	from{opacity: 0;}
-	to{opacity: 1;}
-}
-
-h1 {
-	text-align: center;
-	font-family: 'Roboto', sans-serif;
-	font-weight: 100;
-	color: white;
-	animation-name: example;
-	animation-duration: 1s;
-}
-
 body {
 	background: linear-gradient(to right, #FFD700, #FFA500);
 	background-size: 100%;
 	height: 1000%;
+	color: white;
 }
 
 #tableContent {
-	width: 78%;
+	width: 80%;
 	left: 10%;
 	position: relative;
-	font-family: 'Roboto', sans-serif;
-	color: white;
-	animation-name: example;
-	animation-duration: .75s;
 	border-bottom: 1px solid black;
 	border-collapse: collapse;
 }
@@ -56,7 +39,7 @@ body {
 	margin: 0px 10px;
 }
 .expandedContent {
-	height: 150px;
+	height: 180px;
 	margin: 15px 10px;
 }
 
@@ -64,7 +47,8 @@ body {
 #header {
 	top: 0;
 	width: 100%;
-	height: 100px;
+	overflow: auto;
+	padding: 20px;
 }
 
 #filterContainer {
@@ -75,41 +59,11 @@ body {
 #insertBtn, #updateBtn, #studentBtn {
 	width: 200px;
 }
-
-
-button {
-	background-color: gold;
-	color: black;
-	padding: 16px 32px;
-	font-size: 16px;
-	margin: 4px 2px;
-	width: 200px;
-	cursor: pointer;
-	transition-duration: .4s;
-	border: 0px;
-	border-radius: 4px;
-	margin-top: 20px;
-	margin-right: 30px;
-	animation-name: example;
-	animation-duration: 2s;
+#insertBtn, #updateBtn {
+	float: right;
 }
-
-#insertBtn {
-	position: absolute;
-	top: 1;
-	right: 0;
-}
-
-#updateBtn {
-	position: absolute;
-	right: 220px;
-	top: 1;
-}
-
 #studentBtn {
-	position: absolute;
-	left: 2%;
-	top: 1;
+	float: left;
 }
 
 #dataToggleBtn {
@@ -118,27 +72,22 @@ button {
 	width:40%;
 }
 
-#lineChartButton {
+#accordionButton {
+	width: 200px;
 	animation-duration: 0s;
+	float: left;
 }
 
-.hoverable:hover {
-	background-color: #ffa801;
-	color: white;
-}
-
-.hoverable:focus {
-	outline: none;
-}
-
-input {
+input[type=text] {
 	position: relative;
 	padding: 4px 4px;
 	left: 20%;
 	width: 60%;
 	background-color: rgba(201, 76, 76, 0);
+	box-shadow: none;
 	border: none;
 	border-bottom: solid 2px black;
+	border-radius: 0px;
 	outline: none;
 	text-align: center;
 }
@@ -146,22 +95,4 @@ input {
 
 #filterText {
 	text-align: center;
-}
-
-p {
-	color: white;
-	animation-name: example;
-	animation-duration: 2s;
-}
-
-select {
-	position: relative;
-	left: 68%;
-}
-
-label {
-	position: relative;
-	left: 61%;
-	bottom: 30px;
-	color: white;
 }

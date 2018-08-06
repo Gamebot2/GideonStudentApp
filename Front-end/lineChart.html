@@ -21,7 +21,7 @@
 		<script src = "app.js"></script>
 		<link rel = "stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 		<link rel = "stylesheet" type = "text/css" href="lineChart.css">
-		<link rel = "stylesheet" type = "text/css" href="multiColumn.css">
+		<link rel = "stylesheet" type = "text/css" href="siteStyle.css">
 	</head>
 	<body>
 		<br>
@@ -50,7 +50,7 @@
 				<label for="reptitions">Included repetitions</label><br>
 					<select id = "repNumbers" name = "repNumbers" ng-model = "selectedRep" ng-options = "x for x in repOptions"></select>
 				</div>
-			</div>
+			</div><br>
 
 			<!--Button to generate chart and submit all data-->
 			<button type="submit" ng-click="validateForm()">Generate Chart</button>

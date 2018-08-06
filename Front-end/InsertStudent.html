@@ -5,6 +5,7 @@
 		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
 		<link rel = "stylesheet" type = "text/css" href="RecordStyle.css">
+		<link rel = "stylesheet" type = "text/css" href="siteStyle.css">
 
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -24,7 +25,7 @@
 		<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
 	</head>
 	<body>
-		<div ng-app = "insertStudentApp" ng-controller = "insertStudentCtrl">
+		<div class = "exterior" ng-app = "insertStudentApp" ng-controller = "insertStudentCtrl">
 			<h1>Insert Student</h1>
 			<!--Form used for adding a new student into the database-->
 			<form name = "studentForm">
@@ -59,8 +60,9 @@
 						<option value = "Female">Female</option>
 					</select>
 
+				<br><br>
 				<!--Submit button: runs the insertStudent function-->
-				<input type = "submit" value="Submit" class = "button" ng-click = "createStudent()">
+				<button ng-click = "createStudent()">Submit</button>
 			</form>
 		</div>
 	</body>

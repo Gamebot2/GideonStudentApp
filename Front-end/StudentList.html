@@ -2,8 +2,9 @@
 <html>
 	<head>
 		<title>Student List</title>
+		<link rel = "stylesheet" type = "text/css" href="siteStyle.css">
 		<link rel = "stylesheet" type = "text/css" href="ListStyle.css">	
-		<link rel = "stylesheet" type = "text/css" href="multiColumn.css">
+		
 
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -50,23 +51,25 @@
 			<br>
 			<div id="tableContent">
 				<div class="columnContainer" id="tableHeaderContainer">
-					<div class="customColumn" style="width:30%">Name</div>
-					<div class="customColumn" style="width:57.5%">Email</div>
-					<div class="customColumn" style="width:12.5%">Grade</div>
+					<div class="column" style="width:30%">Name</div>
+					<div class="column" style="width:57.5%">Email</div>
+					<div class="column" style="width:12.5%">Grade</div>
 				</div>
 			</div>
-			<div id="tableContent" ng-repeat="student in students | filter: {client: clientFilter, email: emailFilter}" ng-click="manageExpansion(student)">	
-				<div class="columnContainer" id="tableContainer">
-					<div class="customColumn" style="width:30%">{{student.client}}&nbsp;</div>
-					<div class="customColumn" style="width:57.5%">{{student.email}}&nbsp;</div>
-					<div class="customColumn" style="width:12.5%">{{student.grade}}&nbsp;</div>
+			<div id="tableContent" ng-repeat="student in students | filter: {client: clientFilter, email: emailFilter}">	
+				<div class="columnContainer" id="tableContainer" ng-click="manageExpansion(student)">
+					<div class="column" style="width:30%">{{student.client}}&nbsp;</div>
+					<div class="column" style="width:57.5%">{{student.email}}&nbsp;</div>
+					<div class="column" style="width:12.5%">{{student.grade.split(" ")[0]}}&nbsp;</div>
 				</div>
 				<div id="expandableContainer" ng-class="{'collapsedContent':student!=expandedStudent, 'expandedContent':student==expandedStudent}">
 					ID: {{student.studentId}}<br>
 					Gender: {{student.gender}}<br>
 					Address: {{student.address}}<br>
 					Phone: {{student.phone}}<br>
-					<button type = "button" class = "hoverable" id = "lineChartButton" ng-click = "logStudent(student.studentId, student.client)">Line Chart</button>
+					Current Passes: {{student.currentPasses}}<br><br>
+					<button type = "button" class = "hoverable" id = "accordionButton" ng-click = "logStudent(student.studentId, student.client)">Line Chart</button>
+					<button type = "button" class = "hoverable" id = "accordionButton" ng-click = "editStudent(student.studentId, student.client)">Edit Student</button>
 				</div>
 			</div>
 		</div>

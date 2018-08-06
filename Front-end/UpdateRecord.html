@@ -5,6 +5,7 @@
 		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
 		<link rel = "stylesheet" type = "text/css" href="RecordStyle.css">
+		<link rel = "stylesheet" type = "text/css" href="siteStyle.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
@@ -15,7 +16,7 @@
 		<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
 	</head>
 	<body>		
-			<div ng-app = "updateApp" ng-controller = "updateCtrl">
+			<div class = "exterior" ng-app = "updateApp" ng-controller = "updateCtrl">
 				<h1>Update Record</h1>
 				<!--Form for updating records for students who already are in the system-->
 				<form>
@@ -38,15 +39,20 @@
 						<input type = "date" name = "endDate" id = "dateSelect" ng-model = "endDate"><br><br>
 
 						<!--Simple number picker for instructors to enter the test time-->
-						<label for = "testTime" id = "testTime">Test Time</label>
+						<div style="float:left">
+							<label for = "testTime" id = "testTime">Test Time</label>
 							<input type = "number" name = "testTime" min = "0" max = "1000" ng-model = "testTime">
+						</div>
 
 						<!--Simple number picker for instructors to enter the number of mistakes-->	
-						<label for = "mistakes" id = "mistakes">Mistakes</label>
-							<input type = "number" name = "mistakes" min = "0" max = "1000" ng-model = "mistakes"><br><br>
+						<div style="float:left">
+							<label for = "mistakes" id = "mistakes">Mistakes</label>
+							<input type = "number" name = "mistakes" min = "0" max = "1000" ng-model = "mistakes">
+						</div>
+						<br><br><br>
 
 						<!--Submits form data-->
-						<input type = "submit" value = "Submit" class = "button" ng-click = "updateRecord()">
+						<button ng-click = "updateRecord()">Submit</button>
 				</form>
 			</div>
 	</body>

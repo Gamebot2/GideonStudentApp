@@ -4,10 +4,12 @@ var app = angular.module('studentApp', ['ngAnimate']);
 //Controller used for StudentList.html: mainly to display students who have data for selection
 app.controller('studentCtrl', function($scope, $http, $window) {
 	//Retrieves students with data
+	console.log("start");
 	$scope.getStudents = function() {
 		$http.get("http://localhost:8080/" + ($scope.dataOn ? "dataStudents" : "students"))
 		.then(function(response) {
 			$scope.students = response.data;
+			console.log("end");
 		});
 		$scope.toggleButtonText = $scope.dataOn ? "Display All Students" : "Display Students with Records";
 	}
@@ -33,7 +35,14 @@ app.controller('studentCtrl', function($scope, $http, $window) {
 		console.log(name);
 		$window.localStorage.setItem(0, id);
 		$window.localStorage.setItem(1, name);
-		window.location.href = "lineChart.html"
+		window.location.href = "lineChart.html";
+	}
+
+	$scope.editStudent = function(id, name) {
+		console.log(name);
+		$window.localStorage.setItem(0, id);
+		$window.localStorage.setItem(1, name);
+		window.location.href = "EditStudent.html";
 	}
 });
 
@@ -152,6 +161,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 					}
 				}
 				$scope.errorMessage = (a <= 0);
+				console.log(dates + " " + books);
 
 				//// Extra books or something weird idk ////
 				let extraBooks = new Array();
@@ -166,7 +176,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 						}
 					});
 				}
-				console.log(extraBooks);
+				//console.log(extraBooks);
 
 				//// Goes across the x axis and determines what book the student was working on at the start of that month using the dates and book titles of the records ////
 				var recordCounter = 0;
@@ -475,5 +485,27 @@ app4.controller('insertStudentCtrl', function($scope, $http) {
 		}).then(function(response) {
 			alert(response.data);
 		});
+	}
+});
+
+//App for editing a student
+var app5 = angular.module('editStudentApp', ['ngMaterial']);
+
+app5.controller('editStudentCtrl', function($scope, $http, $window) {
+	$http.get("http://localhost:8080/student?Id=" + $window.localStorage.getItem(0))
+	.then(function(response) {
+		$scope.student = response.data;
+		$scope.Id = $scope.student.studentId;
+		$scope.Client = $scope.student.client;
+		$scope.Email = $scope.student.email;
+		$scope.Phone = $scope.student.phone;
+		$scope.Address = $scope.student.address;
+		$scope.Grade = $scope.student.grade;
+		$scope.Gender = $scope.student.gender;
+		$scope.CurrentPasses = $scope.student.currentPasses;
+	});
+
+	$scope.updateStudent = function() {
+		alert("to be implemented");
 	}
 });
