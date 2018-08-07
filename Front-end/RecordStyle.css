@@ -21,7 +21,9 @@ input[type=text], select, input[type=date], #clientSelect {
 
 /*Used for the insertRecord sheet to space out number inputs at the bottom*/
 #mistakes, #testTime {
-	margin-left: 1%;
+    float: left;
+    width: auto;
+    margin-right: 20px;
 }
 
 /*Used to decrease padding between rows in editStudent*/

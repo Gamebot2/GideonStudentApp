@@ -238,6 +238,8 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 								},
 								ticks: {
 									dislay: false,
+									autoSkip: true,
+									maxRotation: 0,
 									callback:function(label){
 										var month = label.split(" ")[0];
 										var year = label.split(" ")[1];
@@ -340,7 +342,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 //App for inserting data through insertRecord.html
 var app2 = angular.module('insertApp', ['ngMaterial']);
 
-	app2.controller('insertCtrl', function($scope, $http){
+app2.controller('insertCtrl', function($scope, $http){
 
 	//Returns a list of all students for easy name selection	
 	$http.get("http://localhost:8080/students")
@@ -503,7 +505,7 @@ app5.controller('editStudentCtrl', function($scope, $http, $window) {
 	$scope.updateStudent = function() {
 		$http.get("http://localhost:8080/updateStudent?studentId=" + $scope.Id + "&client=" + $scope.Client + "&email=" + $scope.Email + "&phone=" + $scope.Phone + "&address=" + $scope.Address + "&grade=" + $scope.Grade + "&gender=" + $scope.Gender + "&currentPasses=" + $scope.CurrentPasses)
 		.then(function(response) {
-			alert(response.data);
+			window.location.href = "StudentList.html"
 		});
 	}
 });

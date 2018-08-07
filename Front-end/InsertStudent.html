@@ -6,6 +6,7 @@
 		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
 		<link rel = "stylesheet" type = "text/css" href="RecordStyle.css">
 		<link rel = "stylesheet" type = "text/css" href="siteStyle.css">
+		<script src = "ripple.js"></script>
 
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -36,7 +37,7 @@
 				<!--Simple text box for instructors to enter the new student's grade-->
 				<label for = "grade">Grade</label><br>
 					<!--<input type = "text" name = "grade" id = "gradeBox" ng-model = "Grade" required><br><br>-->
-					<select name = "grade" id = "gradeBox" ng-model = "Grade"><br><br>
+					<select name = "grade" id = "gradeBox" ng-model = "Grade">
 						<option value = "PreK (-1)">PreK</option>
 						<option value = "Kinder (0)">Kinder</option>
 						<option value = "1st">1st</option>
@@ -55,7 +56,7 @@
 
 				<!--Simple selection field for instructors to enter the new student's gender-->
 				<label for = "gender">Gender</label><br>
-					<select name = "gender" id = "genderBox" ng-model = "Gender"><br><br>
+					<select name = "gender" id = "genderBox" ng-model = "Gender">
 						<option value = "Male">Male</option>
 						<option value = "Female">Female</option>
 					</select>

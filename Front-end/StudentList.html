@@ -4,7 +4,7 @@
 		<title>Student List</title>
 		<link rel = "stylesheet" type = "text/css" href="siteStyle.css">
 		<link rel = "stylesheet" type = "text/css" href="ListStyle.css">	
-		
+		<script src = "ripple.js"></script>
 
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -46,7 +46,12 @@
 
 			<br>
 			<br>
-			<button type = "button" class = "hoverable" id = "dataToggleBtn" ng-click = "toggleData()">{{toggleButtonText}}</button>
+			<button type = "button" class = "hoverable" id = "dataToggleBtn" ng-click = "toggleData()">
+				{{toggleButtonText}}
+				<!--<div id = "rippleContainer">
+					<span id = "rippleCircle"></span>
+				</div>-->
+			</button>
 			<br>
 			<br>
 			<div id="tableContent">

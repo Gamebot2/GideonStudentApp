@@ -22,26 +22,31 @@ h1, h3 {
 }
 
 
-input, select, button {
-	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1), 3px 3px 10px rgba(0, 0, 0, 0.1);
-}
-
 select, input {
 	display: inline-block;
     border: 1px solid #ccc;
     border-radius: 4px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1), 3px 3px 10px rgba(0, 0, 0, 0.1);
 }
 
+input:focus, select:focus, button:focus {
+	outline: none;
+}
+
+
+/*Button CSS, including ripple and press effects*/
 button {
 	background-color: gold;
 	color: black;
+	position: relative;
+	margin: 0px 4px;
 	padding: 16px 32px;
 	font-size: 16px;
-	margin: 4px 2px;
 	cursor: pointer;
 	transition-duration: .4s;
 	border: none;
 	border-radius: 4px;
+	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1), 3px 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 button:hover {
@@ -49,9 +54,32 @@ button:hover {
 	color: white;
 }
 
-input:focus, select:focus, button:focus {
-	outline: none;
+#rippleContainer {
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	pointer-events: none;
 }
+
+#rippleCircle {
+	position: absolute;
+	height: 100px;
+	width: 100px;
+	transform-origin: 50% 50%;
+	border-radius: 50%;
+	background-color: rgb(0,0,0);
+	opacity: 0.2;
+	animation: rippleAnim 2s linear;
+}
+
+@keyframes rippleAnim {
+	from { opacity: 0.2; transform: scale(0, 0); }
+	to { opacity: 0; transform: scale(25, 25); }
+}
+
 
 
 /*Multi Column CSS*/
