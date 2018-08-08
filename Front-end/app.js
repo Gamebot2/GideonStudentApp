@@ -1,5 +1,5 @@
 //App for studentList and chart displays
-var app = angular.module('studentApp', ['ngAnimate']);
+var app = angular.module('gideonApp', ['ngAnimate']);
 
 //Controller used for StudentList.html: mainly to display students who have data for selection
 app.controller('studentCtrl', function($scope, $http, $window) {
@@ -340,9 +340,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 	});
 
 //App for inserting data through insertRecord.html
-var app2 = angular.module('insertApp', ['ngMaterial']);
-
-app2.controller('insertCtrl', function($scope, $http){
+app.controller('insertCtrl', function($scope, $http){
 
 	//Returns a list of all students for easy name selection	
 	$http.get("http://localhost:8080/students")
@@ -351,7 +349,8 @@ app2.controller('insertCtrl', function($scope, $http){
 
 		$scope.names = [];
 		for(i = 0; i < $scope.students.length; i++) {
-			$scope.names.push($scope.students[i].client);
+			var nameWithId = { name: $scope.students[i].client, id: $scope.students[i].studentId };
+			$scope.names.push(nameWithId); // names contain ids to make sure every name is distinct - the name will be displayed but the id will be used
 		}
 
 	});
@@ -388,7 +387,7 @@ app2.controller('insertCtrl', function($scope, $http){
 		//Creates JSON for the record based on form data
 		$scope.createRecord = function() {
 			var newRecordDetails = JSON.stringify({
-				client: $scope.Client,
+				id: $scope.client,
 				category: $scope.selectedCategory,
 				subcategory: $scope.selectedSubCategory,
 				title: $scope.selectedTitle,
@@ -414,10 +413,8 @@ app2.controller('insertCtrl', function($scope, $http){
 	});
 });
 
-//App for updating recordData through updateRecord.html
-var app3 = angular.module('updateApp', []);
-			
-app3.controller('updateCtrl', function($scope, $http){
+//App for updating recordData through updateRecord.html			
+app.controller('updateCtrl', function($scope, $http){
 
 	//Returns all student names for easy selection
 	$http.get("http://localhost:8080/students")
@@ -459,9 +456,7 @@ app3.controller('updateCtrl', function($scope, $http){
 });
 
 //App for inserting a new student through InsertStudent.html
-var app4 = angular.module('insertStudentApp', []);
-
-app4.controller('insertStudentCtrl', function($scope, $http) {
+app.controller('insertStudentCtrl', function($scope, $http) {
 
 	//Creates JSON for the student based on form data
 	$scope.createStudent = function() {
@@ -486,9 +481,7 @@ app4.controller('insertStudentCtrl', function($scope, $http) {
 });
 
 //App for editing a student
-var app5 = angular.module('editStudentApp', ['ngMaterial']);
-
-app5.controller('editStudentCtrl', function($scope, $http, $window) {
+app.controller('editStudentCtrl', function($scope, $http, $window) {
 	$http.get("http://localhost:8080/student?Id=" + $window.localStorage.getItem(0))
 	.then(function(response) {
 		$scope.student = response.data;

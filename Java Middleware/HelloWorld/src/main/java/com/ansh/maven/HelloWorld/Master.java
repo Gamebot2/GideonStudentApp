@@ -5,7 +5,7 @@ import java.util.Date;
 //Class used to manage data movement across multiple tables
 public class Master {
 	
-	private String Client;
+	private String id;
 	private String category;
 	private String subcategory;
 	private String title;
@@ -17,9 +17,9 @@ public class Master {
 		super();
 	}
 	
-	public Master(String client, String category, String subcategory, String title, Date startDate, int rep) {
+	public Master(String id, String category, String subcategory, String title, Date startDate, int rep) {
 		super();
-		Client = client;
+		this.id = id;
 		this.category = category;
 		this.subcategory = subcategory;
 		this.title = title;
@@ -27,12 +27,12 @@ public class Master {
 		this.rep = rep;
 	}
 
-	public String getClient() {
-		return Client;
+	public String getId() {
+		return id;
 	}
 	
-	public void setClient(String client) {
-		Client = client;
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 	public String getCategory() {

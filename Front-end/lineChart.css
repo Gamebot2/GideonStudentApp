@@ -10,12 +10,6 @@ body {
 	height: 2000px;
 }
 
-select, button {
-	width: 100%;
-	padding: 12px 20px;
-    margin: 8px 0;
-}
-
 #timeText {
 	margin-top: 16px;
 }

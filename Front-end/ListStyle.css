@@ -78,17 +78,11 @@ body {
 	float: left;
 }
 
-input[type=text] {
+input[black] {
 	position: relative;
 	padding: 4px 4px;
 	left: 20%;
 	width: 60%;
-	background-color: rgba(201, 76, 76, 0);
-	box-shadow: none;
-	border: none;
-	border-bottom: solid 2px black;
-	border-radius: 0px;
-	outline: none;
 	text-align: center;
 }
 

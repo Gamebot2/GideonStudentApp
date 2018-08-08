@@ -26,45 +26,44 @@
 		<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
 	</head>
 	<body>
-		<div class = "exterior" ng-app = "insertApp" ng-controller = "insertCtrl">
+		<div class = "exterior" ng-app = "gideonApp" ng-controller = "insertCtrl">
 			<h1>Insert Record</h1>
 			<!--Form used for adding a new record for an existing student into the database-->
 		<form name = "insertForm">
 			<!--Displays list of all current students upon selection-->
-			<label for = "client">Full Name</label>
-          		<input list="studentNames" id="clientSelect" name = "client" ng-model = "Client" required>
-          		<datalist id="studentNames">
-          			<option ng-repeat="v in names" value = "{{v}}">{{v}}</option>
-  				</datalist><br><br>
+			<label for = "client">Filter By Name: </label>
+				<input black id = "textFilter" name = "textFilter" type = "text" ng-model="clientFilter">
+          		<select white big id="clientSelect" name = "client" ng-model = "client" required ng-options = "v.id as v.name for v in names | filter: {name: clientFilter}">
+  				</select><br><br>
 
   			<!--Displays all possible book categories-->
 			<label for = "category">Book Category</label><br>
-				<select id = "category" ng-model = "selectedCategory" ng-options = "x for x in categories" ng-change = "getSubcategories()" required>
+				<select white big id = "category" ng-model = "selectedCategory" ng-options = "x for x in categories" ng-change = "getSubcategories()" required>
 					<option value = "" selected disabled hidden>Choose category</option>
 				</select><br><br>
 
 			<!--Displays all subcategories for a selected category-->
 			<label for = "subCategory">Book Sub-Category</label><br>
-				<select id = "subCategory" ng-model = "selectedSubCategory" ng-options = "y for y in subcategories" ng-change = "getTitles()" required>
+				<select white big iid = "subCategory" ng-model = "selectedSubCategory" ng-options = "y for y in subcategories" ng-change = "getTitles()" required>
 					<option value = "">Choose subcategory</option>
 				</select><br><br>
 
 			<!--Displays all book titles for a given subcategory-->
 			<label for = "title">Book Title</label><br>
-				<select id = "title" ng-model = "selectedTitle" ng-options = "z for z in titles" required>
+				<select white big iid = "title" ng-model = "selectedTitle" ng-options = "z for z in titles" required>
 					<option value = "">Choose title</option>
 				</select><br><br>
 
 			<!--Simple datePicker for instructors to enter the startDate-->
 			<label for = "dateSelect">Start Date</label><br>
-				<input type = "date" name = "startDate" id ="dateSelect" ng-model = "startDate" required><br><br>
+				<input white big type = "date" name = "startDate" id ="dateSelect" ng-model = "startDate" required><br><br>
 
 			<!--Simple number picker for instructors to enter the repetition number-->
 			<label for = "reps" id = "reps">Repetition</label>
-				<input type = "number" name = "reps" min = "1" max = "5" ng-model = "rep" required><br><br>
+				<input white type = "number" name = "reps" min = "1" max = "5" ng-model = "rep" required><br><br>
 			
 			<!--Submit button: runs the insertTask function-->
-			<button ng-click = "createRecord()">Submit</button>
+			<button big ng-click = "createRecord()">Submit</button>
 		</form>
 	</div>
 	</body>

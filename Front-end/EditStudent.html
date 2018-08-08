@@ -26,21 +26,21 @@
 		<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
 	</head>
 	<body>
-		<div class = "exterior" ng-app = "editStudentApp" ng-controller = "editStudentCtrl">
+		<div class = "exterior" ng-app = "gideonApp" ng-controller = "editStudentCtrl">
 			<h1>Edit {{student.client}}</h1>
 			<!--Form used for editing a student in the database-->
 			<div class="columnContainer" id="editStudentRow">
 				<div class="threeColumn">
 					<label for = "student">Full Name</label><br>
-					<input type = "text" ng-model = "Client" required>
+					<input white big type = "text" ng-model = "Client" required>
 				</div>
 				<div class="threeColumn">
 					<label for = "email">Email</label><br>
-					<input type = "text" ng-model = "Email">
+					<input white big type = "text" ng-model = "Email">
 				</div>
 				<div class="threeColumn">
 					<label for = "email">Grade</label><br>
-					<select name = "grade" id = "gradeBox" ng-model = "Grade">
+					<select white big name = "grade" id = "gradeBox" ng-model = "Grade">
 							<option value = "PreK (-1)">PreK</option>
 							<option value = "Kinder (0)">Kinder</option>
 							<option value = "1st">1st</option>
@@ -61,28 +61,28 @@
 			<div class="columnContainer" id="editStudentRow">
 				<div class="twoColumn">
 					<label for = "email">Phone</label><br>
-					<input type = "text" ng-model = "Phone">
+					<input white big type = "text" ng-model = "Phone">
 				</div>
 				<div class="twoColumn">
 					<label for = "email">Address</label><br>
-					<input type = "text" ng-model = "Address">
+					<input white big type = "text" ng-model = "Address">
 				</div>
 			</div><br>
 			<div class="columnContainer" id="editStudentRow">
 				<div class="twoColumn">
 					<label for = "email">Gender</label><br>
-					<select name = "gender" id = "genderBox" ng-model = "Gender">
+					<select white big name = "gender" id = "genderBox" ng-model = "Gender">
 						<option value = "Male">Male</option>
 						<option value = "Female">Female</option>
 					</select>
 				</div>
 				<div class="twoColumn">
 					<label for = "email">Current Passes</label><br>
-					<input type = "text" ng-model = "CurrentPasses">
+					<input white big type = "text" ng-model = "CurrentPasses">
 				</div>
 			</div><br><br>
 
-			<button ng-click = "updateStudent()">Submit</button>
+			<button big ng-click = "updateStudent()">Submit</button>
 		</div>
 	</body>
 </html>

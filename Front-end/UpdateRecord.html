@@ -17,43 +17,43 @@
 		<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
 	</head>
 	<body>		
-			<div class = "exterior" ng-app = "updateApp" ng-controller = "updateCtrl">
+			<div class = "exterior" ng-app = "gideonApp" ng-controller = "updateCtrl">
 				<h1>Update Record</h1>
 				<!--Form for updating records for students who already are in the system-->
 				<form>
 						<label for = "name">Name</label><br>
-						<input list="studentNames" id="clientSelect" name = "client" ng-model = "selectedStudent">
+						<input white big list="studentNames" id="clientSelect" name = "client" ng-model = "selectedStudent">
           					<datalist id="studentNames">
           						<option ng-repeat="v in names" value = "{{v}}">{{v}}</option>
   							</datalist><br><br><br>
 						<br>
-						<label for = "title">Record</label><br>
 
 						<!--Only displays incomplete records-->
-							<select id = "title" ng-model = "selectedRecord" ng-options = "y for y in displayRecords | filter: selectedStudent">
+						<label for = "title">Record</label><br>
+							<select white big id = "title" ng-model = "selectedRecord" ng-options = "y for y in displayRecords | filter: selectedStudent">
 							</select><br>
 						<h3> You selected {{selectedRecord}}</h3>
 						<br>
 
 						<!--Allows user to enter the ending date-->
 						<label for = "dateSelect">End Date</label><br>
-						<input type = "date" name = "endDate" id = "dateSelect" ng-model = "endDate"><br><br>
+						<input white big type = "date" name = "endDate" id = "dateSelect" ng-model = "endDate"><br><br>
 
 						<!--Simple number picker for instructors to enter the test time-->
 						<div id = "testTime">
 							<label for = "testTime">Test Time</label>
-							<input type = "number" name = "testTime" min = "0" max = "1000" ng-model = "testTime">
+							<input white type = "number" name = "testTime" min = "0" max = "1000" ng-model = "testTime">
 						</div>
 
 						<!--Simple number picker for instructors to enter the number of mistakes-->	
 						<div id = "mistakes">
 							<label for = "mistakes">Mistakes</label>
-							<input type = "number" name = "mistakes" min = "0" max = "1000" ng-model = "mistakes">
+							<input white type = "number" name = "mistakes" min = "0" max = "1000" ng-model = "mistakes">
 						</div>
 						<br><br><br>
 
 						<!--Submits form data-->
-						<button ng-click = "updateRecord()">Submit</button>
+						<button big ng-click = "updateRecord()">Submit</button>
 				</form>
 			</div>
 	</body>

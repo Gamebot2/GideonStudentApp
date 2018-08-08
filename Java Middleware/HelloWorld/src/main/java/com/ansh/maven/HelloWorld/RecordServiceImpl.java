@@ -56,9 +56,9 @@ public class RecordServiceImpl implements RecordService{
 	}
 
 	@Override
-	public int addRecord(String Client, String category, String subcategory, String title, Date startDate, int rep) {
+	public int addRecord(String id, String category, String subcategory, String title, Date startDate, int rep) {
 		// TODO Auto-generated method stub
-		return recordDao.addRecord(Client, category, subcategory, title, startDate, rep);
+		return recordDao.addRecord(id, category, subcategory, title, startDate, rep);
 	}
 
 	@Override

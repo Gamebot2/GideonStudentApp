@@ -58,24 +58,9 @@ public class RecordDaoImpl implements RecordDao{
 
 	//Adds a new record to the record database with all of the following information, formats the appropriate SQL string
 	@Override
-	public int addRecord(String Client, String category, String subcategory, String title, Date startDate, int rep) {
-		int bookId = 0, studentId = 0;
-		boolean test = false, studentFoundFlag = false;
-		
-		// get student id
-		String studentsql = "SELECT * FROM students";
-		RowMapper<Student> studentRowMapper = new StudentRowMapper();
-		List<Student> studentList = this.jdbcTemplate.query(studentsql, studentRowMapper);
-		
-		for(Student s: studentList) {
-			if(s.getClient().equalsIgnoreCase(Client)) {
-				studentId = s.getStudentId();
-				studentFoundFlag = true;
-			}
-		}
-		if (!studentFoundFlag) {	// If the client name is not in the database, return an error (would probably help if we could return more than just a number)
-			return -1;
-		}
+	public int addRecord(String studentId, String category, String subcategory, String title, Date startDate, int rep) {
+		int bookId = 0;
+		boolean test = false;
 		
 		// get book id
 		String booksql = "Select * FROM book";

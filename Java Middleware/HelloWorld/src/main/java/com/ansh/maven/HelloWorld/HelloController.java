@@ -147,7 +147,7 @@ public class HelloController {
 		System.out.println("Method addRecord() called");
 		int a;
 		try {
-			a = recordService.addRecord(master.getClient(), master.getCategory(), master.getSubcategory(), master.getTitle(), master.getStartDate(), master.getRep());
+			a = recordService.addRecord(master.getId(), master.getCategory(), master.getSubcategory(), master.getTitle(), master.getStartDate(), master.getRep());
 		} catch (java.lang.NullPointerException e) {
 			a = -1;
 		}

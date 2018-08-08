@@ -8,16 +8,6 @@ body {
     padding: 20px;
 }
 
-input[type=text], select, input[type=date], #clientSelect {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-}
-
-#clientSelect, button {
-    width: 100%;
-}
-
 
 /*Used for the insertRecord sheet to space out number inputs at the bottom*/
 #mistakes, #testTime {

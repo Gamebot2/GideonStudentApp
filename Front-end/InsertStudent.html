@@ -26,18 +26,18 @@
 		<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
 	</head>
 	<body>
-		<div class = "exterior" ng-app = "insertStudentApp" ng-controller = "insertStudentCtrl">
+		<div class = "exterior" ng-app = "gideonApp" ng-controller = "insertStudentCtrl">
 			<h1>Insert Student</h1>
 			<!--Form used for adding a new student into the database-->
 			<form name = "studentForm">
 				<!--Simple text box for instructors to enter the new student's full name-->
 				<label for = "student">Full Name</label><br>
-					<input type = "text" name = "student" id = "nameBox" ng-model = "Client" required><br><br>
+					<input white big type = "text" name = "student" id = "nameBox" ng-model = "Client" required><br><br>
 
 				<!--Simple text box for instructors to enter the new student's grade-->
 				<label for = "grade">Grade</label><br>
 					<!--<input type = "text" name = "grade" id = "gradeBox" ng-model = "Grade" required><br><br>-->
-					<select name = "grade" id = "gradeBox" ng-model = "Grade">
+					<select white big name = "grade" id = "gradeBox" ng-model = "Grade">
 						<option value = "PreK (-1)">PreK</option>
 						<option value = "Kinder (0)">Kinder</option>
 						<option value = "1st">1st</option>
@@ -56,14 +56,14 @@
 
 				<!--Simple selection field for instructors to enter the new student's gender-->
 				<label for = "gender">Gender</label><br>
-					<select name = "gender" id = "genderBox" ng-model = "Gender">
+					<select white big name = "gender" id = "genderBox" ng-model = "Gender">
 						<option value = "Male">Male</option>
 						<option value = "Female">Female</option>
 					</select>
 
 				<br><br>
 				<!--Submit button: runs the insertStudent function-->
-				<button ng-click = "createStudent()">Submit</button>
+				<button big ng-click = "createStudent()">Submit</button>
 			</form>
 		</div>
 	</body>

@@ -27,7 +27,7 @@
 	<body>
 		<br>
 		<!--Containing essentially a form for selected chart specifications-->
-		<div class="chartspecs" ng-app = "studentApp" ng-controller = "chartCtrl">
+		<div class="chartspecs" ng-app = "gideonApp" ng-controller = "chartCtrl">
 
 			<h1>Progress Chart for {{studentName}}</h1>
 			<br>
@@ -36,29 +36,34 @@
 				<!--Allows user to select specific category to graph based on what student has-->
 				<div class="threeColumn">
 				<label for="category">Category</label><br>
-					<select id = "category" name = "category" ng-model = "selectedCategory" ng-options = "y for y in categoriesOfStudent" ng-change = "getReps()">
+					<select white big id = "category" name = "category" ng-model = "selectedCategory" ng-options = "y for y in categoriesOfStudent" ng-change = "getReps()">
 					</select>
 				</div>
 			
 				<!--Allows user to select month specificatons for the graph up to 5 years ago-->
 				<div class="threeColumn">
 				<label for="months">Time Range</label><br>
-					<div id="timeText"><input type = "number" id = "months" name = "months" value = "12" ng-model = "months" min = "1" max = "60" required> months ago to <input type = "number" id = "months" name = "months" value = "12" ng-model = "months2" min = "1" max = "60" required> months ago</div>
+					<div id="timeText">
+						<input white type = "number" id = "months" name = "months" value = "12" ng-model = "months" min = "1" max = "60" required>
+						months ago to
+						<input white type = "number" id = "months" name = "months" value = "12" ng-model = "months2" min = "1" max = "60" required>
+						months ago
+					</div>
 				</div>
 
 				<!--Allows user to select which specific repetitions to display-->
 				<div class="threeColumn">
 				<label for="reptitions">Included repetitions</label><br>
-					<select id = "repNumbers" name = "repNumbers" ng-model = "selectedRep" ng-options = "x for x in repOptions"></select>
+					<select white big id = "repNumbers" name = "repNumbers" ng-model = "selectedRep" ng-options = "x for x in repOptions"></select>
 				</div>
 			</div><br>
 
 			<!--Button to generate chart and submit all data-->
-			<button type="submit" ng-click="validateForm()">Generate Chart</button>
+			<button big type="submit" ng-click="validateForm()">Generate Chart</button>
 
 			<!--Error message in case no data is retrieved-->
 			<h6 ng-show="errorMessage" style = "color:red;">Error: No data found</h6>
-			<br>
+			<br><br>
 
 			<!--HTML element for the generated chart-->
 			<div id = "logoDiv">
