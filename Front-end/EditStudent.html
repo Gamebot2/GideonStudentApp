@@ -17,6 +17,7 @@
 		<meta name="theme-color" content="#ffffff">
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
@@ -29,60 +30,66 @@
 		<div class = "exterior" ng-app = "gideonApp" ng-controller = "editStudentCtrl">
 			<h1>Edit {{student.client}}</h1>
 			<!--Form used for editing a student in the database-->
-			<div class="columnContainer" id="editStudentRow">
-				<div class="threeColumn">
-					<label for = "student">Full Name</label><br>
-					<input white big type = "text" ng-model = "Client" required>
-				</div>
-				<div class="threeColumn">
-					<label for = "email">Email</label><br>
-					<input white big type = "text" ng-model = "Email">
-				</div>
-				<div class="threeColumn">
-					<label for = "email">Grade</label><br>
-					<select white big name = "grade" id = "gradeBox" ng-model = "Grade">
-							<option value = "PreK (-1)">PreK</option>
-							<option value = "Kinder (0)">Kinder</option>
-							<option value = "1st">1st</option>
-							<option value = "2nd">2nd</option>
-							<option value = "3rd">3rd</option>
-							<option value = "4th">4th</option>
-							<option value = "5th">5th</option>
-							<option value = "6th">6th</option>
-							<option value = "7th">7th</option>
-							<option value = "8th">8th</option>
-							<option value = "9th">9th</option>
-							<option value = "10th">10th</option>
-							<option value = "11th">11th</option>
-							<option value = "12th">12th</option>
-					</select>
-				</div>
-			</div><br>
-			<div class="columnContainer" id="editStudentRow">
-				<div class="twoColumn">
-					<label for = "email">Phone</label><br>
-					<input white big type = "text" ng-model = "Phone">
-				</div>
-				<div class="twoColumn">
-					<label for = "email">Address</label><br>
-					<input white big type = "text" ng-model = "Address">
-				</div>
-			</div><br>
-			<div class="columnContainer" id="editStudentRow">
-				<div class="twoColumn">
-					<label for = "email">Gender</label><br>
-					<select white big name = "gender" id = "genderBox" ng-model = "Gender">
-						<option value = "Male">Male</option>
-						<option value = "Female">Female</option>
-					</select>
-				</div>
-				<div class="twoColumn">
-					<label for = "email">Current Passes</label><br>
-					<input white big type = "text" ng-model = "CurrentPasses">
-				</div>
-			</div><br><br>
+			<form name = "form">
+				<div class="columnContainer" id="editStudentRow">
+					<div class="threeColumn">
+						<label for = "student">Full Name</label><br>
+						<div class="inputWrapperBig">
+							<input white big type = "text" name = "client" ng-model = "Client" required>
+							<div class="invalidContainer" ng-class="{'invalid':form.client.$touched && form.client.$invalid}"></div>
+						</div>
+						<span class="errorText" ng-show="form.client.$touched && form.client.$invalid">Name is required.</span>
+					</div>
+					<div class="threeColumn">
+						<label for = "email">Email</label><br>
+						<input white big type = "text" ng-model = "Email">
+					</div>
+					<div class="threeColumn">
+						<label for = "email">Grade</label><br>
+						<select white big name = "grade" id = "gradeBox" ng-model = "Grade">
+								<option value = "PreK (-1)">PreK</option>
+								<option value = "Kinder (0)">Kinder</option>
+								<option value = "1st">1st</option>
+								<option value = "2nd">2nd</option>
+								<option value = "3rd">3rd</option>
+								<option value = "4th">4th</option>
+								<option value = "5th">5th</option>
+								<option value = "6th">6th</option>
+								<option value = "7th">7th</option>
+								<option value = "8th">8th</option>
+								<option value = "9th">9th</option>
+								<option value = "10th">10th</option>
+								<option value = "11th">11th</option>
+								<option value = "12th">12th</option>
+						</select>
+					</div>
+				</div><br>
+				<div class="columnContainer" id="editStudentRow">
+					<div class="twoColumn">
+						<label for = "email">Phone</label><br>
+						<input white big type = "text" ng-model = "Phone">
+					</div>
+					<div class="twoColumn">
+						<label for = "email">Address</label><br>
+						<input white big type = "text" ng-model = "Address">
+					</div>
+				</div><br>
+				<div class="columnContainer" id="editStudentRow">
+					<div class="twoColumn">
+						<label for = "email">Gender</label><br>
+						<select white big name = "gender" id = "genderBox" ng-model = "Gender">
+							<option value = "Male">Male</option>
+							<option value = "Female">Female</option>
+						</select>
+					</div>
+					<div class="twoColumn">
+						<label for = "email">Current Passes</label><br>
+						<input white big type = "text" ng-model = "CurrentPasses">
+					</div>
+				</div><br><br>
 
-			<button big ng-click = "updateStudent()">Submit</button>
+				<button big ng-click = "updateStudent()">Submit</button>
+			</form>
 		</div>
 	</body>
 </html>

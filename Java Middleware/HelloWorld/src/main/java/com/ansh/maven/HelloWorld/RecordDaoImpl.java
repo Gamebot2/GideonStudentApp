@@ -92,11 +92,7 @@ public class RecordDaoImpl implements RecordDao{
 
 	//Updates an already existing record
 	@Override
-	public int updateRecord(String record, Date endDate, int testTime, int mistakes) {
-		
-		String[] brokenRecord = record.split(" ");
-		String recordId = brokenRecord[brokenRecord.length-1];
-		
+	public int updateRecord(String recordId, Date endDate, int testTime, int mistakes) {	
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 		String formatted = format1.format(endDate);
 		

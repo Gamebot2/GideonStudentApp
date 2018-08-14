@@ -24,9 +24,11 @@ h1, h3 {
 
 /*Input CSS (including some button stuff)*/
 select[white], input[white] {
-    border: 1px solid #ccc;
+	border: 1px solid #ccc;
     border-radius: 4px;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15), 3px 3px 10px rgba(0, 0, 0, 0.1);
+    margin: 8px 0;
+    padding: 5px 5px;
     transition-duration: .4s;
 }
 select[black], input[black] {
@@ -41,16 +43,46 @@ select[big], input[big], button[big] {
 	display: inline-block;
 	width: 100%;
 	padding: 12px 20px;
-    margin: 8px 0;
 }
 
 input:focus, select:focus, button:focus {
 	outline: none;
 }
-
 input[white]:focus, select[white]:focus {
 	box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4), 5px 5px 20px rgba(0, 0, 0, 0.3);
 }
+
+
+/*Form validation CSS*/
+.inputWrapper {
+	position: relative;
+	display: inline-block;
+}
+.inputWrapperBig {
+	position: relative;
+	display: inline-block;
+	width: 100%;
+}
+.invalidContainer {
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	pointer-events: none;
+	margin: 8px 0;
+	border-radius: 4px;
+	transition-duration: .4s;
+}
+.invalid {
+	border: 5px solid rgba(255, 0, 0, 0.5);
+}
+.errorText {
+	color: red;
+	animation: none;
+}
+
 
 
 /*Button CSS, including ripple and press effects*/
@@ -88,9 +120,10 @@ button:hover {
 	height: 100px;
 	width: 100px;
 	transform-origin: 50% 50%;
+	transform: scale(35, 35);
 	border-radius: 50%;
 	background: radial-gradient(rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.5) 100%);
-	opacity: 1;
+	opacity: 0;
 	animation: rippleAnim 2s linear;
 }
 

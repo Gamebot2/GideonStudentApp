@@ -8,6 +8,7 @@
 		<link rel = "stylesheet" type = "text/css" href="siteStyle.css">
 		<script src = "ripple.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
@@ -20,40 +21,65 @@
 			<div class = "exterior" ng-app = "gideonApp" ng-controller = "updateCtrl">
 				<h1>Update Record</h1>
 				<!--Form for updating records for students who already are in the system-->
-				<form>
-						<label for = "name">Name</label><br>
-						<input white big list="studentNames" id="clientSelect" name = "client" ng-model = "selectedStudent">
-          					<datalist id="studentNames">
-          						<option ng-repeat="v in names" value = "{{v}}">{{v}}</option>
-  							</datalist><br><br><br>
-						<br>
+				<form name = "form">
+					<label for = "name">Filter By Name: </label>
+					<input black id = "textFilter" name = "textFilter" type = "text" ng-model="clientFilter">
+	          			<select white big id="clientSelect" name = "client" ng-model = "selectedStudent" ng-options = "v for v in names | filter: clientFilter">
+	  					</select><br><br>
 
-						<!--Only displays incomplete records-->
-						<label for = "title">Record</label><br>
-							<select white big id = "title" ng-model = "selectedRecord" ng-options = "y for y in displayRecords | filter: selectedStudent">
-							</select><br>
-						<h3> You selected {{selectedRecord}}</h3>
-						<br>
-
-						<!--Allows user to enter the ending date-->
-						<label for = "dateSelect">End Date</label><br>
-						<input white big type = "date" name = "endDate" id = "dateSelect" ng-model = "endDate"><br><br>
-
-						<!--Simple number picker for instructors to enter the test time-->
-						<div id = "testTime">
-							<label for = "testTime">Test Time</label>
-							<input white type = "number" name = "testTime" min = "0" max = "1000" ng-model = "testTime">
+					<!--Only displays incomplete records-->
+					<label for = "title">Record</label><br>
+						<div class="inputWrapperBig">
+							<select white big id = "title" name = "record" ng-model = "selectedRecord" ng-options = "y as y.display for y in displayRecords | filter: {display: selectedStudent}" required></select>
+							<div class="invalidContainer" ng-class="{'invalid':form.record.$touched && form.record.$invalid}"></div>
 						</div>
+						<span class="errorText" ng-show="form.record.$touched && form.record.$invalid">Record is required.</span>
+					<br>
+					<h3> You selected {{selectedRecord.display}}</h3>
+					<br>
 
-						<!--Simple number picker for instructors to enter the number of mistakes-->	
-						<div id = "mistakes">
-							<label for = "mistakes">Mistakes</label>
-							<input white type = "number" name = "mistakes" min = "0" max = "1000" ng-model = "mistakes">
+					<!--Allows user to enter the ending date-->
+					<label for = "dateSelect">End Date</label><br>
+						<div class="inputWrapperBig">
+							<input white big type = "date" name = "endDate" id = "dateSelect" min = "{{selectedRecord.date}}" ng-model = "endDate" required>
+							<div class="invalidContainer" ng-class="{'invalid':form.endDate.$touched && form.endDate.$invalid}"></div>
 						</div>
-						<br><br><br>
+						<span class="errorText" ng-show="form.endDate.$touched && form.endDate.$invalid">
+							<span ng-show="form.endDate.$error.required">This date is invalid.</span>
+							<span ng-show="form.endDate.$error.min">The end date must come after the start date.</span>
+						</span>
+					<br><br>
 
-						<!--Submits form data-->
-						<button big ng-click = "updateRecord()">Submit</button>
+					<!--Simple number picker for instructors to enter the test time-->
+					<div id = "testTime">
+						<label for = "testTime">Test Time</label>
+						<div class="inputWrapper">
+							<input white type = "number" name = "testTime" min = "0" max = "1000" ng-model = "testTime" required>
+							<div class="invalidContainer" ng-class="{'invalid':form.testTime.$touched && form.testTime.$invalid}"></div>
+						</div>
+						<span class="errorText" ng-show="form.testTime.$touched && form.testTime.$invalid">
+							<span ng-show="form.testTime.$error.required">Test time is required.</span>
+							<span ng-show="form.testTime.$error.date">This date is invalid.</span>
+							<span ng-show="form.testTime.$error.min || form.testTime.$error.max">Test time must be between 0 and 1000.</span>
+						</span>
+					</div>
+
+					<!--Simple number picker for instructors to enter the number of mistakes-->	
+					<div id = "mistakes">
+						<label for = "mistakes">Mistakes</label>
+						<div class="inputWrapper">
+							<input white type = "number" name = "mistakes" min = "0" max = "1000" ng-model = "mistakes" required>
+							<div class="invalidContainer" ng-class="{'invalid':form.mistakes.$touched && form.mistakes.$invalid}"></div>
+						</div>
+						<span class="errorText" ng-show="form.mistakes.$touched && form.mistakes.$invalid">
+							<span ng-show="form.mistakes.$error.required">Mistake count is required.</span>
+							<span ng-show="form.mistakes.$error.min || form.mistakes.$error.max">Mistake count must be between 0 and 1000.</span>
+						</span>
+					</div>
+					<br><br><br>
+
+					<!--Submits form data-->
+					<button big ng-click = "updateRecord()">Submit</button>
 				</form>
 			</div>
 	</body>

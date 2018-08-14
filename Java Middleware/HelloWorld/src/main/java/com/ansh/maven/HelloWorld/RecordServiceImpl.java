@@ -62,9 +62,9 @@ public class RecordServiceImpl implements RecordService{
 	}
 
 	@Override
-	public int updateRecord(String record, Date endDate, int testTime, int minutes) {
+	public int updateRecord(String recordId, Date endDate, int testTime, int minutes) {
 		// TODO Auto-generated method stub
-		return recordDao.updateRecord(record, endDate, testTime, minutes);
+		return recordDao.updateRecord(recordId, endDate, testTime, minutes);
 	}
 
 	@Override

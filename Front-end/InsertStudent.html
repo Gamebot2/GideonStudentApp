@@ -17,6 +17,7 @@
 		<meta name="theme-color" content="#ffffff">
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
@@ -29,39 +30,54 @@
 		<div class = "exterior" ng-app = "gideonApp" ng-controller = "insertStudentCtrl">
 			<h1>Insert Student</h1>
 			<!--Form used for adding a new student into the database-->
-			<form name = "studentForm">
+			<form name = "form">
 				<!--Simple text box for instructors to enter the new student's full name-->
 				<label for = "student">Full Name</label><br>
-					<input white big type = "text" name = "student" id = "nameBox" ng-model = "Client" required><br><br>
+					<div class="inputWrapperBig">
+						<input white big type = "text" name = "student" id = "nameBox" ng-model = "Client" required>
+						<div class="invalidContainer" ng-class="{'invalid':form.student.$touched && form.student.$invalid}"></div>
+					</div>
+					<span class="errorText" ng-show="form.student.$touched && form.student.$invalid">Name is required.</span>
+				<br><br>
 
-				<!--Simple text box for instructors to enter the new student's grade-->
+				<!--Simple selection field for instructors to enter the new student's grade-->
 				<label for = "grade">Grade</label><br>
 					<!--<input type = "text" name = "grade" id = "gradeBox" ng-model = "Grade" required><br><br>-->
-					<select white big name = "grade" id = "gradeBox" ng-model = "Grade">
-						<option value = "PreK (-1)">PreK</option>
-						<option value = "Kinder (0)">Kinder</option>
-						<option value = "1st">1st</option>
-						<option value = "2nd">2nd</option>
-						<option value = "3rd">3rd</option>
-						<option value = "4th">4th</option>
-						<option value = "5th">5th</option>
-						<option value = "6th">6th</option>
-						<option value = "7th">7th</option>
-						<option value = "8th">8th</option>
-						<option value = "9th">9th</option>
-						<option value = "10th">10th</option>
-						<option value = "11th">11th</option>
-						<option value = "12th">12th</option>
-					</select><br><br>
+					<div class="inputWrapperBig">
+						<select white big name = "grade" id = "gradeBox" ng-model = "Grade" required ng-class="{'invalid':form.grade.$touched && form.grade.$invalid}">
+							<option value = "PreK (-1)">PreK</option>
+							<option value = "Kinder (0)">Kinder</option>
+							<option value = "1st">1st</option>
+							<option value = "2nd">2nd</option>
+							<option value = "3rd">3rd</option>
+							<option value = "4th">4th</option>
+							<option value = "5th">5th</option>
+							<option value = "6th">6th</option>
+							<option value = "7th">7th</option>
+							<option value = "8th">8th</option>
+							<option value = "9th">9th</option>
+							<option value = "10th">10th</option>
+							<option value = "11th">11th</option>
+							<option value = "12th">12th</option>
+						</select>
+						<div class="invalidContainer" ng-class="{'invalid':form.grade.$touched && form.grade.$invalid}"></div>
+					</div>
+					<span class="errorText" ng-show="form.grade.$touched && form.grade.$invalid">Grade is required.</span>
+				<br><br>
 
 				<!--Simple selection field for instructors to enter the new student's gender-->
 				<label for = "gender">Gender</label><br>
-					<select white big name = "gender" id = "genderBox" ng-model = "Gender">
-						<option value = "Male">Male</option>
-						<option value = "Female">Female</option>
-					</select>
-
+					<div class="inputWrapperBig">
+						<select white big name = "gender" id = "genderBox" ng-model = "Gender" required ng-class="{'invalid':form.gender.$touched && form.gender.$invalid}">
+							<option value = "Male">Male</option>
+							<option value = "Female">Female</option>
+						</select>
+						<div class="invalidContainer" ng-class="{'invalid':form.gender.$touched && form.gender.$invalid}"></div>
+					</div>
+					<span class="errorText" ng-show="form.gender.$touched && form.gender.$invalid">Gender is required.</span>
 				<br><br>
+
+				
 				<!--Submit button: runs the insertStudent function-->
 				<button big ng-click = "createStudent()">Submit</button>
 			</form>

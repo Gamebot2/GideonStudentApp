@@ -100,6 +100,22 @@ public class HelloController {
 		return studentService.getGrade(StudentId);
 	}
 	
+	//Adds a new student to the students database
+	@CrossOrigin(origins = webOrigin)
+	@RequestMapping("/addStudent")
+	public int addStudent(@RequestBody(required=false) StudentMaster student) {
+		System.out.println("Method addStudent() called" );
+		return studentService.addStudent(student.getClient(), student.getGrade(), student.getGender());
+	}
+	
+	//Edits student data in the students database
+	@CrossOrigin(origins = webOrigin)
+	@RequestMapping("/updateStudent")
+	public int updateStudent(@RequestParam("studentId") String studentId, @RequestParam("client") String client, @RequestParam("email") String email, @RequestParam("phone") String phone, @RequestParam("address") String address, @RequestParam("grade") String grade, @RequestParam("gender") String gender, @RequestParam("currentPasses") String currentPasses) {
+		System.out.println("Method updateStudent() called");
+		return studentService.updateStudent(studentId, client, email, phone, address, grade, gender, currentPasses);
+	}
+	
 	//Returns all records in the record database
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/records")
@@ -154,30 +170,16 @@ public class HelloController {
 		return a;
 	}
 	
-	//Adds a new student to the students database
-	@CrossOrigin(origins = webOrigin)
-	@RequestMapping("/addStudent")
-	public int addStudent(@RequestBody(required=false) StudentMaster student) {
-		System.out.println("Method addStudent() called" );
-		return studentService.addStudent(student.getClient(), student.getGrade(), student.getGender());
-	}
-	
 	//Updates an existing record in the database
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/updateRecord")
-	public int updateRecord(@RequestParam("record") String record, @RequestParam("endDate") Date endDate, @RequestParam("testTime") int testTime, @RequestParam("mistakes") int mistakes) {
+	public int updateRecord(@RequestParam("recordId") String recordId, @RequestParam("endDate") Date endDate, @RequestParam("testTime") int testTime, @RequestParam("mistakes") int mistakes) {
 		System.out.println("Method updateRecord() called");
 		System.out.println(testTime + " " + mistakes);
-		int a = recordService.updateRecord(record, endDate, testTime, mistakes);
+		int a = recordService.updateRecord(recordId, endDate, testTime, mistakes);
 		return a;
 	}
 	
-	//Edits student data in the students database
-	@CrossOrigin(origins = webOrigin)
-	@RequestMapping("/updateStudent")
-	public int updateStudent(@RequestParam("studentId") String studentId, @RequestParam("client") String client, @RequestParam("email") String email, @RequestParam("phone") String phone, @RequestParam("address") String address, @RequestParam("grade") String grade, @RequestParam("gender") String gender, @RequestParam("currentPasses") String currentPasses) {
-		System.out.println("Method updateStudent() called");
-		return studentService.updateStudent(studentId, client, email, phone, address, grade, gender, currentPasses);
-	}
+
 	
 }

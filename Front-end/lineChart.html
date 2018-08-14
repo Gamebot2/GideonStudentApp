@@ -18,6 +18,10 @@
 		<script src = "moment.js"></script>
 		<script src ="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 		<script src ="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-aria.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-messages.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
 		<script src = "app.js"></script>
 		<link rel = "stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 		<link rel = "stylesheet" type = "text/css" href="lineChart.css">
@@ -32,37 +36,53 @@
 			<h1>Progress Chart for {{studentName}}</h1>
 			<br>
 
-			<div class="columnContainer">
-				<!--Allows user to select specific category to graph based on what student has-->
-				<div class="threeColumn">
-				<label for="category">Category</label><br>
-					<select white big id = "category" name = "category" ng-model = "selectedCategory" ng-options = "y for y in categoriesOfStudent" ng-change = "getReps()">
-					</select>
-				</div>
-			
-				<!--Allows user to select month specificatons for the graph up to 5 years ago-->
-				<div class="threeColumn">
-				<label for="months">Time Range</label><br>
-					<div id="timeText">
-						<input white type = "number" id = "months" name = "months" value = "12" ng-model = "months" min = "1" max = "60" required>
-						months ago to
-						<input white type = "number" id = "months" name = "months" value = "12" ng-model = "months2" min = "1" max = "60" required>
-						months ago
+			<form name = "form">
+				<div class="columnContainer">
+					<!--Allows user to select specific category to graph based on what student has-->
+					<div class="threeColumn">
+					<label for="category">Category</label><br>
+						<div class="inputWrapperBig">
+							<select white big id = "category" name = "category" ng-model = "selectedCategory" required ng-options = "y for y in categoriesOfStudent" ng-change = "getReps()"></select>
+							<div class="invalidContainer" ng-class="{'invalid':form.category.$touched && form.category.$invalid}"></div>
+						</div>
+						<span class="errorText" ng-show="form.category.$touched && form.category.$invalid">Category is required.</span>
 					</div>
-				</div>
+				
+					<!--Allows user to select month specificatons for the graph up to 5 years ago-->
+					<div class="threeColumn">
+					<label for="months">Time Range</label><br>
+						<div id="timeText">
+							<div class="inputWrapperBig">
+								<input white type = "number" id = "months" name = "months" value = "12" ng-model = "months" min = "2" max = "60" required>
+								months ago to
+								<input white type = "number" id = "months2" name = "months2" value = "12" ng-model = "months2" min = "1" max = "{{months-1}}" required>
+								months ago
+								<div class="invalidContainer" ng-class="{'invalid':form.months.$touched && form.months2.$touched && (form.months.$invalid || form.months2.$invalid)}"></div>
+							</div>
+							<span class="errorText" ng-show="form.months.$touched && form.months2.$touched && (form.months.$invalid || form.months2.$invalid)">
+								<span ng-show="form.months.$error.required || form.months2.$error.required">Months are required.</span>
+								<span ng-show="form.months.$error.min || form.months.$error.max || form.months2.$error.min || form.months2.$error.max">Month values must be between 1 and 60, and the second value must be earlier than the first.</span>
+							</span>
+						</div>
+					</div>
 
-				<!--Allows user to select which specific repetitions to display-->
-				<div class="threeColumn">
-				<label for="reptitions">Included repetitions</label><br>
-					<select white big id = "repNumbers" name = "repNumbers" ng-model = "selectedRep" ng-options = "x for x in repOptions"></select>
-				</div>
-			</div><br>
+					<!--Allows user to select which specific repetitions to display-->
+					<div class="threeColumn">
+					<label for="reptitions">Included repetitions</label><br>
+						<div class="inputWrapperBig">
+							<select white big id = "repNumbers" name = "repNumbers" ng-model = "selectedRep" required ng-options = "x for x in repOptions"></select>
+							<div class="invalidContainer" ng-class="{'invalid':form.repNumbers.$touched && form.repNumbers.$invalid}"></div>
+						</div>
+						<span class="errorText" ng-show="form.repNumbers.$touched && form.repNumbers.$invalid">Repetitions are required.</span>
+					</div>
+				</div><br>
 
-			<!--Button to generate chart and submit all data-->
-			<button big type="submit" ng-click="validateForm()">Generate Chart</button>
+				<!--Button to generate chart and submit all data-->
+				<button big type="submit" ng-click="generateChart()">Generate Chart</button>
+			</form>
 
 			<!--Error message in case no data is retrieved-->
-			<h6 ng-show="errorMessage" style = "color:red;">Error: No data found</h6>
+			<h6 class="errorText" ng-show="errorMessage">Error: No data found</h6>
 			<br><br>
 
 			<!--HTML element for the generated chart-->
