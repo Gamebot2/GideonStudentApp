@@ -90,6 +90,8 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 	var regen = false;
 	var exampleChart;
 
+	let myChart = document.getElementById('lineChart').getContext('2d');
+
 	//Generates the lineChart based on instructor specifications
 	$scope.generateChart = function() {
 			if ($scope.form.$invalid) // Ensures form is valid before generation
@@ -103,75 +105,100 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 		.then(function(response) {
 			$scope.records = response.data;
 			
-			let getStartDateAt = function(index) { // function that draws a M YYYY date string from a specified record, for use in plotting points
-				var d = new Date($scope.records[index].startDate);
-				var displayed = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
-				return moment(displayed).format('M YYYY');
-			}
-			let getCurrentMonthString = function(subtraction) { // function that returns a M YYYY date string from a certain number of months in the past
-				var currentMonth = moment().subtract(subtraction, 'months');
-				return currentMonth.month() + 1 + " " + currentMonth.year();
-			}
-
-			let myChart = document.getElementById('lineChart').getContext('2d');
-			
-			var labelDatesWithGrades = []; // main container of x axis labels, formatted M YYYY G
-			var labelDates = [];
-			var grades = [];
-			var dates = []; // containers for relevant data from each of the student's records
-			var books = [];
-			var points = [];
-			var newBooks = []; // containers for points and stuff
-			var newBooks2 = []; 			// currently contains an exact copy of the point data previously calculated
-			var newBooks3 = []; 			// currently unused test modification of the data
-
-			//// Extracts the date and book number for each of the student's records ////
-			var a = 0; // Helps display error message if there is no data, couldn't find a better solution for some reason: this value will increase for every existing record
-			for(i = 0; i < $scope.records.length; i++) {
-				if($scope.records[i].startDate != null) {
-					a++;
-
-					dates.push(getStartDateAt(i));
-					books.push($scope.records[i].bookId);
+			let getStartDateAt = function(index) { // function that returns a month/year/floating-point-date object from a specified record, for use in plotting points
+				var d = moment($scope.records[index].startDate.split(" ")[0]);
+				return {
+					month: d.month(),
+					year: d.year(),
+					date: (d.date() - 1) / d.daysInMonth()
 				}
 			}
-			$scope.errorMessage = (a <= 0);
-			if ($scope.errorMessage)
-				return;
-			console.log(dates + " " + books);
+			let getCurrentDate = function(subtraction) { // function that returns a month/year/floating-point-date object from a certain number of months in the past
+				var currentMonth = moment().subtract(subtraction, 'months');
+				return {
+					month: currentMonth.month(),
+					year: currentMonth.year(),
+					date: 0
+				}
+			}
+			let dateCompare = function(date1, date2) { // function that returns the month difference between two month/year/floating-point-date objects
+				return (date1.year - date2.year) * 12 + (date1.month - date2.month) + (date1.date - date2.date);
+			}
 
-			//// Calculates x-axis label data, to be formatted later ////
-			for(j = $scope.months; j >= $scope.months2; j--) {
-				var currentMonthString = getCurrentMonthString(j);
-				labelDates.push(currentMonthString);
+			var highestValueOnAxis = $scope.months - $scope.months2 + 1;
+			var dateAtZero = getCurrentDate($scope.months);
 
-				if(currentMonthString.split(" ")[0] == "8")
+			var greatestBook = 0; // tracks the highest and lowest points on the y-axis, for manual padding
+			var leastBook = 999;
+			
+			var labelDatesWithGrades = []; // main container of x axis labels, labels are objects containing properties "month", "year", and "grade"
+			var labelDates = [];
+			var grades = [];
+			var points = []; // container with points: x is date, y is bookid
+			var points2 = []; 			// currently contains an exact copy of the point data previously calculated
+			var points3 = []; 			// currently unused test modification of the data
+
+			//// Maps the internal linear scale of the x axis (0, 1, 2, 3, ...) with labels containing dates and grades ////
+			for(j = 0; j < highestValueOnAxis; j++) {
+				var currentDate = getCurrentDate($scope.months - j);
+				labelDates.push(currentDate);
+
+				if(currentDate.month == 7) // grade goes up in August = 7
 					currentGradeOffset++;
 				grades.push(currentGradeOffset); // maps an offset value for the grade relating to each month, starting from 0 and increasing until the present
 			}
 			for(var u = 0; u < labelDates.length; u++) {
 				var actualGrade = $scope.currentGrade + grades[u] - currentGradeOffset; // uses the final grade offset and the known current grade to calculate the final grade value for each month
-				labelDatesWithGrades.push(labelDates[u] + " " + actualGrade);
+				labelDatesWithGrades.push({
+					month: labelDates[u].month,
+					year: labelDates[u].year,
+					grade: actualGrade
+				});
 			}
 
-			//// Goes across the x axis and determines what book the student was working on at the start of that month using the dates and book titles of the records ////
-			var recordCounter = 0;
-			for(var k = $scope.months; k >= $scope.months2; k--) {
-				var currentMonthString = getCurrentMonthString(k);
-				newBooks.push(books[recordCounter]);
+			//// Creates a point mapping each record to its respective spot on the x and y axis ////
+			var a = 0; // Helps display error message if there is no data, couldn't find a better solution for some reason: this value will increase for every existing record
+			for(i = 0; i < $scope.records.length; i++) {
+				if($scope.records[i].startDate != null) {
+					a++;
 
-				while (dates[recordCounter + 1] == currentMonthString && recordCounter != $scope.records.length - 1)
-					recordCounter++;
-			}
+					//console.log(dateCompare(getStartDateAt(i), dateAtZero) + ", " + $scope.records[i].bookId);
+					points.push({
+						x: dateCompare(getStartDateAt(i), dateAtZero),
+						y: $scope.records[i].bookId
+					})
 
-			//// Modifications of points ////
-			for(b = 0; b < newBooks.length; b++) {
-				newBooks2[b] = newBooks[b];
-				newBooks3[b] = newBooks[b];
-				if(b == newBooks.length - 1) {
-					newBooks3[b] = "3 - A";
+					if ($scope.records[i].bookId > greatestBook)
+						greatestBook = $scope.records[i].bookId;
+					if ($scope.records[i].bookId < leastBook)
+						leastBook = $scope.records[i].bookId;
 				}
 			}
+			$scope.errorMessage = (a <= 0);
+			if ($scope.errorMessage)
+				return;
+			
+
+			//// Modifications of points ////
+			for(b = 0; b < points.length; b++) {
+				points2[b] = points[b];
+				points3[b] = points[b];
+				if(b == points.length - 1) {
+					points3[b] = "3 - A";
+				}
+			}
+
+			//// Y-LABEL GENERATION ////
+			let labelToBookTitle = function(label) {
+				var s = $scope.allBooks[label-1];
+				if (s != null && s != undefined && s.category == $scope.selectedCategory) {
+					if ($scope.selectedCategory == "Comprehension")
+						return $scope.allBooks[label-1].subcategory + " " + $scope.allBooks[label-1].title;
+					else
+						return $scope.allBooks[label-1].title;
+				}
+			}
+
 
 			//// CHART SPECS ////
 			Chart.defaults.global.defaultFontSize = 18;
@@ -182,25 +209,22 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			exampleChart = new Chart(myChart,{
 				type: 'line',
 				data:{
-					xLabels: labelDatesWithGrades,
-					yLabels: books.reverse(),
 					datasets:[{
 						label: $scope.studentName,
-						data: newBooks2,
+						data: points,
 						backgroundColor: "rgba(255, 0, 0, 0.4)",
 						borderColor: "rgba(255, 0, 0, 0.4)",
 						fill: false,
-						lineTension: 0,
+						cubicInterpolationMode: 'monotone',
 						hitRadius: 30
 					}, {
 						//label: "Testing",
-						//data: newBooks3,
+						//data: points2,
 						backgroundColor: "rgba(0, 0, 255, 0.4)",
 						borderColor: "rgba(0, 0, 255, 0.4)",
 						fill: false,
 						lineTension: 0
-					}	
-					]
+					}]
 				},
 				options: {
 					responsive: true,
@@ -213,34 +237,53 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 						position: 'right'
 					},
 					tooltips: {
-						enabled: false
+						enabled: true,
+						callbacks: {
+							title:function(tooltipItem, data) {
+								return labelToBookTitle(tooltipItem[0].yLabel);
+							},
+							label:function(tooltipItem, data) { // callback function converts x-axis numeral to MM/DD/YYYY formatted string
+								var number = tooltipItem.xLabel;
+								var finalMonth = dateAtZero.month + Math.trunc(number);
+								var finalYear = dateAtZero.year + Math.trunc(finalMonth / 12);
+								finalMonth = finalMonth % 12 + 1;
+
+								var daysInMonth = moment(finalYear + " " + finalMonth, "YYYY MM").daysInMonth();
+								var finalDate = Math.round((number % 1) * daysInMonth) + 1;
+								return "started on " + finalMonth + "/" + finalDate + "/" + finalYear;
+							}
+						}
 					},
 					layout: {
 						padding: {
-							left: 10,
-							bottom: 5
+							top: 10,
+							bottom: 10
 						}
 					},
 					scales: {
 						xAxes: [{
 							id:"xAxis1",
+							type: 'linear',
 							scaleLabel: {
 								display: false,
 								padding: -5
 							},
 							ticks: {
 								dislay: false,
+								stepSize: 1,
 								autoSkip: true,
+								min: 0,
+								max: $scope.months - $scope.months2 + 1,
 								maxRotation: 0,
 								callback:function(label){
-									var month = label.split(" ")[0];
-									var year = label.split(" ")[1];
-									var grade = label.split(" ")[2];
-									return month;
+									var s = labelDatesWithGrades[label];
+									if (s != null && s != undefined)
+										return s.month + 1;
 								}
 							}
 						}, {
 							id: "xAxis2",
+							type: 'linear',
 							gridLines: {
 								display: false,
 								drawBorder: true
@@ -250,15 +293,18 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 								padding: 0
 							},
 							ticks: {
+								stepSize: 1,
 								autoSkip: false,
+								min: 0,
+								max: $scope.months - $scope.months2 + 1,
 								callback:function(label){
-									var month = label.split(" ")[0];
-									var year = label.split(" ")[1];
-									var grade = label.split(" ")[2];
-									if(month == "7") {
-										return year;
-									} else if ( month == "1"){
-										return "|";
+									var s = labelDatesWithGrades[label];
+									if (s != null && s != undefined) {
+										if(s.month == 6) {
+											return s.year;
+										} else if (s.month == 0){
+											return "|";
+										}
 									}
 								},
 								maxRotation: 0,
@@ -267,6 +313,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 
 						}, {
 							id: "xAxis3",
+							type: 'linear',
 							gridLines: {
 								display: false,
 								drawBorder: true,
@@ -276,27 +323,30 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 								display: false
 							},
 							ticks: {
+								stepSize: 1,
 								autoSkip: false,
+								min: 0,
+								max: $scope.months - $scope.months2 + 1,
 								callback:function(label){
-									var month = label.split(" ")[0];
-									var year = label.split(" ")[1];
-									var grade = parseInt(label.split(" ")[2]);
-									if(month == "2") {
-										if(grade == 0) {
-											return "Kindergarten";
-										} else if(grade == 1) {
-											return "1st Grade";
-										} else if(grade == 2) {
-											return "2nd Grade";
-										} else if(grade == 3) {
-											return "3rd Grade";
-										} else if(grade <= -1) {
-											return "Pre-K";
-										} else {
-											return grade + "th Grade";
+									var s = labelDatesWithGrades[label];
+									if (s != null && s != undefined) {
+										if(s.month == 1) {
+											if(s.grade == 0) {
+												return "Kindergarten";
+											} else if(s.grade == 1) {
+												return "1st Grade";
+											} else if(s.grade == 2) {
+												return "2nd Grade";
+											} else if(s.grade == 3) {
+												return "3rd Grade";
+											} else if(s.grade <= -1) {
+												return "Pre-K";
+											} else {
+												return grade + "th Grade";
+											}
+										} else if (s.month == 7) {
+											return "|";
 										}
-									} else if (month == "8") {
-										return "|";
 									}
 								},
 								maxRotation: 0
@@ -313,11 +363,10 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 							ticks: {
 								stepSize: 1,
 								autoSkip: false,
+								min: leastBook - 1,
+								max: greatestBook + 1,
 								callback:function(label) {
-									if ($scope.selectedCategory == "Comprehension")
-										return $scope.allBooks[label-1].subcategory + " " + $scope.allBooks[label-1].title;
-									else
-										return $scope.allBooks[label-1].title;
+									return labelToBookTitle(label);
 								}
 							}
 						}]
