@@ -95,22 +95,13 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			if ($scope.form.$invalid) // Ensures form is valid before generation
 				return;
 
-			var logo = document.getElementById("logoDiv");
-			if (logo.style.display === "none") {
-   				logo.style.display = "block";
-			} else {
-    			logo.style.display = "none";
-			}
-
 			var selectedStudentId = $window.localStorage.getItem(0);
-			var b = document.getElementById("months").value;
 			var currentGradeOffset = 0;
 
 		//// GIANT CHART GENERATION METHOD ////
-		$http.get("http://localhost:8080/recordsById?StudentId=" + selectedStudentId + "&Category=" + $scope.selectedCategory + "&Months=" + b + "&Reps=" + $scope.selectedRep + "&Until=" + $scope.months2)
+		$http.get("http://localhost:8080/recordsById?StudentId=" + selectedStudentId + "&Category=" + $scope.selectedCategory + "&Months=" + $scope.months + "&Reps=" + $scope.selectedRep + "&Until=" + $scope.months2)
 		.then(function(response) {
 			$scope.records = response.data;
-			$scope.first = $scope.records[0];
 			
 			let getStartDateAt = function(index) { // function that draws a M YYYY date string from a specified record, for use in plotting points
 				var d = new Date($scope.records[index].startDate);
@@ -127,11 +118,27 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			var labelDatesWithGrades = []; // main container of x axis labels, formatted M YYYY G
 			var labelDates = [];
 			var grades = [];
-			
 			var dates = []; // containers for relevant data from each of the student's records
 			var books = [];
+			var points = [];
+			var newBooks = []; // containers for points and stuff
+			var newBooks2 = []; 			// currently contains an exact copy of the point data previously calculated
+			var newBooks3 = []; 			// currently unused test modification of the data
 
-			var now = moment().date() + " " + moment().year();
+			//// Extracts the date and book number for each of the student's records ////
+			var a = 0; // Helps display error message if there is no data, couldn't find a better solution for some reason: this value will increase for every existing record
+			for(i = 0; i < $scope.records.length; i++) {
+				if($scope.records[i].startDate != null) {
+					a++;
+
+					dates.push(getStartDateAt(i));
+					books.push($scope.records[i].bookId);
+				}
+			}
+			$scope.errorMessage = (a <= 0);
+			if ($scope.errorMessage)
+				return;
+			console.log(dates + " " + books);
 
 			//// Calculates x-axis label data, to be formatted later ////
 			for(j = $scope.months; j >= $scope.months2; j--) {
@@ -147,22 +154,8 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 				labelDatesWithGrades.push(labelDates[u] + " " + actualGrade);
 			}
 
-			//// Extracts the date and book number for each of the student's records ////
-			var a = 0; // Helps display error message if there is no data, couldn't find a better solution for some reason: this value will increase for every existing record
-			for(i = 0; i < $scope.records.length; i++) {
-				if($scope.records[i].startDate != null) {
-					a++;
-
-					dates.push(getStartDateAt(i));
-					books.push($scope.records[i].bookId);
-				}
-			}
-			$scope.errorMessage = (a <= 0);
-			console.log(dates + " " + books);
-
 			//// Goes across the x axis and determines what book the student was working on at the start of that month using the dates and book titles of the records ////
 			var recordCounter = 0;
-			var newBooks = [];
 			for(var k = $scope.months; k >= $scope.months2; k--) {
 				var currentMonthString = getCurrentMonthString(k);
 				newBooks.push(books[recordCounter]);
@@ -171,8 +164,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 					recordCounter++;
 			}
 
-			var newBooks2 = []; // currently contains an exact copy of the point data previously calculated
-			var newBooks3 = []; // currently unused test modification of the data
+			//// Modifications of points ////
 			for(b = 0; b < newBooks.length; b++) {
 				newBooks2[b] = newBooks[b];
 				newBooks3[b] = newBooks[b];
@@ -193,7 +185,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 					xLabels: labelDatesWithGrades,
 					yLabels: books.reverse(),
 					datasets:[{
-						label: $scope.first.name,
+						label: $scope.studentName,
 						data: newBooks2,
 						backgroundColor: "rgba(255, 0, 0, 0.4)",
 						borderColor: "rgba(255, 0, 0, 0.4)",
@@ -214,7 +206,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 					responsive: true,
 					title: {
 						display: true,
-						text: $scope.first.name,
+						text: $scope.studentName,
 						fontSize: 25
 					},
 					legend: {
@@ -334,6 +326,9 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			});
 
 			regen = true;
+
+			var logo = document.getElementById("logoDiv");
+			logo.style.display = "block";
 		});	
 	};
 
@@ -343,7 +338,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 /*******************\
 * INSERTRECORD.HTML *
 \*******************/
-app.controller('insertCtrl', function($scope, $http){
+app.controller('insertCtrl', function($scope, $http, $window){
 
 	//Returns a list of all students for easy name selection	
 	$http.get("http://localhost:8080/students")
@@ -391,8 +386,11 @@ app.controller('insertCtrl', function($scope, $http){
 	//Creates JSON for the record based on form data
 	$scope.createRecord = function() {
 		if ($scope.form.$valid) {
+			$scope.formStatus = 2;
+			$scope.formStatusText = "Processing...";
+
 			var newRecordDetails = JSON.stringify({
-				id: $scope.client,
+				id: $scope.client.id,
 				category: $scope.selectedCategory,
 				subcategory: $scope.selectedSubCategory,
 				title: $scope.selectedTitle,
@@ -411,8 +409,18 @@ app.controller('insertCtrl', function($scope, $http){
 				},
 				data:newRecordDetails
 			}).then(function(response) {
-				alert(response.data);
+				if (response.data == 0) {
+					$scope.formStatus = 1;
+					$scope.formStatusText = "Successfully added record for " + $scope.client.name;
+				} else {
+					$scope.formStatus = 0;
+					$scope.formStatusText = "Error";
+				}
 			});
+		}
+		else {
+			$scope.formStatus = 0;
+			$scope.formStatusText = "Invalid Form";
 		}
 	}
 });
@@ -421,7 +429,7 @@ app.controller('insertCtrl', function($scope, $http){
 /*******************\
 * UPDATERECORD.HTML *
 \*******************/		
-app.controller('updateCtrl', function($scope, $http){
+app.controller('updateCtrl', function($scope, $http, $window){
 
 	//Returns all student names for easy selection
 	$http.get("http://localhost:8080/students")
@@ -452,18 +460,31 @@ app.controller('updateCtrl', function($scope, $http){
 
 			var displayRecord = $scope.records[i].name + ", started book " + $scope.records[i].bookTitle + " on " + formattedDate + " | RecordId: " + $scope.records[i].recordId;
 
-			$scope.displayRecords.push({ id: $scope.records[i].recordId, date: startDate, display: displayRecord }); // "display" for the shown selections, everything else is actual data
+			$scope.displayRecords.push({ name: $scope.records[i].name, id: $scope.records[i].recordId, date: startDate, display: displayRecord }); // "display" for the shown selections, everything else is actual data
 		}
 	});
 
 	//Updates an incomplete record based on instructor data
 	$scope.updateRecord = function() {
 		if ($scope.form.$valid) {
+			$scope.formStatus = 2;
+			$scope.formStatusText = "Processing...";
+
 			console.log($scope.endDate);
 			$http.get("http://localhost:8080/updateRecord?recordId=" + $scope.selectedRecord.id + "&endDate=" + $scope.endDate + "&testTime=" + $scope.testTime + "&mistakes=" + $scope.mistakes)
 			.then(function(response) {
-				window.location.href = "StudentList.html"
+				if (response.data == 0) {
+					$scope.formStatus = 1;
+					$scope.formStatusText = "Successfully updated record for " + $scope.selectedRecord.name;
+				} else {
+					$scope.formStatus = 0;
+					$scope.formStatusText = "Error";
+				}
 			});	
+		}
+		else {
+			$scope.formStatus = 0;
+			$scope.formStatusText = "Invalid Form";
 		}
 	}
 });
@@ -472,11 +493,14 @@ app.controller('updateCtrl', function($scope, $http){
 /********************\
 * INSERTSTUDENT.HTML *
 \********************/
-app.controller('insertStudentCtrl', function($scope, $http) {
+app.controller('insertStudentCtrl', function($scope, $http, $window) {
 
 	//Creates JSON for the student based on form data
 	$scope.createStudent = function() {
 		if ($scope.form.$valid){
+			$scope.formStatus = 2;
+			$scope.formStatusText = "Processing...";
+
 			var newStudentDetails = JSON.stringify({
 				client: $scope.Client,
 				grade: $scope.Grade,
@@ -492,8 +516,18 @@ app.controller('insertStudentCtrl', function($scope, $http) {
 				},
 				data:newStudentDetails
 			}).then(function(response) {
-				alert(response.data);
+				if (response.data == 0) {
+					$scope.formStatus = 1;
+					$scope.formStatusText = "Successfully added " + $scope.Client;
+				} else {
+					$scope.formStatus = 0;
+					$scope.formStatusText = "Error";
+				}
 			});
+		}
+		else {
+			$scope.formStatus = 0;
+			$scope.formStatusText = "Invalid Form";
 		}
 	}
 });
@@ -518,9 +552,17 @@ app.controller('editStudentCtrl', function($scope, $http, $window) {
 
 	$scope.updateStudent = function() {
 		if ($scope.form.$valid) {
+			$scope.formStatus = 2;
+			$scope.formStatusText = "Processing...";
+
 			$http.get("http://localhost:8080/updateStudent?studentId=" + $scope.Id + "&client=" + $scope.Client + "&email=" + $scope.Email + "&phone=" + $scope.Phone + "&address=" + $scope.Address + "&grade=" + $scope.Grade + "&gender=" + $scope.Gender + "&currentPasses=" + $scope.CurrentPasses)
 			.then(function(response) {
-				window.location.href = "StudentList.html"
+				if (response.data == 0) {
+					window.location.href="StudentList.html";
+				} else {
+					$scope.formStatus = 0;
+					$scope.formStatusText = "Error";
+				}
 			});
 		}
 	}

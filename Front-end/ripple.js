@@ -1,8 +1,7 @@
 var buttons = document.getElementsByTagName('button');
 
-
 setTimeout(function() {	// for some reason, getElementsByTagName takes absolutely forever to load, so this is a manual timeout to wait for all the buttons to come in
-	console.log(buttons.length);
+	console.log("Number of buttons detected: " + buttons.length);
 	for (var b = 0; b < buttons.length; b++) {
 		buttons[b].onmousedown = function(e) {
 			var button = e.srcElement;
@@ -20,5 +19,5 @@ setTimeout(function() {	// for some reason, getElementsByTagName takes absolutel
 			}, 1000);
 		}
 	}
-}, 500);
+}, 1000);
 

@@ -90,6 +90,8 @@
 
 				<button big ng-click = "updateStudent()">Submit</button>
 			</form>
+			<br><br>
+			<span ng-class="{'errorText':formStatus == 0, 'successText':formStatus == 1}">{{formStatusText}}</span>
 		</div>
 	</body>
 </html>

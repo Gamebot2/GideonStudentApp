@@ -28,79 +28,81 @@
 	</head>
 	<body>
 		<div class = "exterior" ng-app = "gideonApp" ng-controller = "insertCtrl">
-			<h1>Insert Record</h1>
-			<!--Form used for adding a new record for an existing student into the database-->
-		<form name = "form">
-			<!--Displays list of all current students upon selection-->
-			<label for = "client">Filter By Name: </label>
-				<input black id = "textFilter" name = "textFilter" type = "text" ng-model="clientFilter">
-				<div class="inputWrapperBig">
-					<select white big id="clientSelect" name = "client" ng-model = "client" required ng-options = "v.id as v.name for v in names | filter: {name: clientFilter}"></select>
-					<div class="invalidContainer" ng-class="{'invalid':form.client.$touched && form.client.$invalid}"></div>
-				</div>
-				<span class="errorText" ng-show="form.client.$touched && form.client.$invalid">Name is required.</span>
-          	<br><br>
+				<h1>Insert Record</h1>
+				<!--Form used for adding a new record for an existing student into the database-->
+			<form name = "form">
+				<!--Displays list of all current students upon selection-->
+				<label for = "client">Filter By Name: </label>
+					<input black id = "textFilter" name = "textFilter" type = "text" ng-model="clientFilter">
+					<div class="inputWrapperBig">
+						<select white big id="clientSelect" name = "client" ng-model = "client" required ng-options = "v as v.name for v in names | filter: {name: clientFilter}"></select>
+						<div class="invalidContainer" ng-class="{'invalid':form.client.$touched && form.client.$invalid}"></div>
+					</div>
+					<span class="errorText" ng-show="form.client.$touched && form.client.$invalid">Name is required.</span>
+	          	<br><br>
 
-  			<!--Displays all possible book categories-->
-			<label for = "category">Book Category</label><br>
-				<div class="inputWrapperBig">
-					<select white big id = "category" name = "category" ng-model = "selectedCategory" ng-options = "x for x in categories" ng-change = "getSubcategories()" required>
-						<option value = "" selected disabled hidden>Choose category</option>
-					</select>
-					<div class="invalidContainer" ng-class="{'invalid':form.category.$touched && form.category.$invalid}"></div>
-				</div>
-				<span class="errorText" ng-show="form.category.$touched && form.category.$invalid">Category is required.</span>
-			<br><br>
+	  			<!--Displays all possible book categories-->
+				<label for = "category">Book Category</label><br>
+					<div class="inputWrapperBig">
+						<select white big id = "category" name = "category" ng-model = "selectedCategory" ng-options = "x for x in categories" ng-change = "getSubcategories()" required>
+							<option value = "" selected disabled hidden>Choose category</option>
+						</select>
+						<div class="invalidContainer" ng-class="{'invalid':form.category.$touched && form.category.$invalid}"></div>
+					</div>
+					<span class="errorText" ng-show="form.category.$touched && form.category.$invalid">Category is required.</span>
+				<br><br>
 
-			<!--Displays all subcategories for a selected category-->
-			<label for = "subCategory">Book Sub-Category</label><br>
-				<div class="inputWrapperBig">
-					<select white big id = "subCategory" name = "subcategory" ng-model = "selectedSubCategory" ng-options = "y for y in subcategories" ng-change = "getTitles()" required>
-						<option value = "">Choose subcategory</option>
-					</select>
-					<div class="invalidContainer" ng-class="{'invalid':form.subcategory.$touched && form.subcategory.$invalid}"></div>
-				</div>
-				<span class="errorText" ng-show="form.subcategory.$touched && form.subcategory.$invalid">Subcategory is required.</span>
-			<br><br>
+				<!--Displays all subcategories for a selected category-->
+				<label for = "subCategory">Book Sub-Category</label><br>
+					<div class="inputWrapperBig">
+						<select white big id = "subCategory" name = "subcategory" ng-model = "selectedSubCategory" ng-options = "y for y in subcategories" ng-change = "getTitles()" required>
+							<option value = "">Choose subcategory</option>
+						</select>
+						<div class="invalidContainer" ng-class="{'invalid':form.subcategory.$touched && form.subcategory.$invalid}"></div>
+					</div>
+					<span class="errorText" ng-show="form.subcategory.$touched && form.subcategory.$invalid">Subcategory is required.</span>
+				<br><br>
 
-			<!--Displays all book titles for a given subcategory-->
-			<label for = "title">Book Title</label><br>
-				<div class="inputWrapperBig">
-					<select white big id = "title" name = "title" ng-model = "selectedTitle" ng-options = "z for z in titles" required>
-						<option value = "">Choose title</option>
-					</select>
-					<div class="invalidContainer" ng-class="{'invalid':form.title.$touched && form.title.$invalid}"></div>
-				</div>
-				<span class="errorText" ng-show="form.title.$touched && form.title.$invalid">Book title is required.</span>
-			<br><br>
+				<!--Displays all book titles for a given subcategory-->
+				<label for = "title">Book Title</label><br>
+					<div class="inputWrapperBig">
+						<select white big id = "title" name = "title" ng-model = "selectedTitle" ng-options = "z for z in titles" required>
+							<option value = "">Choose title</option>
+						</select>
+						<div class="invalidContainer" ng-class="{'invalid':form.title.$touched && form.title.$invalid}"></div>
+					</div>
+					<span class="errorText" ng-show="form.title.$touched && form.title.$invalid">Book title is required.</span>
+				<br><br>
 
-			<!--Simple datePicker for instructors to enter the startDate-->
-			<label for = "dateSelect">Start Date</label><br>
-				<div class="inputWrapperBig">
-					<input white big type = "date" name = "startDate" id ="dateSelect" ng-model = "startDate" required>
-					<div class="invalidContainer" ng-class="{'invalid':form.startDate.$touched && form.startDate.$invalid}"></div>
-				</div>
-				<span class="errorText" ng-show="form.startDate.$touched && form.startDate.$invalid">
-					<span ng-show="form.startDate.$error.required">Start date is required.</span>
-					<span ng-show="form.startDate.$error.date">This date is invalid.</span>
-				</span>
-			<br><br>
+				<!--Simple datePicker for instructors to enter the startDate-->
+				<label for = "dateSelect">Start Date</label><br>
+					<div class="inputWrapperBig">
+						<input white big type = "date" name = "startDate" id ="dateSelect" ng-model = "startDate" required>
+						<div class="invalidContainer" ng-class="{'invalid':form.startDate.$touched && form.startDate.$invalid}"></div>
+					</div>
+					<span class="errorText" ng-show="form.startDate.$touched && form.startDate.$invalid">
+						<span ng-show="form.startDate.$error.required">Start date is required.</span>
+						<span ng-show="form.startDate.$error.date">This date is invalid.</span>
+					</span>
+				<br><br>
 
-			<!--Simple number picker for instructors to enter the repetition number-->
-			<label for = "reps" id = "reps">Repetition</label>
-				<div class="inputWrapper">
-					<input white type = "number" name = "reps" min = "1" max = "5" ng-model = "rep" required>
-					<div class="invalidContainer" ng-class="{'invalid':form.reps.$touched && form.reps.$invalid}"></div>
-				</div>
-				<span class="errorText" ng-show="form.reps.$touched && form.reps.$invalid">
-					<span ng-show="form.reps.$error.required">Repetition number is required.</span>
-					<span ng-show="form.reps.$error.min || form.reps.$error.max">Repetition number must be between 1 and 5.</span>
-				</span>
+				<!--Simple number picker for instructors to enter the repetition number-->
+				<label for = "reps" id = "reps">Repetition</label>
+					<div class="inputWrapper">
+						<input white type = "number" name = "reps" min = "1" max = "5" ng-model = "rep" required>
+						<div class="invalidContainer" ng-class="{'invalid':form.reps.$touched && form.reps.$invalid}"></div>
+					</div>
+					<span class="errorText" ng-show="form.reps.$touched && form.reps.$invalid">
+						<span ng-show="form.reps.$error.required">Repetition number is required.</span>
+						<span ng-show="form.reps.$error.min || form.reps.$error.max">Repetition number must be between 1 and 5.</span>
+					</span>
+				<br><br>
+				
+				<!--Submit button: runs the insertTask function-->
+				<button big ng-click = "createRecord()">Submit</button>
+			</form>
 			<br><br>
-			
-			<!--Submit button: runs the insertTask function-->
-			<button big ng-click = "createRecord()">Submit</button>
-		</form>
-	</div>
+			<span ng-class="{'errorText':formStatus == 0, 'successText':formStatus == 1}">{{formStatusText}}</span>
+		</div>
 	</body>
 </html>

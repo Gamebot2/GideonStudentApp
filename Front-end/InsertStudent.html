@@ -81,6 +81,8 @@
 				<!--Submit button: runs the insertStudent function-->
 				<button big ng-click = "createStudent()">Submit</button>
 			</form>
+			<br><br>
+			<span ng-class="{'errorText':formStatus == 0, 'successText':formStatus == 1}">{{formStatusText}}</span>
 		</div>
 	</body>
 </html>

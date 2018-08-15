@@ -82,6 +82,10 @@ input[white]:focus, select[white]:focus {
 	color: red;
 	animation: none;
 }
+.successText {
+	color: blue;
+	animation: none;
+}
 
 
 
