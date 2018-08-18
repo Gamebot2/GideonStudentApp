@@ -10,6 +10,10 @@ body {
 	height: 2000px;
 }
 
+h1 {
+	margin-bottom: 0px;
+}
+
 #lineChart {
 	
 }
@@ -21,12 +25,36 @@ body {
 }
 
 #logo {
-	margin-left: 3%;
-	margin-top: 1%;
-	margin-bottom: 0;
 	animation-duration: 0s;
 }
 
 #logoDiv {
 	display: none;
+}
+
+
+#invisibleButton {
+	display: inline-block;
+	color: white;
+	background: none;
+	outline: none;
+	box-shadow: none;
+	padding: 0px 0px;
+	margin: 0px 0px;
+}
+
+
+#expandableContainer {
+	overflow-y: hidden;
+	word-wrap: break-word;
+	padding: 0px 10px;
+	transition: all cubic-bezier(0,0,0,1) 0.5s;
+}
+.collapsedContent {
+	height: 0px;
+	margin: 0px 10px;
+}
+.expandedContent {
+	height: 220px;
+	margin: 15px 10px;
 }

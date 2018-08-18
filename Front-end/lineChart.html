@@ -37,6 +37,7 @@
 			<h1>Progress Chart for {{studentName}}</h1>
 			<br>
 
+			<div id = "expandableContainer" ng-class = "{'collapsedContent':!expanded, 'expandedContent':expanded}">
 			<form name = "form">
 				<div class="columnContainer">
 					<!--Allows user to select specific category to graph based on what student has-->
@@ -54,15 +55,15 @@
 					<label for="months">Time Range</label><br>
 						<div id="timeText">
 							<div class="inputWrapperBig">
-								<input white type = "number" id = "months" name = "months" value = "12" ng-model = "months" min = "2" max = "60" required>
+								<input white type = "number" id = "months" name = "months" value = "12" ng-model = "months" min = "1" max = "60" required>
 								months ago to
-								<input white type = "number" id = "months2" name = "months2" value = "12" ng-model = "months2" min = "1" max = "{{months-1}}" required>
+								<input white type = "number" id = "months2" name = "months2" value = "12" ng-model = "months2" min = "0" max = "{{months-1}}" required>
 								months ago
 								<div class="invalidContainer" ng-class="{'invalid':form.months.$touched && form.months2.$touched && (form.months.$invalid || form.months2.$invalid)}"></div>
 							</div>
 							<span class="errorText" ng-show="form.months.$touched && form.months2.$touched && (form.months.$invalid || form.months2.$invalid)">
 								<span ng-show="form.months.$error.required || form.months2.$error.required">Months are required.</span>
-								<span ng-show="form.months.$error.min || form.months.$error.max || form.months2.$error.min || form.months2.$error.max">Month values must be between 1 and 60, and the second value must be earlier than the first.</span>
+								<span ng-show="form.months.$error.min || form.months.$error.max || form.months2.$error.min || form.months2.$error.max">Month values must be between 0 and 60, and the second value must be earlier than the first.</span>
 							</span>
 						</div>
 					</div>
@@ -81,6 +82,7 @@
 				<!--Button to generate chart and submit all data-->
 				<button big type="submit" ng-click="generateChart()">Generate Chart</button>
 			</form>
+			</div>
 
 			<!--Error message in case no data is retrieved-->
 			<h6 class="errorText" ng-show="errorMessage">Error: No data found</h6>
@@ -90,6 +92,8 @@
 			<div id = "logoDiv">
 				<img id = "logo" src = "img/gideon-logo.jpg" height = "60" width = "160" ng-hide="errorMessage">
 			</div>
+			<button id = "invisibleButton" ng-click="expanded=!expanded">(show/hide form)</button>
+			
 			<canvas id = "lineChart" ng-hide="errorMessage"></canvas>
 		</div>
 	</body>

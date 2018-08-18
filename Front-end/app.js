@@ -56,6 +56,8 @@ app.controller('studentCtrl', function($scope, $http, $window) {
 * LINECHART.HTML *
 \****************/
 app.controller('chartCtrl', function($scope, $http, $window) {
+	$scope.expanded = true;
+
 	var logo = document.getElementById("logoDiv");
 	logo.style.display = "none";
 	$scope.studentName = $window.localStorage.getItem(1);
@@ -135,7 +137,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			var labelDates = [];
 			var grades = [];
 			var points = []; // container with points: x is date, y is bookid
-			var points2 = []; 			// currently contains an exact copy of the point data previously calculated
+			var points2 = []; 			// currently contains the best fit line
 			var points3 = []; 			// currently unused test modification of the data
 
 			//// Maps the internal linear scale of the x axis (0, 1, 2, 3, ...) with labels containing dates and grades ////
@@ -179,23 +181,58 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 				return;
 			
 
-			//// Modifications of points ////
+			//// BEST FIT LINE: least squares method ////
+			var metrics = {xmean: 0, ymean: 0, diff: 0, squares: 0};
 			for(b = 0; b < points.length; b++) {
-				points2[b] = points[b];
-				points3[b] = points[b];
-				if(b == points.length - 1) {
-					points3[b] = "3 - A";
-				}
+				metrics.xmean += points[b].x;
+				metrics.ymean += points[b].y;
 			}
+			metrics.xmean /= points.length;
+			metrics.ymean /= points.length;
+			for(b = 0; b < points.length; b++) {
+				metrics.diff += (points[b].x - metrics.xmean) * (points[b].y - metrics.ymean);
+				metrics.squares += (points[b].x - metrics.xmean) * (points[b].x - metrics.xmean);
+			}
+			metrics.slope = metrics.diff / metrics.squares;
+			points2.push({
+				x: 0,
+				y: metrics.slope * (0 - metrics.xmean) + metrics.ymean
+			});
+			points2.push({
+				x: highestValueOnAxis,
+				y: metrics.slope * (highestValueOnAxis - metrics.xmean) + metrics.ymean
+			});
 
 			//// Y-LABEL GENERATION ////
-			let labelToBookTitle = function(label) {
+			let labelToBookTitle = function(label, withLineBreaks) {
 				var s = $scope.allBooks[label-1];
 				if (s != null && s != undefined && s.category == $scope.selectedCategory) {
+					var fullLabel;
 					if ($scope.selectedCategory == "Comprehension")
-						return $scope.allBooks[label-1].subcategory + " " + $scope.allBooks[label-1].title;
+						fullLabel = $scope.allBooks[label-1].subcategory + " " + $scope.allBooks[label-1].title;
 					else
-						return $scope.allBooks[label-1].title;
+						fullLabel = $scope.allBooks[label-1].title;
+
+					if (withLineBreaks) {
+						var splitLabel = fullLabel.split(" ");
+
+						fullLabel = [];
+						fullLabel.push("");
+						var index = 0;
+						for (var i = 0; i < splitLabel.length; i++) {
+							if (fullLabel[index].length >= 10) {
+								index++;
+								fullLabel.push("");
+							} else {
+								fullLabel[index] += " ";
+							}
+							fullLabel[index] += splitLabel[i];
+						}				
+
+						console.log(fullLabel);
+					}
+
+					return fullLabel;
 				}
 			}
 
@@ -218,29 +255,29 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 						cubicInterpolationMode: 'monotone',
 						hitRadius: 30
 					}, {
-						//label: "Testing",
-						//data: points2,
+						label: "Best Fit Line",
+						data: points2,
 						backgroundColor: "rgba(0, 0, 255, 0.4)",
 						borderColor: "rgba(0, 0, 255, 0.4)",
 						fill: false,
+						borderDash: [5],
 						lineTension: 0
 					}]
 				},
 				options: {
 					responsive: true,
 					title: {
-						display: true,
-						text: $scope.studentName,
-						fontSize: 25
+						display: false
 					},
 					legend: {
-						position: 'right'
+						position: 'top'
 					},
 					tooltips: {
 						enabled: true,
 						callbacks: {
 							title:function(tooltipItem, data) {
-								return labelToBookTitle(tooltipItem[0].yLabel);
+								console.log(data);
+								return labelToBookTitle(tooltipItem[0].yLabel, false);
 							},
 							label:function(tooltipItem, data) { // callback function converts x-axis numeral to MM/DD/YYYY formatted string
 								var number = tooltipItem.xLabel;
@@ -366,7 +403,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 								min: leastBook - 1,
 								max: greatestBook + 1,
 								callback:function(label) {
-									return labelToBookTitle(label);
+									return labelToBookTitle(label, true);
 								}
 							}
 						}]
@@ -377,7 +414,9 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			regen = true;
 
 			var logo = document.getElementById("logoDiv");
-			logo.style.display = "block";
+			logo.style.display = "inline-block";
+
+			$scope.expanded = false;
 		});	
 	};
 

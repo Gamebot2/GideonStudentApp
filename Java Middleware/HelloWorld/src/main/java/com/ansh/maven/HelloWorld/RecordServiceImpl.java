@@ -31,18 +31,25 @@ public class RecordServiceImpl implements RecordService{
 		// TODO Auto-generated method stub
 		List<Record> records = recordDao.getRecordsById(RecordId, category, whichReps);
 		List<Record> returnRecords = new ArrayList<Record>();
-		Date monthsAgo = new DateTime().minusMonths(months).toDate();
-		Date untilDate = new DateTime().minusMonths(until).toDate();
+		
+		DateTime dt = new DateTime().withTimeAtStartOfDay().withDayOfMonth(1);
+		Date monthsAgo = dt.minusMonths(months).toDate();
+		Date untilDate = dt.minusMonths(until - 1).toDate(); // subtracting 1 from until in order to display the entire most recent month, rather than just the beginning of it
+		System.out.println(monthsAgo.toString() + " , " + untilDate.toString());
 		
 		boolean firstRecordFlag = true;
 		for(int r = 0; r < records.size(); r++) {
 			Record currentRecord = records.get(r);
-			if(currentRecord.getStartDate().compareTo(monthsAgo) > 0 && currentRecord.getStartDate().compareTo(untilDate) < 0) {
+			if(currentRecord.getStartDate().compareTo(monthsAgo) > 0) {
 				if (firstRecordFlag && r > 0) {
 					returnRecords.add(records.get(r-1));
 				}
 				returnRecords.add(currentRecord);
 				firstRecordFlag = false;
+				
+				if (currentRecord.getStartDate().compareTo(untilDate) > 0) {
+					break;
+				}
 			}
 		}
 		
