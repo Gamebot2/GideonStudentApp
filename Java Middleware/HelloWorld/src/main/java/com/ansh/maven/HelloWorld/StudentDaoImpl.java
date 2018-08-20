@@ -52,8 +52,8 @@ public class StudentDaoImpl implements StudentDao {
 	@Override
 	public List<String> getCategories(int StudentId) {
 		// TODO Auto-generated method stub
-		String sql = "SELECT DISTINCT book.category FROM records INNER JOIN students ON records.StudentId = students.StudentId INNER JOIN book ON records.BookId = book.book_id WHERE students.StudentId = " + StudentId + ";";
-		return this.jdbcTemplate.queryForList(sql, String.class);
+		String sql = "SELECT DISTINCT book.category FROM records INNER JOIN students ON records.StudentId = students.StudentId INNER JOIN book ON records.BookId = book.book_id WHERE students.StudentId = ?";
+		return this.jdbcTemplate.queryForList(sql, String.class, StudentId + ";");
 	
 	}
 
@@ -61,8 +61,8 @@ public class StudentDaoImpl implements StudentDao {
 	public int addStudent(String Client, String Grade, String Gender) {
 		// TODO Auto-generated method stub
 		StudentMaster student1 = new StudentMaster(Client, Grade, Gender);
-		String sql = "INSERT INTO students (Client, FirstName, LastName, Grade, Gender) VALUES (\"" + Client + "\", \"" + student1.getFirstName() + "\", \"" + student1.getLastName() + "\", \"" + student1.getGrade() + "\", \"" + student1.getGender() + "\");";
-		this.jdbcTemplate.update(sql);
+		String sql = "INSERT INTO students (Client, FirstName, LastName, Grade, Gender) VALUES (?, ?, ?, ?, ?);";
+		this.jdbcTemplate.update(sql, Client, student1.getFirstName(), student1.getLastName(), student1.getGrade(), student1.getGender());
 		//System.out.println(sql);
 		return 0;
 	}
@@ -80,9 +80,9 @@ public class StudentDaoImpl implements StudentDao {
 		if (currentPasses == null)
 			currentPasses = "";
 		
-		String updateSql = "UPDATE students SET Client = '" + client + "', Email = '" + email + "', Phone = '" + phone + "', Address = '" + address + "', Grade = '" + grade + "', Gender = '" + gender + "', CurrentPasses = '" + currentPasses + "' WHERE StudentId = " + studentId;
+		String updateSql = "UPDATE students SET Client = ?, Email = ?, Phone = ?, Address = ?, Grade = ?, Gender = ?, CurrentPasses = ? WHERE StudentId = ?";
 		System.out.println(updateSql);
-		this.jdbcTemplate.update(updateSql);
+		this.jdbcTemplate.update(updateSql, client, email, phone, address, grade, gender, currentPasses, studentId);
 		return 0;
 	}
 }

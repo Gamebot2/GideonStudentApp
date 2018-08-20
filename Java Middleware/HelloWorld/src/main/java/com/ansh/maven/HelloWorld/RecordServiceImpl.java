@@ -25,7 +25,7 @@ public class RecordServiceImpl implements RecordService{
 		return recordDao.getAllRecords();
 	}
 	
-	//Gets all records for a certain student, including time and repetition constraints (NOTE: includes one record preceeding the specified timeframe, used for graphing)
+	//Gets records to include in a progress chart for a certain student, given a certain repetition number and a certain timeframe to plot
 	@Override
 	public List<Record> getRecordsById(int RecordId, String category, int months, String whichReps, int until) {
 		// TODO Auto-generated method stub
@@ -42,12 +42,12 @@ public class RecordServiceImpl implements RecordService{
 			Record currentRecord = records.get(r);
 			if(currentRecord.getStartDate().compareTo(monthsAgo) > 0) {
 				if (firstRecordFlag && r > 0) {
-					returnRecords.add(records.get(r-1));
+					returnRecords.add(records.get(r-1)); // adds one record before the timeframe, if possible
 				}
 				returnRecords.add(currentRecord);
 				firstRecordFlag = false;
 				
-				if (currentRecord.getStartDate().compareTo(untilDate) > 0) {
+				if (currentRecord.getStartDate().compareTo(untilDate) > 0) { // adds one record after the timeframe, if possible
 					break;
 				}
 			}
@@ -63,13 +63,13 @@ public class RecordServiceImpl implements RecordService{
 	}
 
 	@Override
-	public int addRecord(String id, String category, String subcategory, String title, Date startDate, int rep) {
+	public int addRecord(int id, String category, String subcategory, String title, Date startDate, int rep) {
 		// TODO Auto-generated method stub
 		return recordDao.addRecord(id, category, subcategory, title, startDate, rep);
 	}
 
 	@Override
-	public int updateRecord(String recordId, Date endDate, int testTime, int minutes) {
+	public int updateRecord(int recordId, Date endDate, int testTime, int minutes) {
 		// TODO Auto-generated method stub
 		return recordDao.updateRecord(recordId, endDate, testTime, minutes);
 	}

@@ -18,10 +18,15 @@ h1 {
 	
 }
 
-.chartspecs {
+.exterior {
 	width: 100%;
 	margin: 0px;
 	padding: 20px;
+}
+
+#chartspecs {
+	margin-left: auto;
+	margin-right: auto;
 }
 
 #logo {
@@ -44,17 +49,6 @@ h1 {
 }
 
 
-#expandableContainer {
-	overflow-y: hidden;
-	word-wrap: break-word;
-	padding: 0px 10px;
-	transition: all cubic-bezier(0,0,0,1) 0.5s;
-}
-.collapsedContent {
-	height: 0px;
-	margin: 0px 10px;
-}
 .expandedContent {
 	height: 220px;
-	margin: 15px 10px;
 }

@@ -105,7 +105,15 @@ public class HelloController {
 	@RequestMapping("/addStudent")
 	public int addStudent(@RequestBody(required=false) StudentMaster student) {
 		System.out.println("Method addStudent() called" );
-		return studentService.addStudent(student.getClient(), student.getGrade(), student.getGender());
+		int a;
+		try {
+			a = studentService.addStudent(student.getClient(), student.getGrade(), student.getGender());
+		} catch (java.lang.RuntimeException e) {
+			System.out.println("Method addStudent() failed:");
+			e.printStackTrace();
+			a = -1;
+		}
+		return a;
 	}
 	
 	//Edits student data in the students database
@@ -113,7 +121,15 @@ public class HelloController {
 	@RequestMapping("/updateStudent")
 	public int updateStudent(@RequestParam("studentId") String studentId, @RequestParam("client") String client, @RequestParam("email") String email, @RequestParam("phone") String phone, @RequestParam("address") String address, @RequestParam("grade") String grade, @RequestParam("gender") String gender, @RequestParam("currentPasses") String currentPasses) {
 		System.out.println("Method updateStudent() called");
-		return studentService.updateStudent(studentId, client, email, phone, address, grade, gender, currentPasses);
+		int a;
+		try {
+			a = studentService.updateStudent(studentId, client, email, phone, address, grade, gender, currentPasses);
+		} catch (java.lang.RuntimeException e) {
+			System.out.println("Method updateStudent() failed");
+			e.printStackTrace();
+			a = -1;
+		}
+		return a;
 	}
 	
 	//Returns all records in the record database
@@ -136,16 +152,9 @@ public class HelloController {
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/recordsById")
 	@ResponseBody
-	public List<Record> getRecordsById(@RequestParam("StudentId") int StudentId, @RequestParam("Category") String category, @RequestParam("Months") String months, @RequestParam("Reps") String whichReps, @RequestParam("Until") String until) {
-		int monthNumber;
-		if(months.equals(null) || months.isEmpty()) {
-			monthNumber = 12;
-		} else {
-			monthNumber = Integer.parseInt(months);
-		}
+	public List<Record> getRecordsById(@RequestParam("StudentId") int StudentId, @RequestParam("Category") String category, @RequestParam("Months") int months, @RequestParam("Reps") String whichReps, @RequestParam("Until") int until) {
 		System.out.println("Method getRecordsById() called for Student ID " + StudentId + ", category " + category + ", month number " + months + ", and rep number " + whichReps + ", and until " + until);
-		int untilNum = Integer.parseInt(until);
-		return recordService.getRecordsById(StudentId, category, monthNumber, whichReps, untilNum);
+		return recordService.getRecordsById(StudentId, category, months, whichReps, until);
 	}
 	
 	//Returns all records for a given student and a given category
@@ -164,7 +173,9 @@ public class HelloController {
 		int a;
 		try {
 			a = recordService.addRecord(master.getId(), master.getCategory(), master.getSubcategory(), master.getTitle(), master.getStartDate(), master.getRep());
-		} catch (java.lang.NullPointerException e) {
+		} catch (java.lang.RuntimeException e) {
+			System.out.println("Method addRecord() failed:");
+			e.printStackTrace();
 			a = -1;
 		}
 		return a;
@@ -173,10 +184,17 @@ public class HelloController {
 	//Updates an existing record in the database
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/updateRecord")
-	public int updateRecord(@RequestParam("recordId") String recordId, @RequestParam("endDate") Date endDate, @RequestParam("testTime") int testTime, @RequestParam("mistakes") int mistakes) {
+	public int updateRecord(@RequestParam("recordId") int recordId, @RequestParam("endDate") Date endDate, @RequestParam("testTime") int testTime, @RequestParam("mistakes") int mistakes) {
 		System.out.println("Method updateRecord() called");
 		System.out.println(testTime + " " + mistakes);
-		int a = recordService.updateRecord(recordId, endDate, testTime, mistakes);
+		int a; 
+		try {
+			a = recordService.updateRecord(recordId, endDate, testTime, mistakes);
+		} catch (java.lang.RuntimeException e) {
+			System.out.println("Method updateRecord() failed:");
+			e.printStackTrace();
+			a = -1;
+		}
 		return a;
 	}
 	

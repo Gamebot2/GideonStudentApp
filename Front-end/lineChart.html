@@ -32,7 +32,7 @@
 	<body>
 		<br>
 		<!--Containing essentially a form for selected chart specifications-->
-		<div class="chartspecs" ng-app = "gideonApp" ng-controller = "chartCtrl">
+		<div class="exterior" ng-app = "gideonApp" ng-controller = "chartCtrl">
 
 			<h1>Progress Chart for {{studentName}}</h1>
 			<br>
@@ -91,10 +91,12 @@
 			<!--HTML element for the generated chart-->
 			<div id = "logoDiv">
 				<img id = "logo" src = "img/gideon-logo.jpg" height = "60" width = "160" ng-hide="errorMessage">
+				<button id = "invisibleButton" ng-click="expanded=!expanded">(show/hide form)</button>
 			</div>
-			<button id = "invisibleButton" ng-click="expanded=!expanded">(show/hide form)</button>
-			
-			<canvas id = "lineChart" ng-hide="errorMessage"></canvas>
+
+			<div class = "exterior" id = "chartspecs">
+				<canvas id = "lineChart" ng-hide="errorMessage"></canvas>
+			</div>
 		</div>
 	</body>
 </html>

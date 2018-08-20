@@ -28,19 +28,8 @@ body {
 }
 
 
-#expandableContainer {
-	overflow-y: hidden;
-	word-wrap: break-word;
-	padding: 0px 10px;
-	transition: all cubic-bezier(0,0,0,1) 0.5s;
-}
-.collapsedContent {
-	height: 0px;
-	margin: 0px 10px;
-}
 .expandedContent {
 	height: 180px;
-	margin: 15px 10px;
 }
 
 

@@ -9,6 +9,6 @@ public interface RecordService {
 	List<Record> getRecordsById(int RecordId, String category, int months, String whichReps, int until);
 	List<Record> getIncompleteRecords();
 	List<Record> getAllRecordsById(int StudentId, String category);
-	int addRecord(String Client, String category, String subcategory, String title, Date startDate, int rep);
-	int updateRecord(String record, Date endDate, int testTime, int minutes);
+	int addRecord(int id, String category, String subcategory, String title, Date startDate, int rep);
+	int updateRecord(int recordId, Date endDate, int testTime, int minutes);
 }

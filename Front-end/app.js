@@ -195,12 +195,12 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			}
 			metrics.slope = metrics.diff / metrics.squares;
 			points2.push({
-				x: 0,
-				y: metrics.slope * (0 - metrics.xmean) + metrics.ymean
+				x: -1,
+				y: metrics.slope * (-1 - metrics.xmean) + metrics.ymean
 			});
 			points2.push({
-				x: highestValueOnAxis,
-				y: metrics.slope * (highestValueOnAxis - metrics.xmean) + metrics.ymean
+				x: highestValueOnAxis + 1,
+				y: metrics.slope * (highestValueOnAxis + 1 - metrics.xmean) + metrics.ymean
 			});
 
 			//// Y-LABEL GENERATION ////
@@ -401,7 +401,8 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 								stepSize: 1,
 								autoSkip: false,
 								min: leastBook - 1,
-								max: greatestBook + 1,
+								max: greatestBook + 3,
+								lineHeight: 1,
 								callback:function(label) {
 									return labelToBookTitle(label, true);
 								}

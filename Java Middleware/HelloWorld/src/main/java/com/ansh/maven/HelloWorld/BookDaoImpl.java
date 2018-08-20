@@ -44,11 +44,8 @@ public class BookDaoImpl implements BookDao {
 		// TODO Auto-generated method stub
 		String sql = "SELECT count(*) FROM book WHERE category = ? and subcategory = ?";
 		int count = jdbcTemplate.queryForObject(sql, Integer.class, category, subcategory);
-		if(count == 0) {
-			return false;
-		} else {
-			return true;
-		}
+
+		return count > 0;
 	}
 
 	

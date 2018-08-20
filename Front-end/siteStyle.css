@@ -155,3 +155,20 @@ button:hover {
 	width: 33.33%;
 	padding: 0px 20px;
 }
+
+
+/*Expandable Content*/
+#expandableContainer {
+	overflow-y: hidden;
+	word-wrap: break-word;
+	padding: 0px 10px;
+	transition: all cubic-bezier(0,0,0,1) 0.5s;
+}
+.collapsedContent {
+	height: 0px;
+	margin: 0px 10px;
+}
+.expandedContent {
+	height: 200px; 		/*NOTE: RE-SPECIFY THE CONTAINER HEIGHT FOR EACH INSTANCE OF EXPANDABLE CONTENT*/
+	margin: 15px 10px;
+}
