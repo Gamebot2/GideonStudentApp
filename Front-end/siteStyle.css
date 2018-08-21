@@ -5,17 +5,16 @@
 }
 
 
+/*General CSS*/
 * {
 	box-sizing: border-box;
 	animation-name: example;
 	animation-duration: 2s;
 }
-
 body {
 	font-family: 'Roboto', sans-serif;
 	color: black;
 }
-
 h1, h3 {
 	text-align: center;
 	font-weight: normal;
