@@ -29,33 +29,25 @@ public class BookServiceImpl implements BookService {
 		Book obj = bookDao.getBookById(book_id);
 		return obj;
 	}
+	
+	//Gets all categories in the database
+	@Override
+	public List<String> getCategories() {
+		return bookDao.getCategories();
+	}
 
 	//Gets all subcategories in the database for a given category
 	@Override
 	public List<String> getSubcategories(String category) {
 		// TODO Auto-generated method stub
-		List<Book> midList = bookDao.getAllBooks();
-		List<String> subcategories = new ArrayList<String>();
-		for(Book b: midList) {
-			if(!subcategories.contains(b.getSubcategory()) && b.getCategory().equals(category)) {
-				subcategories.add(b.getSubcategory());
-			}
-		}
-		return subcategories;
+		return bookDao.getSubcategories(category);
 	}
 
 	//Gets all titles in the database for a given subcategory
 	@Override
 	public List<String> getTitles(String subcategory) {
 		// TODO Auto-generated method stub
-		List<Book> midList = bookDao.getAllBooks();
-		List<String> titles = new ArrayList<String>();
-		for(Book b: midList) {
-			if(!titles.contains(b.getTitle()) && b.getSubcategory().equals(subcategory)) {
-				titles.add(b.getTitle());
-			}
-		}
-		return titles;
+		return bookDao.getTitles(subcategory);
 	}
 	
 	//Gets all subcategories within a certain student's data that actually contain values in the record database
@@ -75,18 +67,7 @@ public class BookServiceImpl implements BookService {
 	//Gets all books between two sequenceLarge values within a certain category
 	@Override
 	public List<Book> getBooksInRange(String category, int startSequence, int endSequence) {
-		
-		List<Book> bookList = bookDao.getAllBooks();
-		List<Book> returnList = new ArrayList<Book>();
-		for(int i = 0; i < bookList.size(); i++) {
-			Book b = bookList.get(i);
-			if(b.getCategory().equalsIgnoreCase(category)) {
-				if (b.getSequenceLarge() > startSequence && b.getSequenceLarge() <= endSequence) {
-					returnList.add(b);
-				}
-			}
-		}
-		return returnList;
+		return bookDao.getBooksInRange(category, startSequence, endSequence);
 	}
 	
 	

@@ -16,7 +16,7 @@ public class RecordServiceImpl implements RecordService{
 	RecordDao recordDao;
 	
 	@Autowired
-	JdbcTemplate template;
+	BookDao bookDao;
 	
 	//Returns all records
 	@Override
@@ -35,7 +35,7 @@ public class RecordServiceImpl implements RecordService{
 		DateTime dt = new DateTime().withTimeAtStartOfDay().withDayOfMonth(1);
 		Date monthsAgo = dt.minusMonths(months).toDate();
 		Date untilDate = dt.minusMonths(until - 1).toDate(); // subtracting 1 from until in order to display the entire most recent month, rather than just the beginning of it
-		System.out.println(monthsAgo.toString() + " , " + untilDate.toString());
+		//System.out.println(monthsAgo.toString() + " , " + untilDate.toString());
 		
 		boolean firstRecordFlag = true;
 		for(int r = 0; r < records.size(); r++) {
@@ -65,7 +65,8 @@ public class RecordServiceImpl implements RecordService{
 	@Override
 	public int addRecord(int id, String category, String subcategory, String title, Date startDate, int rep) {
 		// TODO Auto-generated method stub
-		return recordDao.addRecord(id, category, subcategory, title, startDate, rep);
+		Book book = bookDao.getBookByName(category, subcategory, title);
+		return recordDao.addRecord(id, book, startDate, rep);
 	}
 
 	@Override

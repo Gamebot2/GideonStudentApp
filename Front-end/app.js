@@ -452,16 +452,9 @@ app.controller('insertCtrl', function($scope, $http, $window){
 	}
 
 	//Returns all books
-	$http.get("http://localhost:8080/books")
+	$http.get("http://localhost:8080/categories")
 	.then(function(response) {
-		$scope.books = response.data;
-		$scope.categories = [];
-
-		for(i = 0; i < $scope.books.length; i++) {
-			if($scope.categories.indexOf($scope.books[i].category) < 0) {
-				$scope.categories.push($scope.books[i].category);
-			}
-		}
+		$scope.categories = response.data
 	});
 
 	//Creates JSON for the record based on form data
