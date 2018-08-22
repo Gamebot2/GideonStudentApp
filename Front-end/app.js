@@ -1,6 +1,6 @@
-/*******************************\
-* MODULE FOR ENTIRE APPLICATION *
-\*******************************/
+/******************\
+* SITEWIDE MODULE *
+\******************/
 var app = angular.module('gideonApp', ['ngAnimate']);
 
 
