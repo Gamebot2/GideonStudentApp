@@ -10,6 +10,11 @@ Application for storing student books completion data for the subjects of Math a
 * [Maven](https://maven.apache.org/) - Dependency Management
 * [MySQL](https://www.mysql.com/) - Database Management
 
+## Authors
+
+* **Ansh Jain** - *Initial creation and setup* - [Gamebot3](https://github.com/Gamebot3)
+* **Matthew Zhang** - *App improvements and takeover* - [myName2243](https://github.com/myName2243)
+
 ## Code of Conduct
 
 Please read [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for details on our code of conduct.
