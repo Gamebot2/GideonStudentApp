@@ -9,12 +9,10 @@ var app = angular.module('gideonApp', ['ngAnimate']);
 \******************/
 app.controller('studentCtrl', function($scope, $http, $window) {
 	//Retrieves students with data
-	console.log("start");
 	$scope.getStudents = function() {
 		$http.get("http://localhost:8080/" + ($scope.dataOn ? "dataStudents" : "students"))
 		.then(function(response) {
 			$scope.students = response.data;
-			console.log("end");
 		});
 		$scope.toggleButtonText = $scope.dataOn ? "Display All Students" : "Display Students with Records";
 	}
@@ -37,14 +35,12 @@ app.controller('studentCtrl', function($scope, $http, $window) {
 
 	//Function for selecting a student and going to the chart page
 	$scope.logStudent = function(id, name) {
-		console.log(name);
 		$window.localStorage.setItem(0, id);
 		$window.localStorage.setItem(1, name);
 		window.location.href = "lineChart.html";
 	}
 
 	$scope.editStudent = function(id, name) {
-		console.log(name);
 		$window.localStorage.setItem(0, id);
 		$window.localStorage.setItem(1, name);
 		window.location.href = "EditStudent.html";
@@ -227,9 +223,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 								fullLabel[index] += " ";
 							}
 							fullLabel[index] += splitLabel[i];
-						}				
-
-						console.log(fullLabel);
+						}
 					}
 
 					return fullLabel;
@@ -276,7 +270,6 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 						enabled: true,
 						callbacks: {
 							title:function(tooltipItem, data) {
-								console.log(data);
 								return labelToBookTitle(tooltipItem[0].yLabel, false);
 							},
 							label:function(tooltipItem, data) { // callback function converts x-axis numeral to MM/DD/YYYY formatted string
@@ -446,7 +439,6 @@ app.controller('insertCtrl', function($scope, $http, $window){
 	$scope.getSubcategories = function() {
 		$http.get("http://localhost:8080/subcategories?Category=" + $scope.selectedCategory)
 		.then(function(response) {
-			console.log(response.data);
 			$scope.subcategories = response.data;
 		});
 	}
@@ -559,7 +551,6 @@ app.controller('updateCtrl', function($scope, $http, $window){
 			$scope.formStatus = 2;
 			$scope.formStatusText = "Processing...";
 
-			console.log($scope.endDate);
 			$http.get("http://localhost:8080/updateRecord?recordId=" + $scope.selectedRecord.id + "&endDate=" + $scope.endDate + "&testTime=" + $scope.testTime + "&mistakes=" + $scope.mistakes)
 			.then(function(response) {
 				if (response.data == 0) {
