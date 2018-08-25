@@ -21,14 +21,12 @@ public class RecordServiceImpl implements RecordService{
 	//Returns all records
 	@Override
 	public List<Record> getAllRecords() {
-		// TODO Auto-generated method stub
 		return recordDao.getAllRecords();
 	}
 	
-	//Gets records to include in a progress chart for a certain student, given a certain repetition number and a certain timeframe to plot
+	// Gets records to include in a progress chart for a certain student, given a certain repetition number and a certain timeframe to plot
 	@Override
 	public List<Record> getRecordsById(int RecordId, String category, int months, String whichReps, int until) {
-		// TODO Auto-generated method stub
 		List<Record> records = recordDao.getRecordsById(RecordId, category, whichReps);
 		List<Record> returnRecords = new ArrayList<Record>();
 		
@@ -56,29 +54,29 @@ public class RecordServiceImpl implements RecordService{
 		return returnRecords;
 	}
 	
+	// Gets records to include in a progress chart for a given student
+	@Override
+	public List<Record> getAllRecordsById(int StudentId, String category) {
+		return recordDao.getAllRecordsById(StudentId, category);
+	}
+	
+	// Returns records without an end date
 	@Override
 	public List<Record> getIncompleteRecords() {
-		//TODO Auto-generated method stub
 		return recordDao.getIncompleteRecords();
 	}
 
+	// Adds a record to the database
 	@Override
 	public int addRecord(int id, String category, String subcategory, String title, Date startDate, int rep) {
-		// TODO Auto-generated method stub
 		Book book = bookDao.getBookByName(category, subcategory, title);
 		return recordDao.addRecord(id, book, startDate, rep);
 	}
 
+	// Updates a record in the database with an end date
 	@Override
 	public int updateRecord(int recordId, Date endDate, int testTime, int minutes) {
-		// TODO Auto-generated method stub
 		return recordDao.updateRecord(recordId, endDate, testTime, minutes);
-	}
-
-	@Override
-	public List<Record> getAllRecordsById(int StudentId, String category) {
-		// TODO Auto-generated method stub
-		return recordDao.getAllRecordsById(StudentId, category);
 	}
 
 }

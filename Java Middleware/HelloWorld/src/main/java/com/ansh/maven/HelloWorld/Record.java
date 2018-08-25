@@ -18,6 +18,25 @@ public class Record {
 	private String bookTitle;
 	private String subcategory;
 	
+	
+	public Record() {
+		super();
+	}
+
+	public Record(int recordId, int studentId, int bookId, Date startDate, Date endDate, int rep, int test,
+			int testTime, int mistakes) {
+		super();
+		RecordId = recordId;
+		StudentId = studentId;
+		BookId = bookId;
+		StartDate = startDate;
+		EndDate = endDate;
+		Rep = rep;
+		Test = test;
+		TestTime = testTime;
+		Mistakes = mistakes;
+	}
+	
 	public String getSubcategory() {
 		return subcategory;
 	}
@@ -48,24 +67,6 @@ public class Record {
 
 	public void setSequenceLarge(int sequenceLarge) {
 		this.sequenceLarge = sequenceLarge;
-	}
-
-	public Record() {
-		super();
-	}
-
-	public Record(int recordId, int studentId, int bookId, Date startDate, Date endDate, int rep, int test,
-			int testTime, int mistakes) {
-		super();
-		RecordId = recordId;
-		StudentId = studentId;
-		BookId = bookId;
-		StartDate = startDate;
-		EndDate = endDate;
-		Rep = rep;
-		Test = test;
-		TestTime = testTime;
-		Mistakes = mistakes;
 	}
 
 	public int getRecordId() {

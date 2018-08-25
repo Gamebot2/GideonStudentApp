@@ -25,7 +25,6 @@ public class BookDaoImpl implements BookDao {
 	//Retrieves all books from the database
 	@Override
 	public List<Book> getAllBooks() {
-		// TODO Auto-generated method stub
 		sql = "SELECT * FROM book";
 		rowMapper = new BookRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
@@ -34,7 +33,6 @@ public class BookDaoImpl implements BookDao {
 	//Retrieves a single book from the database given a specific ID number
 	@Override
 	public Book getBookById(int book_id) {
-		// TODO Auto-generated method stub
 		sql = "SELECT * FROM book WHERE book_id = ?";
 		rowMapper = new BeanPropertyRowMapper<Book>(Book.class);
 		return jdbcTemplate.queryForObject(sql, rowMapper, book_id);
@@ -80,7 +78,6 @@ public class BookDaoImpl implements BookDao {
 	//Returns whether or not a book exists by checking for its category and subcategory
 	@Override
 	public boolean bookExists(String category, String subcategory) {
-		// TODO Auto-generated method stub
 		sql = "SELECT count(*) FROM book WHERE category = ? and subcategory = ?";
 		int count = jdbcTemplate.queryForObject(sql, Integer.class, category, subcategory);
 

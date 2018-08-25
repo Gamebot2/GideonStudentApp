@@ -10,7 +10,7 @@ var app = angular.module('gideonApp', ['ngAnimate']);
 app.controller('studentCtrl', function($scope, $http, $window) {
 	//Retrieves students with data
 	$scope.getStudents = function() {
-		$http.get("http://localhost:8080/" + ($scope.dataOn ? "dataStudents" : "students"))
+		$http.get("http://localhost:8081/" + ($scope.dataOn ? "dataStudents" : "students"))
 		.then(function(response) {
 			$scope.students = response.data;
 		});
@@ -59,18 +59,18 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 	$scope.studentName = $window.localStorage.getItem(1);
 
 	//Retrieves all categories the selected student is working in
-	$http.get("http://localhost:8080/categoriesByStudent?Id=" + $window.localStorage.getItem(0))
+	$http.get("http://localhost:8081/categoriesByStudent?Id=" + $window.localStorage.getItem(0))
 	.then(function(response) {
 		$scope.categoriesOfStudent = response.data;
 	});
 
 	//Retrieves the student's grade level
-	$http.get("http://localhost:8080/gradeOfStudent?Id=" + $window.localStorage.getItem(0))
+	$http.get("http://localhost:8081/gradeOfStudent?Id=" + $window.localStorage.getItem(0))
 	.then(function(response) {
 		$scope.currentGrade = response.data;
 	});
 
-	$http.get("http://localhost:8080/books")
+	$http.get("http://localhost:8081/books")
 	.then(function(response) {
 		$scope.allBooks = response.data;
 	});
@@ -99,7 +99,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			var currentGradeOffset = 0;
 
 		//// GIANT CHART GENERATION METHOD ////
-		$http.get("http://localhost:8080/recordsById?StudentId=" + selectedStudentId + "&Category=" + $scope.selectedCategory + "&Months=" + $scope.months + "&Reps=" + $scope.selectedRep + "&Until=" + $scope.months2)
+		$http.get("http://localhost:8081/recordsById?StudentId=" + selectedStudentId + "&Category=" + $scope.selectedCategory + "&Months=" + $scope.months + "&Reps=" + $scope.selectedRep + "&Until=" + $scope.months2)
 		.then(function(response) {
 			$scope.records = response.data;
 			
@@ -397,7 +397,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 								max: greatestBook + 3,
 								lineHeight: 1,
 								callback:function(label) {
-									return labelToBookTitle(label, true);
+									return labelToBookTitle(label, false); // USE "TRUE" INSTEAD OF "FALSE" FOR MULTI-LINE LABELS
 								}
 							}
 						}]
@@ -423,7 +423,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 app.controller('insertCtrl', function($scope, $http, $window){
 
 	//Returns a list of all students for easy name selection	
-	$http.get("http://localhost:8080/students")
+	$http.get("http://localhost:8081/students")
 	.then(function(response) {
 		$scope.students = response.data;
 
@@ -437,7 +437,7 @@ app.controller('insertCtrl', function($scope, $http, $window){
 
 	//Returns a list of subcategories based on the selected category
 	$scope.getSubcategories = function() {
-		$http.get("http://localhost:8080/subcategories?Category=" + $scope.selectedCategory)
+		$http.get("http://localhost:8081/subcategories?Category=" + $scope.selectedCategory)
 		.then(function(response) {
 			$scope.subcategories = response.data;
 		});
@@ -445,14 +445,14 @@ app.controller('insertCtrl', function($scope, $http, $window){
 
 	//Returns a list of titles based on the selected subCategory
 	$scope.getTitles = function() {
-		$http.get("http://localhost:8080/titles?Subcategory=" + $scope.selectedSubCategory)
+		$http.get("http://localhost:8081/titles?Subcategory=" + $scope.selectedSubCategory)
 		.then(function(response) {
 			$scope.titles = response.data;
 		});
 	}
 
 	//Returns all books
-	$http.get("http://localhost:8080/categories")
+	$http.get("http://localhost:8081/categories")
 	.then(function(response) {
 		$scope.categories = response.data
 	});
@@ -475,7 +475,7 @@ app.controller('insertCtrl', function($scope, $http, $window){
 			});
 			//Inserts the record with an HTTP post call
 			$http({
-				url: 'http://localhost:8080/addRecord',
+				url: 'http://localhost:8081/addRecord',
 				method: 'POST',
 				headers: {
 					"Content-Type": "application/json",
@@ -506,7 +506,7 @@ app.controller('insertCtrl', function($scope, $http, $window){
 app.controller('updateCtrl', function($scope, $http, $window){
 
 	//Returns all student names for easy selection
-	$http.get("http://localhost:8080/students")
+	$http.get("http://localhost:8081/students")
 	.then(function(response) {
 		$scope.students = response.data;
 		$scope.names = [];
@@ -516,7 +516,7 @@ app.controller('updateCtrl', function($scope, $http, $window){
 	});
 
 	//Retrieves incomplete records for instructors to choose from
-	$http.get("http://localhost:8080/incompleteRecords")
+	$http.get("http://localhost:8081/incompleteRecords")
 	.then(function(response) {
 		$scope.records = response.data;
 		$scope.displayRecords = [];
@@ -544,7 +544,7 @@ app.controller('updateCtrl', function($scope, $http, $window){
 			$scope.formStatus = 2;
 			$scope.formStatusText = "Processing...";
 
-			$http.get("http://localhost:8080/updateRecord?recordId=" + $scope.selectedRecord.id + "&endDate=" + $scope.endDate + "&testTime=" + $scope.testTime + "&mistakes=" + $scope.mistakes)
+			$http.get("http://localhost:8081/updateRecord?recordId=" + $scope.selectedRecord.id + "&endDate=" + $scope.endDate + "&testTime=" + $scope.testTime + "&mistakes=" + $scope.mistakes)
 			.then(function(response) {
 				if (response.data == 0) {
 					$scope.formStatus = 1;
@@ -581,7 +581,7 @@ app.controller('insertStudentCtrl', function($scope, $http, $window) {
 			});
 			//Inserts the record with an HTTP post call
 			$http({
-				url: 'http://localhost:8080/addStudent',
+				url: 'http://localhost:8081/addStudent',
 				method: 'POST',
 				headers: {
 					"Content-Type": "application/json",
@@ -610,7 +610,7 @@ app.controller('insertStudentCtrl', function($scope, $http, $window) {
 * EDITSTUDENT.HTML *
 \******************/
 app.controller('editStudentCtrl', function($scope, $http, $window) {
-	$http.get("http://localhost:8080/student?Id=" + $window.localStorage.getItem(0))
+	$http.get("http://localhost:8081/student?Id=" + $window.localStorage.getItem(0))
 	.then(function(response) {
 		$scope.student = response.data;
 		$scope.Id = $scope.student.studentId;
@@ -628,7 +628,7 @@ app.controller('editStudentCtrl', function($scope, $http, $window) {
 			$scope.formStatus = 2;
 			$scope.formStatusText = "Processing...";
 
-			$http.get("http://localhost:8080/updateStudent?studentId=" + $scope.Id + "&client=" + $scope.Client + "&email=" + $scope.Email + "&phone=" + $scope.Phone + "&address=" + $scope.Address + "&grade=" + $scope.Grade + "&gender=" + $scope.Gender + "&currentPasses=" + $scope.CurrentPasses)
+			$http.get("http://localhost:8081/updateStudent?studentId=" + $scope.Id + "&client=" + $scope.Client + "&email=" + $scope.Email + "&phone=" + $scope.Phone + "&address=" + $scope.Address + "&grade=" + $scope.Grade + "&gender=" + $scope.Gender + "&currentPasses=" + $scope.CurrentPasses)
 			.then(function(response) {
 				if (response.data == 0) {
 					window.location.href="StudentList.html";

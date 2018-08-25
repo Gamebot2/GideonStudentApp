@@ -18,14 +18,12 @@ public class BookServiceImpl implements BookService {
 	//Gets all books
 	@Override
 	public List<Book> getAllBooks() {
-		// TODO Auto-generated method stub
 		return bookDao.getAllBooks();
 	}
 
 	//Gets specific book by ID
 	@Override
 	public Book getBookById(int book_id) {
-		// TODO Auto-generated method stub
 		Book obj = bookDao.getBookById(book_id);
 		return obj;
 	}
@@ -39,14 +37,12 @@ public class BookServiceImpl implements BookService {
 	//Gets all subcategories in the database for a given category
 	@Override
 	public List<String> getSubcategories(String category) {
-		// TODO Auto-generated method stub
 		return bookDao.getSubcategories(category);
 	}
 
 	//Gets all titles in the database for a given subcategory
 	@Override
 	public List<String> getTitles(String subcategory) {
-		// TODO Auto-generated method stub
 		return bookDao.getTitles(subcategory);
 	}
 	

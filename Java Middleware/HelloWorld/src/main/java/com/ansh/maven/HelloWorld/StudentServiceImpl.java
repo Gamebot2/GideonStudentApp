@@ -11,31 +11,32 @@ public class StudentServiceImpl implements StudentService{
 	@Autowired
 	StudentDao studentDao;
 
+	// Returns all students in the database
 	@Override
 	public List<Student> getAllStudents() {
-		// TODO Auto-generated method stub
 		return studentDao.getAllStudents();
 	}
 
+	// Returns a single student with a certain id number
 	@Override
 	public Student getStudentById(int StudentId) {
-		// TODO Auto-generated method stub
 		Student obj = studentDao.getStudentById(StudentId);
 		return obj;
 	}
 
+	// Returns all students that are associated with a record
 	@Override
 	public List<Student> getStudentsWithData() {
-		// TODO Auto-generated method stub
 		return studentDao.getStudentsWithData();
 	}
 
+	// Returns all book categories for which a student has records
 	@Override
 	public List<String> getCategories(int StudentId) {
-		// TODO Auto-generated method stub
 		return studentDao.getCategories(StudentId);
 	}
 
+	// Returns the numeric grade of a student
 	@Override
 	public int getGrade(int StudentId) {
 		Student obj = studentDao.getStudentById(StudentId);
@@ -44,12 +45,13 @@ public class StudentServiceImpl implements StudentService{
 		return grade;
 	}
 
+	// Adds a student to the database
 	@Override
 	public int addStudent(String Client, String Grade, String Gender) {
-		// TODO Auto-generated method stub
 		return studentDao.addStudent(Client, Grade, Gender);
 	}
 	
+	// Updates student information in the database
 	@Override
 	public int updateStudent(String studentId, String client, String email, String phone, String address, String grade, String gender, String currentPasses) {
 		return studentDao.updateStudent(studentId, client, email, phone, address, grade, gender, currentPasses);
