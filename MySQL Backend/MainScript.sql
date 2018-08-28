@@ -1,38 +1,105 @@
-SHOW databases;
-use gideon;
-show tables;
-SELECT * FROM book;
-SELECT * FROM records;
-SELECT * from students;
-SELECT DISTINCT students.StudentId, students.Client, students.Email, students.ClientId, students.CurrentPasses, students.FirstName,
-students.Gender, students.Grade, students.LastName, students.MiddleName, students.PrimaryStaffMember
-FROM students RIGHT JOIN records ON records.StudentId = students.StudentId;
+/*
+							MAIN SCRIPT
+
+Mostly miscellaneous queries meant to be edited and used one at a time
+*/
+
+-- database overview
+SHOW DATABASES;
+USE gideon;
+SHOW TABLES;
+
+-- table overview
+DESCRIBE books;
+DESCRIBE records;
 DESCRIBE students;
 
-SELECT DISTINCT subcategory, book_id, subject, category, title, gradeLevel, test, timeAllowed, mistakesAllowed, sequence, sequenceLarge FROM book WHERE category = 'Comprehension';
-
-SELECT * FROM students WHERE StudentId = "3";
-
-DROP TABLE book;
-DROP TABLE records;
-DROP TABLE newrecordsheet;
-SELECT records.RecordId, records.StudentId, records.BookId, records.StartDate, records.EndDate, records.Rep, records.Test, records.TestTime, records.Mistakes, students.Client FROM records
-INNER JOIN students ON records.StudentId = students.StudentId WHERE records.StudentId = 3 ;
-
+-- table view
+SELECT * FROM books;
 SELECT * FROM records;
-DELETE FROM records WHERE RecordId = 277;
-SELECT * FROM records INNER JOIN book ON records.BookId = book.book_id INNER JOIN students ON records.StudentId = students.StudentId WHERE records.StudentId = 3 AND book.category = 'Grammar';
+SELECT * from students;
 
-SELECT * FROM records INNER JOIN book ON records.BookId = book.book_id INNER JOIN students ON records.StudentId = students.StudentId WHERE records.EndDate IS NULL;
+-- table deletes (mostly for any extraneous test data)
+DELETE FROM students WHERE StudentId > 78;
+DELETE FROM records WHERE RecordId > 221;
 
-
+-- table inserts (for manual test data)
+INSERT INTO students (Client, FirstName, LastName, Grade, Gender)
+VALUES ("Test Student", "Test", "Student", "5th", "Male");
 INSERT INTO records (StudentId, BookId, StartDate, EndDate, Rep, Test, TestTime, Mistakes) 
 VALUES (10000, 10000, null, null, 1, 1, null, null);
 
-SELECT * FROM records INNER JOIN book ON records.BookId = book.book_id INNER JOIN students ON records.StudentId = students.StudentId;
+-- selecting records with way more detail (customize the WHERE clause to filter)
+SELECT *
+FROM records
+INNER JOIN book
+	ON records.BookId = book.book_id
+INNER JOIN students
+	ON records.StudentId = students.StudentId
+WHERE
+    records.StudentId = 3;
 
-SELECT * FROM records INNER JOIN book ON records.BookId = book.book_id INNER JOIN students ON records.StudentId = students.StudentId WHERE records.StudentId = 3 AND book.category = "Grammar" AND records.Rep = 1 AND book.subcategory = "Grammar 1";
+-- selects students with records
+SELECT DISTINCT
+    students.StudentId,
+    students.Client,
+    students.Email,
+    students.ClientId,
+    students.CurrentPasses,
+    students.FirstName,
+    students.Gender,
+    students.Grade,
+    students.LastName,
+    students.MiddleName,
+    students.PrimaryStaffMember
+FROM students
+RIGHT JOIN records
+	ON records.StudentId = students.StudentId;
 
-SELECT * FROM records INNER JOIN book ON records.BookId = book.book_id INNER JOIN students ON records.StudentId = students.StudentId WHERE records.StudentId = 3;
+-- all books in a category
+SELECT DISTINCT
+    subcategory,
+    book_id,
+    subject,
+    category,
+    title,
+    gradeLevel,
+    test,
+    timeAllowed,
+    mistakesAllowed,
+    sequence,
+    sequenceLarge
+FROM book
+WHERE category = 'Comprehension';
 
-SELECT DISTINCT book.category FROM records INNER JOIN students ON records.StudentId = students.StudentId INNER JOIN book ON records.BookId = book.book_id WHERE students.StudentId = 3;
+-- all records belonging to a student
+SELECT 
+    records.RecordId,
+    records.StudentId,
+    records.BookId,
+    records.StartDate,
+    records.EndDate,
+    records.Rep,
+    records.Test,
+    records.TestTime,
+    records.Mistakes,
+    students.Client
+FROM records
+INNER JOIN students
+	ON records.StudentId = students.StudentId
+	WHERE records.StudentId = 3;
+    
+-- all unfinished records
+SELECT *
+FROM records
+WHERE records.EndDate IS NULL;
+
+-- all categories in which a certain student has records
+SELECT DISTINCT book.category
+FROM records
+INNER JOIN students
+	ON records.StudentId = students.StudentId
+INNER JOIN book
+	ON records.BookId = book.book_id
+WHERE
+    students.StudentId = 3;

@@ -1,5 +1,5 @@
 /******************\
-* SITEWIDE MODULE *
+* SITEWIDE MODULE  *
 \******************/
 var app = angular.module('gideonApp', ['ngAnimate']);
 
@@ -53,19 +53,19 @@ app.controller('studentCtrl', function($scope, $http, $window) {
 \****************/
 app.controller('chartCtrl', function($scope, $http, $window) {
 	$scope.expanded = true;
+	$scope.logoDisplay = false;
 
-	var logo = document.getElementById("logoDiv");
-	logo.style.display = "none";
+	$scope.studentId = $window.localStorage.getItem(0);
 	$scope.studentName = $window.localStorage.getItem(1);
 
 	//Retrieves all categories the selected student is working in
-	$http.get("http://localhost:8081/categoriesByStudent?Id=" + $window.localStorage.getItem(0))
+	$http.get("http://localhost:8081/categoriesByStudent?Id=" + $scope.studentId)
 	.then(function(response) {
 		$scope.categoriesOfStudent = response.data;
 	});
 
 	//Retrieves the student's grade level
-	$http.get("http://localhost:8081/gradeOfStudent?Id=" + $window.localStorage.getItem(0))
+	$http.get("http://localhost:8081/gradeOfStudent?Id=" + $scope.studentId)
 	.then(function(response) {
 		$scope.currentGrade = response.data;
 	});
@@ -95,11 +95,10 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			if ($scope.form.$invalid) // Ensures form is valid before generation
 				return;
 
-			var selectedStudentId = $window.localStorage.getItem(0);
 			var currentGradeOffset = 0;
 
 		//// GIANT CHART GENERATION METHOD ////
-		$http.get("http://localhost:8081/recordsById?StudentId=" + selectedStudentId + "&Category=" + $scope.selectedCategory + "&Months=" + $scope.months + "&Reps=" + $scope.selectedRep + "&Until=" + $scope.months2)
+		$http.get("http://localhost:8081/recordsById?StudentId=" + $scope.studentId + "&Category=" + $scope.selectedCategory + "&Months=" + $scope.months + "&Reps=" + $scope.selectedRep + "&Until=" + $scope.months2)
 		.then(function(response) {
 			$scope.records = response.data;
 			
@@ -407,9 +406,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 
 			regen = true;
 
-			var logo = document.getElementById("logoDiv");
-			logo.style.display = "inline-block";
-
+			$scope.logoDisplay = true;
 			$scope.expanded = false;
 		});	
 	};

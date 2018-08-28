@@ -88,12 +88,13 @@
 			<h6 class="errorText" ng-show="errorMessage">Error: No data found</h6>
 			<br><br>
 
-			<!--HTML element for the generated chart-->
-			<div id = "logoDiv">
+			
+			<div ng-class="{'logoOff':!logoDisplay, 'logoOn':logoDisplay}">
 				<img id = "logo" src = "img/gideon-logo.jpg" height = "60" width = "160" ng-hide="errorMessage">
 				<button id = "invisibleButton" ng-click="expanded=!expanded">(show/hide form)</button>
 			</div>
 
+			<!--HTML element for the generated chart-->
 			<div class = "exterior" id = "chartspecs">
 				<canvas id = "lineChart" ng-hide="errorMessage"></canvas>
 			</div>

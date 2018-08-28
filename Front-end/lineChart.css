@@ -33,8 +33,11 @@ h1 {
 	animation-duration: 0s;
 }
 
-#logoDiv {
+.logoOff {
 	display: none;
+}
+.logoOn {
+	display: inline-block;
 }
 
 
