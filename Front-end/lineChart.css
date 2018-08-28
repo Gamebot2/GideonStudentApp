@@ -29,10 +29,6 @@ h1 {
 	margin-right: auto;
 }
 
-#logo {
-	animation-duration: 0s;
-}
-
 .logoOff {
 	display: none;
 }

@@ -29,7 +29,7 @@ public class RecordDaoImpl implements RecordDao{
 	//Retrieves all records from every student in the database
 	@Override
 	public List<Record> getAllRecords() {
-		sql = "SELECT * FROM records INNER JOIN book ON records.BookId = book.book_id INNER JOIN students ON records.StudentId = students.StudentId";
+		sql = "SELECT * FROM records INNER JOIN books ON records.BookId = books.BookId INNER JOIN students ON records.StudentId = students.StudentId";
 		rowMapper = new RecordRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
@@ -37,8 +37,8 @@ public class RecordDaoImpl implements RecordDao{
 	//Returns all records of a student in a specific category and a specific repetition number
 	@Override
 	public List<Record> getRecordsById(int RecordId, String category, String whichReps) {	
-		sql = "SELECT * FROM records INNER JOIN book ON records.BookId = book.book_id INNER JOIN students ON records.StudentId ="
-				+ " students.StudentId WHERE records.StudentId = ? AND book.category = ? # ORDER BY StartDate";
+		sql = "SELECT * FROM records INNER JOIN books ON records.BookId = books.BookId INNER JOIN students ON records.StudentId ="
+				+ " students.StudentId WHERE records.StudentId = ? AND books.Category = ? # ORDER BY StartDate";
 
 		rowMapper = new RecordRowMapper();
 		List<Record> output;
@@ -74,14 +74,14 @@ public class RecordDaoImpl implements RecordDao{
 		String formatted = format1.format(startDate);
 		
 		System.out.println(sql);
-		this.jdbcTemplate.update(sql, studentId, book.getBook_id(), formatted, rep);
+		this.jdbcTemplate.update(sql, studentId, book.getBookId(), formatted, rep);
 		return 0;
 	}
 
 	//Updates an already existing record
 	@Override
 	public int updateRecord(int recordId, Date endDate, int testTime, int mistakes) {	
-		sql = "UPDATE records SET endDate = ?, TestTime = #, mistakes = #  WHERE RecordId = ?";
+		sql = "UPDATE records SET EndDate = ?, TestTime = #, Mistakes = #  WHERE RecordId = ?";
 		
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 		String formatted = format1.format(endDate);
@@ -101,7 +101,7 @@ public class RecordDaoImpl implements RecordDao{
 	//Returns all records that have start dates, but do not have end dates
 	@Override
 	public List<Record> getIncompleteRecords() {
-		sql = "SELECT * FROM records INNER JOIN book ON records.BookId = book.book_id INNER JOIN students ON records.StudentId = students.StudentId WHERE records.EndDate IS NULL";
+		sql = "SELECT * FROM records INNER JOIN books ON records.BookId = books.BookId INNER JOIN students ON records.StudentId = students.StudentId WHERE records.EndDate IS NULL";
 		rowMapper = new RecordRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
@@ -109,7 +109,7 @@ public class RecordDaoImpl implements RecordDao{
 	//Returns all records for a certain student and a certain category
 	@Override
 	public List<Record> getAllRecordsById(int StudentId, String category) {
-		sql = "SELECT * FROM records INNER JOIN students ON records.StudentId = students.StudentId INNER JOIN book ON records.BookId = book.book_id WHERE students.StudentId = ? AND book.category = ? AND records.rep = 1;";
+		sql = "SELECT * FROM records INNER JOIN students ON records.StudentId = students.StudentId INNER JOIN books ON records.BookId = books.BookId WHERE students.StudentId = ? AND books.Category = ? AND records.rep = 1;";
 		System.out.println(sql);
 		rowMapper = new RecordRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper, StudentId, category);

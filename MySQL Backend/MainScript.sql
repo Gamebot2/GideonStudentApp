@@ -19,25 +19,26 @@ SELECT * FROM books;
 SELECT * FROM records;
 SELECT * from students;
 
--- table deletes (mostly for any extraneous test data)
-DELETE FROM students WHERE StudentId > 78;
-DELETE FROM records WHERE RecordId > 221;
+-- put whatever here
 
--- table inserts (for manual test data)
+DELETE FROM students WHERE StudentId > 78;
+DELETE FROM records WHERE RecordId > 281;
+
 INSERT INTO students (Client, FirstName, LastName, Grade, Gender)
 VALUES ("Test Student", "Test", "Student", "5th", "Male");
-INSERT INTO records (StudentId, BookId, StartDate, EndDate, Rep, Test, TestTime, Mistakes) 
-VALUES (10000, 10000, null, null, 1, 1, null, null);
+
+
+
+
+
 
 -- selecting records with way more detail (customize the WHERE clause to filter)
 SELECT *
 FROM records
-INNER JOIN book
-	ON records.BookId = book.book_id
+INNER JOIN books
+	ON records.BookId = books.BookId
 INNER JOIN students
-	ON records.StudentId = students.StudentId
-WHERE
-    records.StudentId = 3;
+	ON records.StudentId = students.StudentId;
 
 -- selects students with records
 SELECT DISTINCT
@@ -58,19 +59,19 @@ RIGHT JOIN records
 
 -- all books in a category
 SELECT DISTINCT
-    subcategory,
-    book_id,
-    subject,
-    category,
-    title,
-    gradeLevel,
-    test,
-    timeAllowed,
-    mistakesAllowed,
-    sequence,
-    sequenceLarge
-FROM book
-WHERE category = 'Comprehension';
+    Subcategory,
+    BookId,
+    Subject,
+    Category,
+    Title,
+    GradeLevel,
+    Test,
+    TimeAllowed,
+    MistakesAllowed,
+    Sequence,
+    SequenceLarge
+FROM books
+WHERE Category = 'Comprehension';
 
 -- all records belonging to a student
 SELECT 
@@ -95,11 +96,11 @@ FROM records
 WHERE records.EndDate IS NULL;
 
 -- all categories in which a certain student has records
-SELECT DISTINCT book.category
+SELECT DISTINCT book.Category
 FROM records
 INNER JOIN students
 	ON records.StudentId = students.StudentId
-INNER JOIN book
-	ON records.BookId = book.book_id
+INNER JOIN books
+	ON records.BookId = books.BookId
 WHERE
     students.StudentId = 3;

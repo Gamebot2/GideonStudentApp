@@ -21,10 +21,10 @@ public class RecordRowMapper implements RowMapper<Record>{
 		record.setStudentId(row.getInt("StudentId"));
 		record.setTest(row.getInt("Test"));
 		record.setTestTime(row.getInt("TestTime"));
-		record.setSequenceLarge(row.getInt("sequenceLarge"));
+		record.setSequenceLarge(row.getInt("SequenceLarge"));
 		record.setName(row.getString("Client"));
-		record.setBookTitle(row.getString("title"));
-		record.setSubcategory(row.getString("subcategory"));
+		record.setBookTitle(row.getString("Title"));
+		record.setSubcategory(row.getString("Subcategory"));
 		return record;
 	}
 	

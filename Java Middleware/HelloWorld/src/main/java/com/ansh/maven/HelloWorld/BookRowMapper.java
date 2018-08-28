@@ -10,17 +10,17 @@ public class BookRowMapper implements RowMapper<Book>{
 	public Book mapRow(ResultSet row, int rowNum) throws SQLException {
 		// TODO Auto-generated method stub
 		Book book = new Book();
-		book.setBook_id(row.getInt("book_id"));
+		book.setBookId(row.getInt("BookId"));
 		book.setSubject(row.getString("Subject"));
-		book.setCategory(row.getString("category"));
-		book.setSubcategory(row.getString("subcategory"));
-		book.setTitle(row.getString("title"));
-		book.setGradeLevel(row.getInt("gradeLevel"));
-		book.setTest(row.getInt("test"));
-		book.setTimeAllowed(row.getInt("timeAllowed"));
-		book.setMistakesAllowed(row.getInt("mistakesAllowed"));
-		book.setSequence(row.getInt("sequence"));
-		book.setSequenceLarge(row.getInt("sequenceLarge"));
+		book.setCategory(row.getString("Category"));
+		book.setSubcategory(row.getString("Subcategory"));
+		book.setTitle(row.getString("Title"));
+		book.setGradeLevel(row.getInt("GradeLevel"));
+		book.setTest(row.getInt("Test"));
+		book.setTimeAllowed(row.getInt("TimeAllowed"));
+		book.setMistakesAllowed(row.getInt("MistakesAllowed"));
+		book.setSequence(row.getInt("Sequence"));
+		book.setSequenceLarge(row.getInt("SequenceLarge"));
 		return book;
 	}
 

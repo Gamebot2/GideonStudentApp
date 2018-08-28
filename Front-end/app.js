@@ -8,7 +8,7 @@ var app = angular.module('gideonApp', ['ngAnimate']);
 * STUDENTLIST.HTML *
 \******************/
 app.controller('studentCtrl', function($scope, $http, $window) {
-	//Retrieves students with data
+
 	$scope.getStudents = function() {
 		$http.get("http://localhost:8081/" + ($scope.dataOn ? "dataStudents" : "students"))
 		.then(function(response) {
@@ -37,7 +37,7 @@ app.controller('studentCtrl', function($scope, $http, $window) {
 	$scope.logStudent = function(id, name) {
 		$window.localStorage.setItem(0, id);
 		$window.localStorage.setItem(1, name);
-		window.location.href = "lineChart.html";
+		window.location.href = "LineChart.html";
 	}
 
 	$scope.editStudent = function(id, name) {
@@ -70,6 +70,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 		$scope.currentGrade = response.data;
 	});
 
+	//Retrieves all the books for use later in y-axis plotting
 	$http.get("http://localhost:8081/books")
 	.then(function(response) {
 		$scope.allBooks = response.data;
@@ -84,330 +85,349 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 		}
 	}
 
-
+	// Pre-generation chart management
 	var regen = false;
 	var exampleChart;
-
 	let myChart = document.getElementById('lineChart').getContext('2d');
 
 	//Generates the lineChart based on instructor specifications
 	$scope.generateChart = function() {
-			if ($scope.form.$invalid) // Ensures form is valid before generation
-				return;
+		if ($scope.form.$invalid) { // Ensures form is valid before generation
+			$scope.formStatus = 0;
+			$scope.formStatusText = "Invalid Form";
+			return;
+		} else {
+			$scope.formStatus = 2;
+			$scope.formStatusText = "Processing...";
+		}
 
-			var currentGradeOffset = 0;
 
 		//// GIANT CHART GENERATION METHOD ////
 		$http.get("http://localhost:8081/recordsById?StudentId=" + $scope.studentId + "&Category=" + $scope.selectedCategory + "&Months=" + $scope.months + "&Reps=" + $scope.selectedRep + "&Until=" + $scope.months2)
 		.then(function(response) {
 			$scope.records = response.data;
 			
-			let getStartDateAt = function(index) { // function that returns a month/year/floating-point-date object from a specified record, for use in plotting points
-				var d = moment($scope.records[index].startDate.split(" ")[0]);
-				return {
-					month: d.month(),
-					year: d.year(),
-					date: (d.date() - 1) / d.daysInMonth()
+			try {
+				let getStartDateAt = function(index) { // function that returns a month/year/floating-point-date object from a specified record, for use in plotting points
+					var d = moment($scope.records[index].startDate.split(" ")[0]);
+					return {
+						month: d.month(),
+						year: d.year(),
+						date: (d.date() - 1) / d.daysInMonth()
+					}
 				}
-			}
-			let getCurrentDate = function(subtraction) { // function that returns a month/year/floating-point-date object from a certain number of months in the past
-				var currentMonth = moment().subtract(subtraction, 'months');
-				return {
-					month: currentMonth.month(),
-					year: currentMonth.year(),
-					date: 0
+				let getCurrentDate = function(subtraction) { // function that returns a month/year/floating-point-date object from a certain number of months in the past
+					var currentMonth = moment().subtract(subtraction, 'months');
+					return {
+						month: currentMonth.month(),
+						year: currentMonth.year(),
+						date: 0
+					}
 				}
-			}
-			let dateCompare = function(date1, date2) { // function that returns the month difference between two month/year/floating-point-date objects
-				return (date1.year - date2.year) * 12 + (date1.month - date2.month) + (date1.date - date2.date);
-			}
+				let dateCompare = function(date1, date2) { // function that returns the month difference between two month/year/floating-point-date objects
+					return (date1.year - date2.year) * 12 + (date1.month - date2.month) + (date1.date - date2.date);
+				}
 
-			var highestValueOnAxis = $scope.months - $scope.months2 + 1;
-			var dateAtZero = getCurrentDate($scope.months);
 
-			var greatestBook = 0; // tracks the highest and lowest points on the y-axis, for manual padding
-			var leastBook = 999;
-			
-			var labelDatesWithGrades = []; // main container of x axis labels, labels are objects containing properties "month", "year", and "grade"
-			var labelDates = [];
-			var grades = [];
-			var points = []; // container with points: x is date, y is bookid
-			var points2 = []; 			// currently contains the best fit line
-			var points3 = []; 			// currently unused test modification of the data
+				var highestValueOnAxis = $scope.months - $scope.months2 + 1;
+				var dateAtZero = getCurrentDate($scope.months);
 
-			//// Maps the internal linear scale of the x axis (0, 1, 2, 3, ...) with labels containing dates and grades ////
-			for(j = 0; j < highestValueOnAxis; j++) {
-				var currentDate = getCurrentDate($scope.months - j);
-				labelDates.push(currentDate);
+				var greatestBook = 0; // tracks the highest and lowest points on the y-axis, for manual padding
+				var leastBook = 999;
 
-				if(currentDate.month == 7) // grade goes up in August = 7
-					currentGradeOffset++;
-				grades.push(currentGradeOffset); // maps an offset value for the grade relating to each month, starting from 0 and increasing until the present
-			}
-			for(var u = 0; u < labelDates.length; u++) {
-				var actualGrade = $scope.currentGrade + grades[u] - currentGradeOffset; // uses the final grade offset and the known current grade to calculate the final grade value for each month
-				labelDatesWithGrades.push({
-					month: labelDates[u].month,
-					year: labelDates[u].year,
-					grade: actualGrade
+				var currentGradeOffset = 0;
+				
+				var labelDates = []; // main container of x axis labels, labels are objects containing properties "month", "year", and "grade" (also date, but that's irrelevant here)
+				var grades = [];
+				var points = []; // container with points: x is date, y is bookid
+				var points2 = []; 			// currently contains the best fit line
+				var points3 = []; 			// currently unused test modification of the data
+
+
+				//// Maps the internal linear scale of the x axis (0, 1, 2, 3, ...) with labels containing dates and grades ////
+				for(j = 0; j < highestValueOnAxis; j++) {
+					var currentDate = getCurrentDate($scope.months - j);
+					labelDates.push(currentDate);
+
+					if(currentDate.month == 7) // grade goes up in August = 7
+						currentGradeOffset++;
+					grades.push(currentGradeOffset); // maps an offset value for the grade relating to each month, starting from 0 and increasing until the present
+				}
+				for(j = 0; j < labelDates.length; j++)
+					labelDates[j].grade = $scope.currentGrade + grades[j] - currentGradeOffset; // uses the final grade offset and the known current grade to calculate the final grade value for each month
+
+
+				//// Creates a point mapping each record to its respective spot on the x and y axis ////
+				var a = 0; // Helps display error message if there is no data, couldn't find a better solution for some reason: this value will increase for every existing record
+				for(i = 0; i < $scope.records.length; i++) {
+					if($scope.records[i].startDate != null) {
+						a++;
+
+						//console.log(dateCompare(getStartDateAt(i), dateAtZero) + ", " + $scope.records[i].bookId);
+						points.push({
+							x: dateCompare(getStartDateAt(i), dateAtZero),
+							y: $scope.records[i].bookId
+						})
+
+						if ($scope.records[i].bookId > greatestBook)
+							greatestBook = $scope.records[i].bookId;
+						if ($scope.records[i].bookId < leastBook)
+							leastBook = $scope.records[i].bookId;
+					}
+				}
+
+				if (a <= 0) { // no data check
+					$scope.errorMessage = true;
+					$scope.formStatus = 0;
+					$scope.formStatusText = "Error: No data";
+					return;
+				}
+				else {
+					$scope.errorMessage = false;
+				}
+				
+
+				//// BEST FIT LINE: least squares method ////
+				var metrics = {xmean: 0, ymean: 0, diff: 0, squares: 0};
+				for(b = 0; b < points.length; b++) {
+					metrics.xmean += points[b].x;
+					metrics.ymean += points[b].y;
+				}
+				metrics.xmean /= points.length;
+				metrics.ymean /= points.length;
+				for(b = 0; b < points.length; b++) {
+					metrics.diff += (points[b].x - metrics.xmean) * (points[b].y - metrics.ymean);
+					metrics.squares += (points[b].x - metrics.xmean) * (points[b].x - metrics.xmean);
+				}
+				metrics.slope = metrics.diff / metrics.squares;
+				points2.push({
+					x: -1,
+					y: metrics.slope * (-1 - metrics.xmean) + metrics.ymean
 				});
-			}
+				points2.push({
+					x: highestValueOnAxis + 1,
+					y: metrics.slope * (highestValueOnAxis + 1 - metrics.xmean) + metrics.ymean
+				});
 
-			//// Creates a point mapping each record to its respective spot on the x and y axis ////
-			var a = 0; // Helps display error message if there is no data, couldn't find a better solution for some reason: this value will increase for every existing record
-			for(i = 0; i < $scope.records.length; i++) {
-				if($scope.records[i].startDate != null) {
-					a++;
 
-					//console.log(dateCompare(getStartDateAt(i), dateAtZero) + ", " + $scope.records[i].bookId);
-					points.push({
-						x: dateCompare(getStartDateAt(i), dateAtZero),
-						y: $scope.records[i].bookId
-					})
+				//// Y-LABEL GENERATION ////
+				let labelToBookTitle = function(label, withLineBreaks) {
+					var s = $scope.allBooks[label-1];
+					if (s != null && s != undefined && s.category == $scope.selectedCategory) {
+						var fullLabel;
+						if ($scope.selectedCategory == "Comprehension")
+							fullLabel = $scope.allBooks[label-1].subcategory + " " + $scope.allBooks[label-1].title;
+						else
+							fullLabel = $scope.allBooks[label-1].title;
 
-					if ($scope.records[i].bookId > greatestBook)
-						greatestBook = $scope.records[i].bookId;
-					if ($scope.records[i].bookId < leastBook)
-						leastBook = $scope.records[i].bookId;
-				}
-			}
-			$scope.errorMessage = (a <= 0);
-			if ($scope.errorMessage)
-				return;
-			
+						if (withLineBreaks) {
+							var splitLabel = fullLabel.split(" ");
 
-			//// BEST FIT LINE: least squares method ////
-			var metrics = {xmean: 0, ymean: 0, diff: 0, squares: 0};
-			for(b = 0; b < points.length; b++) {
-				metrics.xmean += points[b].x;
-				metrics.ymean += points[b].y;
-			}
-			metrics.xmean /= points.length;
-			metrics.ymean /= points.length;
-			for(b = 0; b < points.length; b++) {
-				metrics.diff += (points[b].x - metrics.xmean) * (points[b].y - metrics.ymean);
-				metrics.squares += (points[b].x - metrics.xmean) * (points[b].x - metrics.xmean);
-			}
-			metrics.slope = metrics.diff / metrics.squares;
-			points2.push({
-				x: -1,
-				y: metrics.slope * (-1 - metrics.xmean) + metrics.ymean
-			});
-			points2.push({
-				x: highestValueOnAxis + 1,
-				y: metrics.slope * (highestValueOnAxis + 1 - metrics.xmean) + metrics.ymean
-			});
-
-			//// Y-LABEL GENERATION ////
-			let labelToBookTitle = function(label, withLineBreaks) {
-				var s = $scope.allBooks[label-1];
-				if (s != null && s != undefined && s.category == $scope.selectedCategory) {
-					var fullLabel;
-					if ($scope.selectedCategory == "Comprehension")
-						fullLabel = $scope.allBooks[label-1].subcategory + " " + $scope.allBooks[label-1].title;
-					else
-						fullLabel = $scope.allBooks[label-1].title;
-
-					if (withLineBreaks) {
-						var splitLabel = fullLabel.split(" ");
-
-						fullLabel = [];
-						fullLabel.push("");
-						var index = 0;
-						for (var i = 0; i < splitLabel.length; i++) {
-							if (fullLabel[index].length >= 10) {
-								index++;
-								fullLabel.push("");
-							} else {
-								fullLabel[index] += " ";
+							fullLabel = [];
+							fullLabel.push("");
+							var index = 0;
+							for (var i = 0; i < splitLabel.length; i++) {
+								if (fullLabel[index].length >= 10) {
+									index++;
+									fullLabel.push("");
+								} else {
+									fullLabel[index] += " ";
+								}
+								fullLabel[index] += splitLabel[i];
 							}
-							fullLabel[index] += splitLabel[i];
 						}
+
+						return fullLabel;
 					}
-
-					return fullLabel;
 				}
-			}
 
 
-			//// CHART SPECS ////
-			Chart.defaults.global.defaultFontSize = 18;
-			Chart.defaults.global.defaultFontColor = '#000';
+				//// CHART SPECS ////
+				Chart.defaults.global.defaultFontSize = 18;
+				Chart.defaults.global.defaultFontColor = '#000';
 
-			if (regen)
-				exampleChart.destroy();
-			exampleChart = new Chart(myChart,{
-				type: 'line',
-				data:{
-					datasets:[{
-						label: $scope.studentName,
-						data: points,
-						backgroundColor: "rgba(255, 0, 0, 0.4)",
-						borderColor: "rgba(255, 0, 0, 0.4)",
-						fill: false,
-						cubicInterpolationMode: 'monotone',
-						hitRadius: 30
-					}, {
-						label: "Best Fit Line",
-						data: points2,
-						backgroundColor: "rgba(0, 0, 255, 0.4)",
-						borderColor: "rgba(0, 0, 255, 0.4)",
-						fill: false,
-						borderDash: [5],
-						lineTension: 0
-					}]
-				},
-				options: {
-					responsive: true,
-					title: {
-						display: false
-					},
-					legend: {
-						position: 'top'
-					},
-					tooltips: {
-						enabled: true,
-						callbacks: {
-							title:function(tooltipItem, data) {
-								return labelToBookTitle(tooltipItem[0].yLabel, false);
-							},
-							label:function(tooltipItem, data) { // callback function converts x-axis numeral to MM/DD/YYYY formatted string
-								var number = tooltipItem.xLabel;
-								var finalMonth = dateAtZero.month + Math.trunc(number);
-								var finalYear = dateAtZero.year + Math.trunc(finalMonth / 12);
-								finalMonth = finalMonth % 12 + 1;
-
-								var daysInMonth = moment(finalYear + " " + finalMonth, "YYYY MM").daysInMonth();
-								var finalDate = Math.round((number % 1) * daysInMonth) + 1;
-								return "started on " + finalMonth + "/" + finalDate + "/" + finalYear;
-							}
-						}
-					},
-					layout: {
-						padding: {
-							top: 10,
-							bottom: 10
-						}
-					},
-					scales: {
-						xAxes: [{
-							id:"xAxis1",
-							type: 'linear',
-							scaleLabel: {
-								display: false,
-								padding: -5
-							},
-							ticks: {
-								dislay: false,
-								stepSize: 1,
-								autoSkip: true,
-								min: 0,
-								max: $scope.months - $scope.months2 + 1,
-								maxRotation: 0,
-								callback:function(label){
-									var s = labelDatesWithGrades[label];
-									if (s != null && s != undefined)
-										return s.month + 1;
-								}
-							}
+				if (regen)
+					exampleChart.destroy();
+				exampleChart = new Chart(myChart,{
+					type: 'line',
+					data:{
+						datasets:[{
+							label: $scope.studentName,
+							data: points,
+							backgroundColor: "rgba(255, 0, 0, 0.4)",
+							borderColor: "rgba(255, 0, 0, 0.4)",
+							fill: false,
+							cubicInterpolationMode: 'monotone',
+							hitRadius: 30
 						}, {
-							id: "xAxis2",
-							type: 'linear',
-							gridLines: {
-								display: false,
-								drawBorder: true
-							},
-							scaleLabel: {
-								display: false,
-								padding: 0
-							},
-							ticks: {
-								stepSize: 1,
-								autoSkip: false,
-								min: 0,
-								max: $scope.months - $scope.months2 + 1,
-								callback:function(label){
-									var s = labelDatesWithGrades[label];
-									if (s != null && s != undefined) {
-										if(s.month == 6) {
-											return s.year;
-										} else if (s.month == 0){
-											return "|";
-										}
-									}
-								},
-								maxRotation: 0,
-								padding: 0
-							}
-
-						}, {
-							id: "xAxis3",
-							type: 'linear',
-							gridLines: {
-								display: false,
-								drawBorder: true,
-								drawOnChartArea: false
-							},
-							scaleLabel: {
-								display: false
-							},
-							ticks: {
-								stepSize: 1,
-								autoSkip: false,
-								min: 0,
-								max: $scope.months - $scope.months2 + 1,
-								callback:function(label){
-									var s = labelDatesWithGrades[label];
-									if (s != null && s != undefined) {
-										if(s.month == 1) {
-											if(s.grade == 0) {
-												return "Kindergarten";
-											} else if(s.grade == 1) {
-												return "1st Grade";
-											} else if(s.grade == 2) {
-												return "2nd Grade";
-											} else if(s.grade == 3) {
-												return "3rd Grade";
-											} else if(s.grade <= -1) {
-												return "Pre-K";
-											} else {
-												return grade + "th Grade";
-											}
-										} else if (s.month == 7) {
-											return "|";
-										}
-									}
-								},
-								maxRotation: 0
-							}
-						}],
-						yAxes: [{
-							type: 'linear',
-							position: 'left',
-							display: true,
-							scaleLabel: {
-								display: true,
-								labelString: $scope.selectedCategory
-							},
-							ticks: {
-								stepSize: 1,
-								autoSkip: false,
-								min: leastBook - 1,
-								max: greatestBook + 3,
-								lineHeight: 1,
-								callback:function(label) {
-									return labelToBookTitle(label, false); // USE "TRUE" INSTEAD OF "FALSE" FOR MULTI-LINE LABELS
-								}
-							}
+							label: "Best Fit Line",
+							data: points2,
+							backgroundColor: "rgba(0, 0, 255, 0.4)",
+							borderColor: "rgba(0, 0, 255, 0.4)",
+							fill: false,
+							borderDash: [5],
+							lineTension: 0
 						}]
+					},
+					options: {
+						responsive: true,
+						title: {
+							display: false
+						},
+						legend: {
+							position: 'top'
+						},
+						tooltips: {
+							enabled: true,
+							callbacks: {
+								title:function(tooltipItem, data) {
+									return labelToBookTitle(tooltipItem[0].yLabel, false);
+								},
+								label:function(tooltipItem, data) { // callback function converts x-axis numeral to MM/DD/YYYY formatted string
+									var number = tooltipItem.xLabel;
+									var finalMonth = dateAtZero.month + Math.trunc(number);
+									var finalYear = dateAtZero.year + Math.trunc(finalMonth / 12);
+									finalMonth = finalMonth % 12 + 1;
+
+									var daysInMonth = moment(finalYear + " " + finalMonth, "YYYY MM").daysInMonth();
+									var finalDate = Math.round((number % 1) * daysInMonth) + 1;
+									return "started on " + finalMonth + "/" + finalDate + "/" + finalYear;
+								}
+							}
+						},
+						layout: {
+							padding: {
+								top: 10,
+								bottom: 10
+							}
+						},
+						scales: {
+							xAxes: [{
+								id:"xAxis1",
+								type: 'linear',
+								scaleLabel: {
+									display: false,
+									padding: -5
+								},
+								ticks: {
+									dislay: false,
+									stepSize: 1,
+									autoSkip: true,
+									min: 0,
+									max: $scope.months - $scope.months2 + 1,
+									maxRotation: 0,
+									callback:function(label){
+										var s = labelDates[label];
+										if (s != null && s != undefined)
+											return s.month + 1;
+									}
+								}
+							}, {
+								id: "xAxis2",
+								type: 'linear',
+								gridLines: {
+									display: false,
+									drawBorder: true
+								},
+								scaleLabel: {
+									display: false,
+									padding: 0
+								},
+								ticks: {
+									stepSize: 1,
+									autoSkip: false,
+									min: 0,
+									max: $scope.months - $scope.months2 + 1,
+									callback:function(label){
+										var s = labelDates[label];
+										if (s != null && s != undefined) {
+											if(s.month == 6) {
+												return s.year;
+											} else if (s.month == 0){
+												return "|";
+											}
+										}
+									},
+									maxRotation: 0,
+									padding: 0
+								}
+
+							}, {
+								id: "xAxis3",
+								type: 'linear',
+								gridLines: {
+									display: false,
+									drawBorder: true,
+									drawOnChartArea: false
+								},
+								scaleLabel: {
+									display: false
+								},
+								ticks: {
+									stepSize: 1,
+									autoSkip: false,
+									min: 0,
+									max: $scope.months - $scope.months2 + 1,
+									callback:function(label){
+										var s = labelDates[label];
+										if (s != null && s != undefined) {
+											if(s.month == 1) {
+												if(s.grade == 0) {
+													return "Kindergarten";
+												} else if(s.grade == 1) {
+													return "1st Grade";
+												} else if(s.grade == 2) {
+													return "2nd Grade";
+												} else if(s.grade == 3) {
+													return "3rd Grade";
+												} else if(s.grade <= -1) {
+													return "Pre-K";
+												} else {
+													return grade + "th Grade";
+												}
+											} else if (s.month == 7) {
+												return "|";
+											}
+										}
+									},
+									maxRotation: 0
+								}
+							}],
+							yAxes: [{
+								type: 'linear',
+								position: 'left',
+								display: true,
+								scaleLabel: {
+									display: true,
+									labelString: $scope.selectedCategory
+								},
+								ticks: {
+									stepSize: 1,
+									autoSkip: false,
+									min: leastBook - 1,
+									max: greatestBook + 3,
+									lineHeight: 1,
+									callback:function(label) {
+										return labelToBookTitle(label, false); // USE "TRUE" INSTEAD OF "FALSE" FOR MULTI-LINE LABELS
+									}
+								}
+							}]
+						}
 					}
-				}
-			});
+				});
 
-			regen = true;
+				regen = true;
 
-			$scope.logoDisplay = true;
-			$scope.expanded = false;
+				$scope.logoDisplay = true;
+				$scope.expanded = false;
+
+				$scope.formStatus = 1;
+				$scope.formStatusText = "";
+			}
+			catch (err) {
+				$scope.formStatus = 0;
+				$scope.formStatusText = "Error - check console";
+			}
 		});	
 	};
 
@@ -634,6 +654,10 @@ app.controller('editStudentCtrl', function($scope, $http, $window) {
 					$scope.formStatusText = "Error";
 				}
 			});
+		}
+		else {
+			$scope.formStatus = 0;
+			$scope.formStatusText = "Invalid Form";
 		}
 	}
 });

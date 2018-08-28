@@ -1,10 +1,21 @@
+/*CONTENT CSS*/
 body {
 	background: linear-gradient(to right, #FFD700, #FFA500);
 	background-size: 100%;
 	height: 1000%;
 	color: white;
 }
+#header {
+	top: 0;
+	width: 100%;
+	overflow: auto;
+	padding: 20px;
+}
+#footer {
+	margin-top: 250px;
+}
 
+/*TABLE CSS*/
 #tableContent {
 	width: 80%;
 	left: 10%;
@@ -12,39 +23,31 @@ body {
 	border-bottom: 1px solid black;
 	border-collapse: collapse;
 }
-
 #tableHeaderContainer, #tableContainer {
 	padding: 15px 10px;
 	text-align: center;
 	transition: 0.5s;
 }
-
 #tableHeaderContainer {
 	background-color: black;
 }
-
+#tableContainer {
+	animation-duration: 0s;
+}
 #tableContainer:hover{
 	background-color: #FFA500;
 }
 
+/*.columnContainer, .column {
+	pointer-events: none;
+}*/
 
 .expandedContent {
 	height: 180px;
 }
 
 
-#header {
-	top: 0;
-	width: 100%;
-	overflow: auto;
-	padding: 20px;
-}
-
-#filterContainer {
-	margin: auto;
-	width: 50%;
-}
-
+/*BUTTON CSS*/
 #insertBtn, #updateBtn, #studentBtn {
 	width: 200px;
 }
@@ -54,17 +57,25 @@ body {
 #studentBtn {
 	float: left;
 }
-
 #dataToggleBtn {
 	position: relative;
 	left:30%;
 	width:40%;
 }
-
 #accordionButton {
 	width: 200px;
 	animation-duration: 0s;
 	float: left;
+}
+
+
+/*FILTER CSS*/
+#filterContainer {
+	margin: auto;
+	width: 50%;
+}
+#filterText {
+	text-align: center;
 }
 
 input[black] {
@@ -73,15 +84,4 @@ input[black] {
 	left: 20%;
 	width: 60%;
 	text-align: center;
-}
-
-
-#filterText {
-	text-align: center;
-}
-
-
-
-#footer {
-	margin-top: 250px;
 }

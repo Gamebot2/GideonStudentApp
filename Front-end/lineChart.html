@@ -1,33 +1,33 @@
 <!DOCTYPE html>
-<html class = "no-js" lang="">
+<html>
 	<head>
 		<title>Line Chart</title>
+
 		<meta charset="UTF-8">
 		<meta http-equiv="x-ua-compatible" content="ie=edge">
-		<meta name = "description" content = "">
+		<meta name="description" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-
-		<!--link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"-->
-		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-		<link rel="manifest" href="/site.webmanifest">
 		<meta name="msapplication-TileColor" content="#da532c">
 		<meta name="theme-color" content="#ffffff">
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
-		<script src = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js"></script>
-		<script src = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
-		<script src ="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-		<script src ="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.min.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-aria.min.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-messages.min.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
-		<script src = "app.js"></script>
-		<link rel = "stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-		<link rel = "stylesheet" type = "text/css" href="lineChart.css">
-		<link rel = "stylesheet" type = "text/css" href="siteStyle.css">
-		<script src = "ripple.js"></script>
+		<script src="app.js"></script>
+		<script src="ripple.js"></script>
+
+		<link rel="manifest" href="/site.webmanifest">
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="SiteStyle.css">
+		<link rel="stylesheet" type="text/css" href="LineChart.css">
 	</head>
 	<body>
 		<br>
@@ -85,7 +85,7 @@
 			</div>
 
 			<!--Error message in case no data is retrieved-->
-			<h6 class="errorText" ng-show="errorMessage">Error: No data found</h6>
+			<span ng-class="{'errorText':formStatus == 0, 'successText':formStatus == 1}">{{formStatusText}}</span>
 			<br><br>
 
 			

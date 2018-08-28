@@ -25,7 +25,7 @@ public class BookDaoImpl implements BookDao {
 	//Retrieves all books from the database
 	@Override
 	public List<Book> getAllBooks() {
-		sql = "SELECT * FROM book";
+		sql = "SELECT * FROM books";
 		rowMapper = new BookRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
@@ -33,7 +33,7 @@ public class BookDaoImpl implements BookDao {
 	//Retrieves a single book from the database given a specific ID number
 	@Override
 	public Book getBookById(int book_id) {
-		sql = "SELECT * FROM book WHERE book_id = ?";
+		sql = "SELECT * FROM books WHERE BookId = ?";
 		rowMapper = new BeanPropertyRowMapper<Book>(Book.class);
 		return jdbcTemplate.queryForObject(sql, rowMapper, book_id);
 	}
@@ -41,7 +41,7 @@ public class BookDaoImpl implements BookDao {
 	//Retrieves a single book from the database given information about its name
 	@Override
 	public Book getBookByName(String category, String subcategory, String title) {
-		sql = "SELECT * FROM book WHERE category = ? AND subcategory = ? AND title = ?";
+		sql = "SELECT * FROM books WHERE Category = ? AND Subcategory = ? AND Title = ?";
 		rowMapper = new BeanPropertyRowMapper<Book>(Book.class);
 		return jdbcTemplate.queryForObject(sql, rowMapper, category, subcategory, title);
 	}
@@ -49,27 +49,27 @@ public class BookDaoImpl implements BookDao {
 	//Returns a list of categories in the database
 	@Override
 	public List<String> getCategories() {
-		sql = "SELECT DISTINCT category FROM book";
+		sql = "SELECT DISTINCT Category FROM books";
 		return jdbcTemplate.queryForList(sql, String.class);
 	}
 	
 	//Returns a list of subcategories for a given category in the database
 	@Override
 	public List<String> getSubcategories(String category) {
-		sql = "SELECT DISTINCT subcategory FROM book WHERE category = ?";
+		sql = "SELECT DISTINCT Subcategory FROM books WHERE Category = ?";
 		return jdbcTemplate.queryForList(sql, String.class, category);
 	}
 	
 	//Returns a list of titles for a given subcategory in the database
 	@Override
 	public List<String> getTitles(String subcategory) {
-		sql = "SELECT DISTINCT title FROM book WHERE subcategory = ?";
+		sql = "SELECT DISTINCT Title FROM books WHERE Subcategory = ?";
 		return jdbcTemplate.queryForList(sql, String.class, subcategory);
 	}
 	
 	//Returns all books between two sequenceLarge values within a certain category
 	public List<Book> getBooksInRange(String category, int startSequence, int endSequence) {
-		sql = "SELECT * FROM book WHERE UPPER(category) = UPPER(?) AND sequenceLarge > ? AND sequenceLarge <= ?";
+		sql = "SELECT * FROM books WHERE UPPER(Category) = UPPER(?) AND SequenceLarge > ? AND SequenceLarge <= ?";
 		rowMapper = new BookRowMapper();
 		return jdbcTemplate.query(sql, rowMapper, category, startSequence, endSequence);
 	}
@@ -78,7 +78,7 @@ public class BookDaoImpl implements BookDao {
 	//Returns whether or not a book exists by checking for its category and subcategory
 	@Override
 	public boolean bookExists(String category, String subcategory) {
-		sql = "SELECT count(*) FROM book WHERE category = ? and subcategory = ?";
+		sql = "SELECT COUNT(*) FROM books WHERE Category = ? and Subcategory = ?";
 		int count = jdbcTemplate.queryForObject(sql, Integer.class, category, subcategory);
 
 		return count > 0;

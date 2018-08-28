@@ -2,7 +2,7 @@ package com.ansh.maven.HelloWorld;
 
 public class Book {
 	
-	private int book_id;
+	private int bookId;
 	private String subject;
 	private String category;
 	private String subcategory;
@@ -18,10 +18,10 @@ public class Book {
 		super();
 	}
 
-	public Book(int book_id, String subject, String category, String subcategory, String title, int gradeLevel,
+	public Book(int bookId, String subject, String category, String subcategory, String title, int gradeLevel,
 			int test, int timeAllowed, int mistakesAllowed, int sequence, int sequenceLarge) {
 		super();
-		this.book_id = book_id;
+		this.bookId = bookId;
 		this.subject = subject;
 		this.category = category;
 		this.subcategory = subcategory;
@@ -34,12 +34,12 @@ public class Book {
 		this.sequenceLarge = sequenceLarge;
 	}
 
-	public int getBook_id() {
-		return book_id;
+	public int getBookId() {
+		return bookId;
 	}
 
-	public void setBook_id(int book_id) {
-		this.book_id = book_id;
+	public void setBookId(int bookId) {
+		this.bookId = bookId;
 	}
 
 	public String getSubject() {
@@ -124,7 +124,7 @@ public class Book {
 
 	@Override
 	public String toString() {
-		return "Book [book_id=" + book_id + ", subject=" + subject + ", category=" + category + ", subcategory="
+		return "Book [bookId=" + bookId + ", subject=" + subject + ", category=" + category + ", subcategory="
 				+ subcategory + ", title=" + title + ", gradeLevel=" + gradeLevel + ", test=" + test + ", timeAllowed="
 				+ timeAllowed + ", mistakesAllowed=" + mistakesAllowed + ", sequence=" + sequence + ", sequenceLarge="
 				+ sequenceLarge + "]";

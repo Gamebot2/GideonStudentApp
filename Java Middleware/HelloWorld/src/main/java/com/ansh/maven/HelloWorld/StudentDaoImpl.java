@@ -55,7 +55,7 @@ public class StudentDaoImpl implements StudentDao {
 	// Returns the categories of books for which a student has records
 	@Override
 	public List<String> getCategories(int StudentId) {
-		sql = "SELECT DISTINCT book.category FROM records INNER JOIN students ON records.StudentId = students.StudentId INNER JOIN book ON records.BookId = book.book_id WHERE students.StudentId = ?";
+		sql = "SELECT DISTINCT books.Category FROM records INNER JOIN students ON records.StudentId = students.StudentId INNER JOIN books ON records.BookId = books.BookId WHERE students.StudentId = ?";
 		return this.jdbcTemplate.queryForList(sql, String.class, StudentId + ";");
 	
 	}
