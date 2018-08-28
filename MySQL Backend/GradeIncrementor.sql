@@ -41,8 +41,8 @@ UPDATE students
 SET Grade = CASE
 	WHEN students.Grade = null OR students.Grade = ""
     THEN ""
-	WHEN students.Grade = "PreK (-1)"
-    THEN "PreK (-1)"
+	/*WHEN students.Grade = "PreK (-1)" 	-- uncomment if decrementing grades
+    THEN "PreK (-1)"*/
 	WHEN
 		students.Grade IN (
 			SELECT
@@ -56,7 +56,7 @@ SET Grade = CASE
 		FROM grades
 		WHERE grades.GradeNumber = (
 			SELECT
-				grades.GradeNumber + 1 -- if you need to decrement everyone's grade, change this to grades.GradeNumber - 1
+				grades.GradeNumber + 1 		-- if you need to decrement everyone's grade, change this to grades.GradeNumber - 1, and uncomment the above WHEN clause
 			FROM grades
 			WHERE grades.GradeString = students.Grade
 		)
