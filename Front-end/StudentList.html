@@ -30,9 +30,11 @@
 			<button type = "button" class = "hoverable" id = "insertBtn" onclick = "location.href='InsertRecord.html'">Insert Record</button>
 		</div>
 		<br/>
+
 		<!--List for displaying all students in the database that have book data-->
 		<div ng-app="gideonApp" ng-controller = "studentCtrl">
 			<h1>List of Students</h1>
+
 			<!--Filter text blocks-->
 			<div class = "columnContainer" id = "filterContainer">
 				<div class = "twoColumn">
@@ -55,6 +57,8 @@
 			</button>
 			<br>
 			<br>
+
+			<!--Table of students, now arranged in columns as opposed to an actual table-->
 			<div id="tableContent">
 				<div class="columnContainer" id="tableHeaderContainer">
 					<div class="column" style="width:30%">Name</div>

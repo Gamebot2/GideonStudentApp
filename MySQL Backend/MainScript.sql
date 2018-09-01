@@ -21,9 +21,6 @@ SELECT * from students;
 
 -- put whatever here
 
-DELETE FROM students WHERE StudentId > 78;
-DELETE FROM records WHERE RecordId > 281;
-
 INSERT INTO students (Client, FirstName, LastName, Grade, Gender)
 VALUES ("Test Student", "Test", "Student", "5th", "Male");
 
@@ -31,6 +28,17 @@ VALUES ("Test Student", "Test", "Student", "5th", "Male");
 
 
 
+
+
+
+
+
+
+
+
+-- delete a student while maintaining referential integrity in records
+DELETE FROM records WHERE RecordId > 0 AND StudentID IN (SELECT StudentId FROM students WHERE StudentId = 69);
+DELETE FROM students WHERE StudentId = 69;
 
 -- selecting records with way more detail (customize the WHERE clause to filter)
 SELECT *

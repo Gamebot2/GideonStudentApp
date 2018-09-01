@@ -58,16 +58,93 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 	$scope.studentId = $window.localStorage.getItem(0);
 	$scope.studentName = $window.localStorage.getItem(1);
 
+	// vvvv DATES MANAGEMENT STUFF vvvv
+	$scope.months = [
+		{name: "Jan", num: 0},
+		{name: "Feb", num: 1},
+		{name: "Mar", num: 2},
+		{name: "Apr", num: 3},
+		{name: "May", num: 4},
+		{name: "Jun", num: 5},
+		{name: "Jul", num: 6},
+		{name: "Aug", num: 7},
+		{name: "Sep", num: 8},
+		{name: "Oct", num: 9},
+		{name: "Nov", num: 10},
+		{name: "Dec", num: 11}
+	];
+
+	var now = moment();
+	var zeroDate;
+	$scope.now = {
+		month: now.month(),
+		year: now.year(),
+		date: 0
+	}
+	$scope.date1 = {month: now.month(), year: now.year()-1, date: 0};
+	$scope.date2 = {month: now.month(), year: now.year(), date: 0};
+	$scope.datesCustomValid = true;
+
+	let getStartDateAt = function(index) { // function that returns a month/year/floating-point-date object from a specified record, for use in plotting points
+		var d = moment($scope.records[index].startDate.split(" ")[0]);
+		return {
+			month: d.month(),
+			year: d.year(),
+			date: (d.date() - 1) / d.daysInMonth()
+		}
+	}
+	let dateAdd = function(originalDate, addition) { // function that returns a month/year/floating-point-date object a certain number of months after another one of those objects
+		var numeral = originalDate.year * 12 + originalDate.month;
+		numeral += addition;
+		return {
+			month: numeral % 12,
+			year: Math.trunc(numeral / 12),
+			date: 0
+		}
+	}
+	let dateSubtract = function(originalDate, subtraction) { // function that returns a month/year/floating-point-date object a certain number of months prior to another one of those objects
+		return dateAdd(originalDate, -subtraction);
+	}
+	let dateCompare = function(date1, date2) { // function that returns the month difference between two month/year/floating-point-date objects
+		return (date1.year - date2.year) * 12 + (date1.month - date2.month) + (date1.date - date2.date);
+	}
+
+	$scope.datesCustomValidate = function() {
+		if ($scope.date1.month == null || $scope.date1.month == undefined || $scope.date1.year == null || $scope.date1.year == undefined ||
+			$scope.date2.month == null || $scope.date2.month == undefined || $scope.date2.year == null || $scope.date2.year == undefined) {
+			console.log("definition invalid");
+			$scope.datesCustomValid = false;
+		}
+		else if (dateCompare($scope.date1, $scope.now) >= 0 || dateCompare($scope.date1, $scope.now) < -60 || dateCompare($scope.date2, $scope.now) > 12 || dateCompare($scope.date2, $scope.now) < -60) {
+			console.log("range invalid");
+			$scope.datesCustomValid = false;
+		}
+		else if (dateCompare($scope.date1, $scope.date2) >= 0) {
+			console.log("comparison invalid");
+			$scope.datesCustomValid = false;
+		}
+		else {
+			$scope.datesCustomValid = true;
+		}
+	}
+	// ^^^^ DATES MANAGEMENT STUFF ^^^^
+
 	//Retrieves all categories the selected student is working in
 	$http.get("http://localhost:8081/categoriesByStudent?Id=" + $scope.studentId)
 	.then(function(response) {
 		$scope.categoriesOfStudent = response.data;
 	});
 
-	//Retrieves the student's grade level
+	//Retrieves the student's grade level and does time calculations
 	$http.get("http://localhost:8081/gradeOfStudent?Id=" + $scope.studentId)
 	.then(function(response) {
 		$scope.currentGrade = response.data;
+
+		zeroDate = {
+			month: 7,
+			year: now.year() - $scope.currentGrade - (now.month() < 7 ? 1 : 0), // subtract an extra 1 from the year if it's before august
+			date: 0
+		}
 	});
 
 	//Retrieves all the books for use later in y-axis plotting
@@ -92,7 +169,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 
 	//Generates the lineChart based on instructor specifications
 	$scope.generateChart = function() {
-		if ($scope.form.$invalid) { // Ensures form is valid before generation
+		if ($scope.form.$invalid || !$scope.datesCustomValid) { // Ensures form is valid before generation
 			$scope.formStatus = 0;
 			$scope.formStatusText = "Invalid Form";
 			return;
@@ -101,38 +178,18 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			$scope.formStatusText = "Processing...";
 		}
 
+		var months = dateCompare($scope.now, $scope.date1);
+		var months2 = dateCompare($scope.now, $scope.date2);
 
 		//// GIANT CHART GENERATION METHOD ////
-		$http.get("http://localhost:8081/recordsById?StudentId=" + $scope.studentId + "&Category=" + $scope.selectedCategory + "&Months=" + $scope.months + "&Reps=" + $scope.selectedRep + "&Until=" + $scope.months2)
+		$http.get("http://localhost:8081/recordsById?StudentId=" + $scope.studentId + "&Category=" + $scope.selectedCategory + "&Months=" + months + "&Reps=" + $scope.selectedRep + "&Until=" + months2)
 		.then(function(response) {
 			$scope.records = response.data;
 			
 			try {
-				let getStartDateAt = function(index) { // function that returns a month/year/floating-point-date object from a specified record, for use in plotting points
-					var d = moment($scope.records[index].startDate.split(" ")[0]);
-					return {
-						month: d.month(),
-						year: d.year(),
-						date: (d.date() - 1) / d.daysInMonth()
-					}
-				}
-				let getCurrentDate = function(subtraction) { // function that returns a month/year/floating-point-date object from a certain number of months in the past
-					var currentMonth = moment().subtract(subtraction, 'months');
-					return {
-						month: currentMonth.month(),
-						year: currentMonth.year(),
-						date: 0
-					}
-				}
-				let dateCompare = function(date1, date2) { // function that returns the month difference between two month/year/floating-point-date objects
-					return (date1.year - date2.year) * 12 + (date1.month - date2.month) + (date1.date - date2.date);
-				}
-
-
-				var highestValueOnAxis = $scope.months - $scope.months2 + 1;
-				var dateAtZero = getCurrentDate($scope.months);
-
-				var greatestBook = 0; // tracks the highest and lowest points on the y-axis, for manual padding
+				var lowestDate = dateCompare($scope.date1, zeroDate); // x-axis bounds
+				var highestDate = dateCompare($scope.date2, zeroDate);
+				var greatestBook = 0; // y-axis bounds
 				var leastBook = 999;
 
 				var currentGradeOffset = 0;
@@ -144,9 +201,9 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 				var points3 = []; 			// currently unused test modification of the data
 
 
-				//// Maps the internal linear scale of the x axis (0, 1, 2, 3, ...) with labels containing dates and grades ////
-				for(j = 0; j < highestValueOnAxis; j++) {
-					var currentDate = getCurrentDate($scope.months - j);
+				//// Maps the internal linear scale of the x axis (lowestDate, ... highestDate) with labels containing dates and grades ////
+				for(j = lowestDate; j < highestDate; j++) {
+					var currentDate = dateAdd(zeroDate, j);
 					labelDates.push(currentDate);
 
 					if(currentDate.month == 7) // grade goes up in August = 7
@@ -155,7 +212,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 				}
 				for(j = 0; j < labelDates.length; j++)
 					labelDates[j].grade = $scope.currentGrade + grades[j] - currentGradeOffset; // uses the final grade offset and the known current grade to calculate the final grade value for each month
-
+				console.log(labelDates);
 
 				//// Creates a point mapping each record to its respective spot on the x and y axis ////
 				var a = 0; // Helps display error message if there is no data, couldn't find a better solution for some reason: this value will increase for every existing record
@@ -165,7 +222,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 
 						//console.log(dateCompare(getStartDateAt(i), dateAtZero) + ", " + $scope.records[i].bookId);
 						points.push({
-							x: dateCompare(getStartDateAt(i), dateAtZero),
+							x: dateCompare(getStartDateAt(i), zeroDate),
 							y: $scope.records[i].bookId
 						})
 
@@ -201,12 +258,12 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 				}
 				metrics.slope = metrics.diff / metrics.squares;
 				points2.push({
-					x: -1,
-					y: metrics.slope * (-1 - metrics.xmean) + metrics.ymean
+					x: lowestDate - 1,
+					y: metrics.slope * (lowestDate - 1 - metrics.xmean) + metrics.ymean
 				});
 				points2.push({
-					x: highestValueOnAxis + 1,
-					y: metrics.slope * (highestValueOnAxis + 1 - metrics.xmean) + metrics.ymean
+					x: highestDate + 1,
+					y: metrics.slope * (highestDate + 1 - metrics.xmean) + metrics.ymean
 				});
 
 
@@ -285,8 +342,8 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 								},
 								label:function(tooltipItem, data) { // callback function converts x-axis numeral to MM/DD/YYYY formatted string
 									var number = tooltipItem.xLabel;
-									var finalMonth = dateAtZero.month + Math.trunc(number);
-									var finalYear = dateAtZero.year + Math.trunc(finalMonth / 12);
+									var finalMonth = zeroDate.month + Math.trunc(number);
+									var finalYear = zeroDate.year + Math.trunc(finalMonth / 12);
 									finalMonth = finalMonth % 12 + 1;
 
 									var daysInMonth = moment(finalYear + " " + finalMonth, "YYYY MM").daysInMonth();
@@ -313,11 +370,11 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 									dislay: false,
 									stepSize: 1,
 									autoSkip: true,
-									min: 0,
-									max: $scope.months - $scope.months2 + 1,
+									min: lowestDate,
+									max: highestDate,
 									maxRotation: 0,
 									callback:function(label){
-										var s = labelDates[label];
+										var s = labelDates[label - lowestDate];
 										if (s != null && s != undefined)
 											return s.month + 1;
 									}
@@ -336,10 +393,10 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 								ticks: {
 									stepSize: 1,
 									autoSkip: false,
-									min: 0,
-									max: $scope.months - $scope.months2 + 1,
+									min: lowestDate,
+									max: highestDate,
 									callback:function(label){
-										var s = labelDates[label];
+										var s = labelDates[label - lowestDate];
 										if (s != null && s != undefined) {
 											if(s.month == 6) {
 												return s.year;
@@ -366,10 +423,10 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 								ticks: {
 									stepSize: 1,
 									autoSkip: false,
-									min: 0,
-									max: $scope.months - $scope.months2 + 1,
+									min: lowestDate,
+									max: highestDate,
 									callback:function(label){
-										var s = labelDates[label];
+										var s = labelDates[label - lowestDate];
 										if (s != null && s != undefined) {
 											if(s.month == 1) {
 												if(s.grade == 0) {
@@ -425,6 +482,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 				$scope.formStatusText = "";
 			}
 			catch (err) {
+				console.log(err.message);
 				$scope.formStatus = 0;
 				$scope.formStatusText = "Error - check console";
 			}

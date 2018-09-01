@@ -35,6 +35,8 @@ CREATE TABLE `records` (
     `TestTime` VARCHAR(255) DEFAULT NULL,
     `Mistakes` VARCHAR(255) DEFAULT NULL,
     PRIMARY KEY (`RecordId`),
+    CONSTRAINT FOREIGN KEY (`StudentId`) REFERENCES `students`(`StudentId`),
+    CONSTRAINT FOREIGN KEY (`BookId`) REFERENCES `books`(`BookId`),
     KEY `StudentId_index` (`StudentId`),
     KEY `BookId_index` (`BookId`),
     KEY `Rep_index` (`Rep`),

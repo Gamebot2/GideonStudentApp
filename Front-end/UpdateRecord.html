@@ -32,6 +32,7 @@
 			<h1>Update Record</h1>
 			<!--Form for updating records for students who already are in the system-->
 			<form name = "form">
+				<!--Displays list of all current students upon selection, with a custom filter; meant only to filter for the record, not a required input-->
 				<label for = "name">Filter By Name: </label>
 				<input black id = "textFilter" name = "textFilter" type = "text" ng-model="clientFilter">
           			<select white big id="clientSelect" name = "client" ng-model = "selectedStudent" ng-options = "v for v in names | filter: clientFilter">
