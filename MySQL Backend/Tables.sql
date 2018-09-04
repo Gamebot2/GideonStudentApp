@@ -9,6 +9,7 @@ CREATE TABLE `books` (
 	`Category` VARCHAR(255) DEFAULT NULL,
 	`Subcategory` VARCHAR(255) DEFAULT NULL,
 	`Title` VARCHAR(255) DEFAULT NULL,
+    `Abbreviation` VARCHAR(255) DEFAULT NULL,
 	`GradeLevel` VARCHAR(255) DEFAULT NULL,
 	`Test` INT(11) NOT NULL,
 	`TimeAllowed` INT(11) NOT NULL,

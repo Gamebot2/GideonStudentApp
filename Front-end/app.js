@@ -10,7 +10,7 @@ var app = angular.module('gideonApp', ['ngAnimate']);
 app.controller('studentCtrl', function($scope, $http, $window) {
 
 	$scope.getStudents = function() {
-		$http.get("http://localhost:8081/" + ($scope.dataOn ? "dataStudents" : "students"))
+		$http.get(`http://localhost:8081/${$scope.dataOn ? "dataStudents" : "students"}`)
 		.then(function(response) {
 			$scope.students = response.data;
 		});
@@ -59,32 +59,13 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 	$scope.studentName = $window.localStorage.getItem(1);
 
 	// vvvv DATES MANAGEMENT STUFF vvvv
-	$scope.months = [
-		{name: "Jan", num: 0},
-		{name: "Feb", num: 1},
-		{name: "Mar", num: 2},
-		{name: "Apr", num: 3},
-		{name: "May", num: 4},
-		{name: "Jun", num: 5},
-		{name: "Jul", num: 6},
-		{name: "Aug", num: 7},
-		{name: "Sep", num: 8},
-		{name: "Oct", num: 9},
-		{name: "Nov", num: 10},
-		{name: "Dec", num: 11}
-	];
-
-	var now = moment();
 	var zeroDate;
-	$scope.now = {
-		month: now.month(),
-		year: now.year(),
+	var n = moment();
+	now = {
+		month: n.month(),
+		year: n.year(),
 		date: 0
 	}
-	$scope.date1 = {month: now.month(), year: now.year()-1, date: 0};
-	$scope.date2 = {month: now.month(), year: now.year(), date: 0};
-	$scope.datesCustomValid = true;
-
 	let getStartDateAt = function(index) { // function that returns a month/year/floating-point-date object from a specified record, for use in plotting points
 		var d = moment($scope.records[index].startDate.split(" ")[0]);
 		return {
@@ -103,46 +84,28 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 		}
 	}
 	let dateSubtract = function(originalDate, subtraction) { // function that returns a month/year/floating-point-date object a certain number of months prior to another one of those objects
-		return dateAdd(originalDate, -subtraction);
+		return dateAdd(originalDate, -1 * subtraction);
 	}
 	let dateCompare = function(date1, date2) { // function that returns the month difference between two month/year/floating-point-date objects
 		return (date1.year - date2.year) * 12 + (date1.month - date2.month) + (date1.date - date2.date);
 	}
-
-	$scope.datesCustomValidate = function() {
-		if ($scope.date1.month == null || $scope.date1.month == undefined || $scope.date1.year == null || $scope.date1.year == undefined ||
-			$scope.date2.month == null || $scope.date2.month == undefined || $scope.date2.year == null || $scope.date2.year == undefined) {
-			console.log("definition invalid");
-			$scope.datesCustomValid = false;
-		}
-		else if (dateCompare($scope.date1, $scope.now) >= 0 || dateCompare($scope.date1, $scope.now) < -60 || dateCompare($scope.date2, $scope.now) > 12 || dateCompare($scope.date2, $scope.now) < -60) {
-			console.log("range invalid");
-			$scope.datesCustomValid = false;
-		}
-		else if (dateCompare($scope.date1, $scope.date2) >= 0) {
-			console.log("comparison invalid");
-			$scope.datesCustomValid = false;
-		}
-		else {
-			$scope.datesCustomValid = true;
-		}
-	}
 	// ^^^^ DATES MANAGEMENT STUFF ^^^^
 
+
 	//Retrieves all categories the selected student is working in
-	$http.get("http://localhost:8081/categoriesByStudent?Id=" + $scope.studentId)
+	$http.get(`http://localhost:8081/categoriesByStudent?Id=${$scope.studentId}`)
 	.then(function(response) {
 		$scope.categoriesOfStudent = response.data;
 	});
 
 	//Retrieves the student's grade level and does time calculations
-	$http.get("http://localhost:8081/gradeOfStudent?Id=" + $scope.studentId)
+	$http.get(`http://localhost:8081/gradeOfStudent?Id=${$scope.studentId}`)
 	.then(function(response) {
 		$scope.currentGrade = response.data;
 
 		zeroDate = {
 			month: 7,
-			year: now.year() - $scope.currentGrade - (now.month() < 7 ? 1 : 0), // subtract an extra 1 from the year if it's before august
+			year: now.year - $scope.currentGrade - (now.month < 7 ? 1 : 0), // subtract an extra 1 from the year if it's before august
 			date: 0
 		}
 	});
@@ -169,7 +132,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 
 	//Generates the lineChart based on instructor specifications
 	$scope.generateChart = function() {
-		if ($scope.form.$invalid || !$scope.datesCustomValid) { // Ensures form is valid before generation
+		if ($scope.form.$invalid) { // Ensures form is valid before generation
 			$scope.formStatus = 0;
 			$scope.formStatusText = "Invalid Form";
 			return;
@@ -178,17 +141,17 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			$scope.formStatusText = "Processing...";
 		}
 
-		var months = dateCompare($scope.now, $scope.date1);
-		var months2 = dateCompare($scope.now, $scope.date2);
+		var date1 = dateSubtract(now, $scope.months);
+		var date2 = dateSubtract(now, $scope.months2);
 
 		//// GIANT CHART GENERATION METHOD ////
-		$http.get("http://localhost:8081/recordsById?StudentId=" + $scope.studentId + "&Category=" + $scope.selectedCategory + "&Months=" + months + "&Reps=" + $scope.selectedRep + "&Until=" + months2)
+		$http.get(`http://localhost:8081/recordsById?StudentId=${$scope.studentId}&Category=${$scope.selectedCategory}&Months=${$scope.months}&Reps=${$scope.selectedRep}&Until=${$scope.months2}`)
 		.then(function(response) {
 			$scope.records = response.data;
 			
 			try {
-				var lowestDate = dateCompare($scope.date1, zeroDate); // x-axis bounds
-				var highestDate = dateCompare($scope.date2, zeroDate);
+				var lowestDate = dateCompare(date1, zeroDate); // x-axis bounds
+				var highestDate = dateCompare(date2, zeroDate);
 				var greatestBook = 0; // y-axis bounds
 				var leastBook = 999;
 
@@ -220,7 +183,6 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 					if($scope.records[i].startDate != null) {
 						a++;
 
-						//console.log(dateCompare(getStartDateAt(i), dateAtZero) + ", " + $scope.records[i].bookId);
 						points.push({
 							x: dateCompare(getStartDateAt(i), zeroDate),
 							y: $scope.records[i].bookId
@@ -268,31 +230,18 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 
 
 				//// Y-LABEL GENERATION ////
-				let labelToBookTitle = function(label, withLineBreaks) {
+				let labelToBookTitle = function(label, abbreviated) {
 					var s = $scope.allBooks[label-1];
 					if (s != null && s != undefined && s.category == $scope.selectedCategory) {
 						var fullLabel;
-						if ($scope.selectedCategory == "Comprehension")
-							fullLabel = $scope.allBooks[label-1].subcategory + " " + $scope.allBooks[label-1].title;
+
+						if (abbreviated)
+							fullLabel = s.abbreviation;
 						else
-							fullLabel = $scope.allBooks[label-1].title;
-
-						if (withLineBreaks) {
-							var splitLabel = fullLabel.split(" ");
-
-							fullLabel = [];
-							fullLabel.push("");
-							var index = 0;
-							for (var i = 0; i < splitLabel.length; i++) {
-								if (fullLabel[index].length >= 10) {
-									index++;
-									fullLabel.push("");
-								} else {
-									fullLabel[index] += " ";
-								}
-								fullLabel[index] += splitLabel[i];
-							}
-						}
+							if ($scope.selectedCategory == "Comprehension" || $scope.selectedCategory == "Calculation")
+								fullLabel = `${s.subcategory} - ${s.title}`;
+							else
+								fullLabel = s.title;
 
 						return fullLabel;
 					}
@@ -346,9 +295,9 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 									var finalYear = zeroDate.year + Math.trunc(finalMonth / 12);
 									finalMonth = finalMonth % 12 + 1;
 
-									var daysInMonth = moment(finalYear + " " + finalMonth, "YYYY MM").daysInMonth();
+									var daysInMonth = moment(`${finalYear} ${finalMonth}`, "YYYY MM").daysInMonth();
 									var finalDate = Math.round((number % 1) * daysInMonth) + 1;
-									return "started on " + finalMonth + "/" + finalDate + "/" + finalYear;
+									return `started on ${finalMonth}/${finalDate}/${finalYear}`;
 								}
 							}
 						},
@@ -440,7 +389,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 												} else if(s.grade <= -1) {
 													return "Pre-K";
 												} else {
-													return grade + "th Grade";
+													return `${grade}th Grade`;
 												}
 											} else if (s.month == 7) {
 												return "|";
@@ -465,7 +414,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 									max: greatestBook + 3,
 									lineHeight: 1,
 									callback:function(label) {
-										return labelToBookTitle(label, false); // USE "TRUE" INSTEAD OF "FALSE" FOR MULTI-LINE LABELS
+										return labelToBookTitle(label, true); // USE "TRUE" INSTEAD OF "FALSE" FOR MULTI-LINE LABELS
 									}
 								}
 							}]
@@ -512,7 +461,7 @@ app.controller('insertCtrl', function($scope, $http, $window){
 
 	//Returns a list of subcategories based on the selected category
 	$scope.getSubcategories = function() {
-		$http.get("http://localhost:8081/subcategories?Category=" + $scope.selectedCategory)
+		$http.get(`http://localhost:8081/subcategories?Category=${$scope.selectedCategory}`)
 		.then(function(response) {
 			$scope.subcategories = response.data;
 		});
@@ -520,7 +469,7 @@ app.controller('insertCtrl', function($scope, $http, $window){
 
 	//Returns a list of titles based on the selected subCategory
 	$scope.getTitles = function() {
-		$http.get("http://localhost:8081/titles?Subcategory=" + $scope.selectedSubCategory)
+		$http.get(`http://localhost:8081/titles?Subcategory=${$scope.selectedSubCategory}`)
 		.then(function(response) {
 			$scope.titles = response.data;
 		});
@@ -560,7 +509,7 @@ app.controller('insertCtrl', function($scope, $http, $window){
 			}).then(function(response) {
 				if (response.data == 0) {
 					$scope.formStatus = 1;
-					$scope.formStatusText = "Successfully added record for " + $scope.client.name;
+					$scope.formStatusText = `Successfully added record for ${$scope.client.name}`;
 				} else {
 					$scope.formStatus = 0;
 					$scope.formStatusText = "Error";
@@ -605,9 +554,9 @@ app.controller('updateCtrl', function($scope, $http, $window){
 			var startDate = new Date(year, month-1, day).toISOString();
 
 			//Formats date for readability
-			var formattedDate = month + "/" + day + "/" + year;
+			var formattedDate = `${month}/${day}/${year}`;
 
-			var displayRecord = $scope.records[i].name + ", started book " + $scope.records[i].bookTitle + " on " + formattedDate + " | RecordId: " + $scope.records[i].recordId;
+			var displayRecord = `${$scope.records[i].name} started book ${$scope.records[i].bookTitle} on ${formattedDate} | RecordId: ${$scope.records[i].recordId}`;
 
 			$scope.displayRecords.push({ name: $scope.records[i].name, id: $scope.records[i].recordId, date: startDate, display: displayRecord }); // "display" for the shown selections, everything else is actual data
 		}
@@ -619,11 +568,11 @@ app.controller('updateCtrl', function($scope, $http, $window){
 			$scope.formStatus = 2;
 			$scope.formStatusText = "Processing...";
 
-			$http.get("http://localhost:8081/updateRecord?recordId=" + $scope.selectedRecord.id + "&endDate=" + $scope.endDate + "&testTime=" + $scope.testTime + "&mistakes=" + $scope.mistakes)
+			$http.get(`http://localhost:8081/updateRecord?recordId=${$scope.selectedRecord.id}&endDate=${$scope.endDate}&testTime=${$scope.testTime}&mistakes=${$scope.mistakes}`)
 			.then(function(response) {
 				if (response.data == 0) {
 					$scope.formStatus = 1;
-					$scope.formStatusText = "Successfully updated record for " + $scope.selectedRecord.name;
+					$scope.formStatusText = `Successfully updated record for ${$scope.selectedRecord.name}`;
 				} else {
 					$scope.formStatus = 0;
 					$scope.formStatusText = "Error";
@@ -666,7 +615,7 @@ app.controller('insertStudentCtrl', function($scope, $http, $window) {
 			}).then(function(response) {
 				if (response.data == 0) {
 					$scope.formStatus = 1;
-					$scope.formStatusText = "Successfully added " + $scope.Client;
+					$scope.formStatusText = `Successfully added ${$scope.Client}`;
 				} else {
 					$scope.formStatus = 0;
 					$scope.formStatusText = "Error";
@@ -685,7 +634,7 @@ app.controller('insertStudentCtrl', function($scope, $http, $window) {
 * EDITSTUDENT.HTML *
 \******************/
 app.controller('editStudentCtrl', function($scope, $http, $window) {
-	$http.get("http://localhost:8081/student?Id=" + $window.localStorage.getItem(0))
+	$http.get(`http://localhost:8081/student?Id=${$window.localStorage.getItem(0)}`)
 	.then(function(response) {
 		$scope.student = response.data;
 		$scope.Id = $scope.student.studentId;
@@ -703,10 +652,10 @@ app.controller('editStudentCtrl', function($scope, $http, $window) {
 			$scope.formStatus = 2;
 			$scope.formStatusText = "Processing...";
 
-			$http.get("http://localhost:8081/updateStudent?studentId=" + $scope.Id + "&client=" + $scope.Client + "&email=" + $scope.Email + "&phone=" + $scope.Phone + "&address=" + $scope.Address + "&grade=" + $scope.Grade + "&gender=" + $scope.Gender + "&currentPasses=" + $scope.CurrentPasses)
+			$http.get(`http://localhost:8081/updateStudent?studentId=${$scope.Id}&client=${$scope.Client}&email=${$scope.Email}&phone=${$scope.Phone}&address=${$scope.Address}&grade=${$scope.Grade}&gender=${$scope.Gender}&currentPasses=${$scope.CurrentPasses}`)
 			.then(function(response) {
 				if (response.data == 0) {
-					window.location.href="StudentList.html";
+					window.location.href = "StudentList.html";
 				} else {
 					$scope.formStatus = 0;
 					$scope.formStatusText = "Error";

@@ -15,6 +15,7 @@ public class BookRowMapper implements RowMapper<Book>{
 		book.setCategory(row.getString("Category"));
 		book.setSubcategory(row.getString("Subcategory"));
 		book.setTitle(row.getString("Title"));
+		book.setAbbreviation(row.getString("Abbreviation"));
 		book.setGradeLevel(row.getInt("GradeLevel"));
 		book.setTest(row.getInt("Test"));
 		book.setTimeAllowed(row.getInt("TimeAllowed"));

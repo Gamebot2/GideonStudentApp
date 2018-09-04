@@ -24,8 +24,8 @@ SELECT * from students;
 INSERT INTO students (Client, FirstName, LastName, Grade, Gender)
 VALUES ("Test Student", "Test", "Student", "5th", "Male");
 
-
-
+ALTER TABLE books ADD COLUMN Abbreviation VARCHAR(255) DEFAULT NULL;
+UPDATE books SET Abbreviation = Title WHERE (Category = "Word Problems" OR Category = "Grammar") AND BookId >= 0;
 
 
 

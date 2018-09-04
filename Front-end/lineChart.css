@@ -7,7 +7,7 @@ canvas {
 body {
 	background: linear-gradient(to bottom, #FFD700, #FFA500 50%, #FFA500 100%) no-repeat bottom;
 	background-size: 100%;
-	height: 2000px;
+	/*height: 2000px;*/
 }
 
 h1 {

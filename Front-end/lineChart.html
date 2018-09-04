@@ -52,23 +52,21 @@
 				
 					<!--Allows user to select month specificatons for the graph up to 5 years ago-->
 					<div class="threeColumn">
-					<label for="months">Time Range</label><br>
-						<div id="timeText">
-							<div class="inputWrapperBig">
-								<select white id = "month1" name = "month1" ng-model = "date1.month" ng-options = "v.num as v.name for v in months" min = "1" max = "12" required ng-change = "datesCustomValidate()">
-								<input white type = "number" id = "year1" name = "year1" ng-model = "date1.year" required ng-change = "datesCustomValidate()">
-								to<br>
-								<select white id = "month2" name = "month2" ng-model = "date2.month" ng-options = "v.num as v.name for v in months" min = "1" max = "12" required ng-change = "datesCustomValidate()">
-								<input white type = "number" id = "year2" name = "year2" ng-model = "date2.year" required ng-change = "datesCustomValidate()">
-								<div class="invalidContainer" ng-class="{'invalid':(form.month1.$touched && form.month2.$touched && form.year1.$touched && form.year2.$touched) && !datesCustomValid}"></div>
-							</div>
-							<span class="errorText" ng-show="(form.month1.$touched && form.month2.$touched && form.year1.$touched && form.year2.$touched) && !datesCustomValid">
-								<span ng-show="form.month1.$error.required || form.months2.$error.required">Months are required.</span>
-								<span ng-show="form.year1.$error.required || form.year2.$error.required">Years are required.</span>
-								<span ng-show="!datesCustomValid">Enter two dates, the first before the second, between 5 years in the past and now (the second date can be up to 1 year in the future, for future projection)</span>
-							</span>
-						</div>
-					</div>
+ 					<label for="months">Time Range</label><br>
+ 						<div id="timeText">
+ 							<div class="inputWrapperBig">
+ 								<input white type = "number" id = "months" name = "months" value = "12" ng-model = "months" min = "1" max = "60" required>
+ 								months ago to
+ 								<input white type = "number" id = "months2" name = "months2" value = "12" ng-model = "months2" min = "0" max = "{{months-1}}" required>
+ 								months ago
+ 								<div class="invalidContainer" ng-class="{'invalid':form.months.$touched && form.months2.$touched && (form.months.$invalid || form.months2.$invalid)}"></div>
+ 							</div>
+ 							<span class="errorText" ng-show="form.months.$touched && form.months2.$touched && (form.months.$invalid || form.months2.$invalid)">
+ 								<span ng-show="form.months.$error.required || form.months2.$error.required">Months are required.</span>
+ 								<span ng-show="form.months.$error.min || form.months.$error.max || form.months2.$error.min || form.months2.$error.max">Month values must be between 0 and 60, and the second value must be earlier than the first.</span>
+ 							</span>
+ 						</div>
+ 					</div>
 
 					<!--Allows user to select which specific repetitions to display-->
 					<div class="threeColumn">
@@ -101,5 +99,7 @@
 				<canvas id = "lineChart" ng-hide="errorMessage"></canvas>
 			</div>
 		</div>
+
+		<div id = "footer">&nbsp;</div>
 	</body>
 </html>
