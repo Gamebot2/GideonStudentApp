@@ -9,5 +9,6 @@ public interface StudentDao {
 	List<Student> getStudentsWithData();
 	List<String> getCategories(int StudentId);
 	int addStudent(String Client, String Grade, String Gender);
-	int updateStudent(String studentId, String client, String email, String phone, String address, String grade, String gender, String currentPasses);
+	int updateStudent(int studentId, String client, String email, String phone, String address, String grade,
+			String gender, String currentPasses);
 }

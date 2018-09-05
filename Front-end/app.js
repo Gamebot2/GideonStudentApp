@@ -290,14 +290,12 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 									return labelToBookTitle(tooltipItem[0].yLabel, false);
 								},
 								label:function(tooltipItem, data) { // callback function converts x-axis numeral to MM/DD/YYYY formatted string
-									var number = tooltipItem.xLabel;
-									var finalMonth = zeroDate.month + Math.trunc(number);
-									var finalYear = zeroDate.year + Math.trunc(finalMonth / 12);
-									finalMonth = finalMonth % 12 + 1;
+									var theDate = dateAdd(zeroDate, Math.trunc(tooltipItem.xLabel));
 
-									var daysInMonth = moment(`${finalYear} ${finalMonth}`, "YYYY MM").daysInMonth();
-									var finalDate = Math.round((number % 1) * daysInMonth) + 1;
-									return `started on ${finalMonth}/${finalDate}/${finalYear}`;
+									var daysInMonth = moment(`${theDate.year} ${theDate.month + 1}`, "YYYY MM").daysInMonth();
+									theDate.date = Math.round((tooltipItem.xLabel % 1) * daysInMonth) + 1;
+
+									return `started on ${theDate.month + 1}/${theDate.date}/${theDate.year}`;
 								}
 							}
 						},
@@ -347,11 +345,10 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 									callback:function(label){
 										var s = labelDates[label - lowestDate];
 										if (s != null && s != undefined) {
-											if(s.month == 6) {
+											if(s.month == 6)
 												return s.year;
-											} else if (s.month == 0){
+											else if (s.month == 0)
 												return "|";
-											}
 										}
 									},
 									maxRotation: 0,
@@ -378,19 +375,18 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 										var s = labelDates[label - lowestDate];
 										if (s != null && s != undefined) {
 											if(s.month == 1) {
-												if(s.grade == 0) {
+												if(s.grade == 0)
 													return "Kindergarten";
-												} else if(s.grade == 1) {
+												else if(s.grade == 1)
 													return "1st Grade";
-												} else if(s.grade == 2) {
+												else if(s.grade == 2)
 													return "2nd Grade";
-												} else if(s.grade == 3) {
+												else if(s.grade == 3)
 													return "3rd Grade";
-												} else if(s.grade <= -1) {
+												else if(s.grade <= -1)
 													return "Pre-K";
-												} else {
+												else
 													return `${grade}th Grade`;
-												}
 											} else if (s.month == 7) {
 												return "|";
 											}
@@ -409,12 +405,12 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 								},
 								ticks: {
 									stepSize: 1,
-									autoSkip: false,
+									autoSkip: true,
 									min: leastBook - 1,
 									max: greatestBook + 3,
 									lineHeight: 1,
 									callback:function(label) {
-										return labelToBookTitle(label, true); // USE "TRUE" INSTEAD OF "FALSE" FOR MULTI-LINE LABELS
+										return labelToBookTitle(label, true);
 									}
 								}
 							}]
@@ -488,14 +484,14 @@ app.controller('insertCtrl', function($scope, $http, $window){
 			$scope.formStatusText = "Processing...";
 
 			var newRecordDetails = JSON.stringify({
-				id: $scope.client.id,
-				category: $scope.selectedCategory,
-				subcategory: $scope.selectedSubCategory,
-				title: $scope.selectedTitle,
-				startDate: $scope.startDate,
-				testTime: $scope.testTime,
-				mistakes: $scope.mistakes,
-				rep: $scope.rep
+				id: 			$scope.client.id,
+				category: 		$scope.selectedCategory,
+				subcategory: 	$scope.selectedSubCategory,
+				title: 			$scope.selectedTitle,
+				startDate: 		$scope.startDate,
+				testTime: 		$scope.testTime,
+				mistakes: 		$scope.mistakes,
+				rep: 			$scope.rep
 			});
 			//Inserts the record with an HTTP post call
 			$http({
@@ -600,7 +596,7 @@ app.controller('insertStudentCtrl', function($scope, $http, $window) {
 
 			var newStudentDetails = JSON.stringify({
 				client: $scope.Client,
-				grade: $scope.Grade,
+				grade: 	$scope.Grade,
 				gender: $scope.Gender
 			});
 			//Inserts the record with an HTTP post call
@@ -637,14 +633,14 @@ app.controller('editStudentCtrl', function($scope, $http, $window) {
 	$http.get(`http://localhost:8081/student?Id=${$window.localStorage.getItem(0)}`)
 	.then(function(response) {
 		$scope.student = response.data;
-		$scope.Id = $scope.student.studentId;
-		$scope.Client = $scope.student.client;
-		$scope.Email = $scope.student.email;
-		$scope.Phone = $scope.student.phone;
-		$scope.Address = $scope.student.address;
-		$scope.Grade = $scope.student.grade;
-		$scope.Gender = $scope.student.gender;
-		$scope.CurrentPasses = $scope.student.currentPasses;
+		$scope.Id 				= $scope.student.studentId;
+		$scope.Client 			= $scope.student.client;
+		$scope.Email 			= $scope.student.email;
+		$scope.Phone 			= $scope.student.phone;
+		$scope.Address 			= $scope.student.address;
+		$scope.Grade 			= $scope.student.grade;
+		$scope.Gender 			= $scope.student.gender;
+		$scope.CurrentPasses 	= $scope.student.currentPasses;
 	});
 
 	$scope.updateStudent = function() {
@@ -652,8 +648,26 @@ app.controller('editStudentCtrl', function($scope, $http, $window) {
 			$scope.formStatus = 2;
 			$scope.formStatusText = "Processing...";
 
-			$http.get(`http://localhost:8081/updateStudent?studentId=${$scope.Id}&client=${$scope.Client}&email=${$scope.Email}&phone=${$scope.Phone}&address=${$scope.Address}&grade=${$scope.Grade}&gender=${$scope.Gender}&currentPasses=${$scope.CurrentPasses}`)
-			.then(function(response) {
+			var newStudentDetails = JSON.stringify({
+				id: 			$scope.Id,
+				client:			$scope.Client,
+				email: 			$scope.Email,
+				phone: 			$scope.Phone,
+				address: 		$scope.Address,
+				grade: 			$scope.Grade,
+				gender: 		$scope.Gender,
+				currentPasses: 	$scope.CurrentPasses,
+			});
+
+			$http({
+				url: 'http://localhost:8081/updateStudent',
+				method: 'POST',
+				headers: {
+					"Content-Type": "application/json",
+					"Accept": "application/json"
+				},
+				data:newStudentDetails
+			}).then(function(response) {
 				if (response.data == 0) {
 					window.location.href = "StudentList.html";
 				} else {

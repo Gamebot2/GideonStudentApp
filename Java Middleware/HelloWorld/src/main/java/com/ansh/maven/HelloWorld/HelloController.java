@@ -115,7 +115,7 @@ public class HelloController {
 		System.out.println("Method addStudent() called" );
 		int a;
 		try {
-			a = studentService.addStudent(student.getClient(), student.getGrade(), student.getGender());
+			a = studentService.addStudent(student);
 		} catch (java.lang.RuntimeException e) {
 			System.out.println("Method addStudent() failed:");
 			e.printStackTrace();
@@ -127,11 +127,11 @@ public class HelloController {
 	//Edits student data in the students database
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/updateStudent")
-	public int updateStudent(@RequestParam("studentId") String studentId, @RequestParam("client") String client, @RequestParam("email") String email, @RequestParam("phone") String phone, @RequestParam("address") String address, @RequestParam("grade") String grade, @RequestParam("gender") String gender, @RequestParam("currentPasses") String currentPasses) {
+	public int updateStudent(@RequestBody(required=false) StudentMasterExtra student) {
 		System.out.println("Method updateStudent() called");
 		int a;
 		try {
-			a = studentService.updateStudent(studentId, client, email, phone, address, grade, gender, currentPasses);
+			a = studentService.updateStudent(student);
 		} catch (java.lang.RuntimeException e) {
 			System.out.println("Method updateStudent() failed");
 			e.printStackTrace();

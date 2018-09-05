@@ -73,7 +73,7 @@ public class StudentDaoImpl implements StudentDao {
 	
 	// Updates student information in the database
 	@Override
-	public int updateStudent(String studentId, String client, String email, String phone, String address, String grade, String gender, String currentPasses) {
+	public int updateStudent(int studentId, String client, String email, String phone, String address, String grade, String gender, String currentPasses) {
 		if (client == null)
 			client = "";
 		if (email == null)

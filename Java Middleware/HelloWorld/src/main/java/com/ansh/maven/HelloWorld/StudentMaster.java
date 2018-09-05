@@ -1,11 +1,11 @@
 package com.ansh.maven.HelloWorld;
 
 public class StudentMaster {
-	private String Client;
-	private String FirstName;
-	private String LastName;
-	private String Grade;
-	private String Gender;
+	protected String Client;
+	protected String FirstName;
+	protected String LastName;
+	protected String Grade;
+	protected String Gender;
 	
 	
 	

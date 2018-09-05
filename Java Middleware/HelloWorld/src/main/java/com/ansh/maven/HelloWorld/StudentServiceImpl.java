@@ -47,14 +47,14 @@ public class StudentServiceImpl implements StudentService{
 
 	// Adds a student to the database
 	@Override
-	public int addStudent(String Client, String Grade, String Gender) {
-		return studentDao.addStudent(Client, Grade, Gender);
+	public int addStudent(StudentMaster student) {
+		return studentDao.addStudent(student.getClient(), student.getGrade(), student.getGender());
 	}
 	
 	// Updates student information in the database
 	@Override
-	public int updateStudent(String studentId, String client, String email, String phone, String address, String grade, String gender, String currentPasses) {
-		return studentDao.updateStudent(studentId, client, email, phone, address, grade, gender, currentPasses);
+	public int updateStudent(StudentMasterExtra student) {
+		return studentDao.updateStudent(student.getId(), student.getClient(), student.getEmail(), student.getPhone(), student.getAddress(), student.getGrade(), student.getGender(), student.getCurrentPasses());
 	}
 	
 }
