@@ -34,7 +34,7 @@ h1, h3 {
 	animation-name: enter;
 	animation-duration: 2s;
 }
-*.ng-leave {
+*.ng-leave, *.ng-hide {
 	animation-name: exit;
 	animation-duration: 0.5s;
 }

@@ -14,6 +14,14 @@ h1 {
 	margin-bottom: 0px;
 }
 
+select[white], input[white], .invalidContainer {
+    margin: 0;
+}
+
+input[type="number"] {
+	width: 80px;
+}
+
 #lineChart {
 	
 }

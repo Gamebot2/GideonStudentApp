@@ -7,6 +7,7 @@ public interface StudentDao {
 	Student getStudentById(int StudentId);
 	boolean studentExists(String firstName, String lastName);
 	List<Student> getStudentsWithData();
+	List<String> getGrade(int StudentId);
 	List<String> getCategories(int StudentId);
 	int addStudent(String Client, String Grade, String Gender);
 	int updateStudent(int studentId, String client, String email, String phone, String address, String grade,

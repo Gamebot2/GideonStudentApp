@@ -64,7 +64,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 	now = {
 		month: n.month(),
 		year: n.year(),
-		date: 0
+		date: (n.date() - 1) / n.daysInMonth()
 	}
 	let getStartDateAt = function(index) { // function that returns a month/year/floating-point-date object from a specified record, for use in plotting points
 		var d = moment($scope.records[index].startDate.split(" ")[0]);
@@ -141,11 +141,13 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			$scope.formStatusText = "Processing...";
 		}
 
+		$scope.until = $scope.months2 == 0 ? -Math.max($scope.monthsF, 0) : $scope.months2;
+
 		var date1 = dateSubtract(now, $scope.months);
-		var date2 = dateSubtract(now, $scope.months2);
+		var date2 = dateSubtract(now, $scope.until);
 
 		//// GIANT CHART GENERATION METHOD ////
-		$http.get(`http://localhost:8081/recordsById?StudentId=${$scope.studentId}&Category=${$scope.selectedCategory}&Months=${$scope.months}&Reps=${$scope.selectedRep}&Until=${$scope.months2}`)
+		$http.get(`http://localhost:8081/recordsById?StudentId=${$scope.studentId}&Category=${$scope.selectedCategory}&Months=${$scope.months}&Reps=${$scope.selectedRep}&Until=${$scope.until}`)
 		.then(function(response) {
 			$scope.records = response.data;
 			
@@ -161,7 +163,8 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 				var grades = [];
 				var points = []; // container with points: x is date, y is bookid
 				var points2 = []; 			// currently contains the best fit line
-				var points3 = []; 			// currently unused test modification of the data
+				var points3 = []; 			// currently contains nothing, but will contain something soon
+				var points4 = [];			// currently contains the vertical NOW line
 
 
 				//// Maps the internal linear scale of the x axis (lowestDate, ... highestDate) with labels containing dates and grades ////
@@ -208,6 +211,10 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 
 				//// BEST FIT LINE: least squares method ////
 				var metrics = {xmean: 0, ymean: 0, diff: 0, squares: 0};
+				metrics.getY = function(x) {
+					return metrics.slope * (x - metrics.xmean) + metrics.ymean
+				};
+
 				for(b = 0; b < points.length; b++) {
 					metrics.xmean += points[b].x;
 					metrics.ymean += points[b].y;
@@ -221,11 +228,25 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 				metrics.slope = metrics.diff / metrics.squares;
 				points2.push({
 					x: lowestDate - 1,
-					y: metrics.slope * (lowestDate - 1 - metrics.xmean) + metrics.ymean
+					y: metrics.getY(lowestDate - 1)
 				});
 				points2.push({
 					x: highestDate + 1,
-					y: metrics.slope * (highestDate + 1 - metrics.xmean) + metrics.ymean
+					y: metrics.getY(highestDate + 1)
+				});
+
+				if (metrics.getY(highestDate) > greatestBook) // move greatestBook upward if the best fit line goes above the data line
+					greatestBook = metrics.getY(highestDate);
+
+
+				//// NOW LINE: a vertical black line to indicate the current date
+				points4.push({
+					x: dateCompare(now, zeroDate) - 0.001,
+					y: leastBook - 2
+				});
+				points4.push({
+					x: dateCompare(now, zeroDate) + 0.001,
+					y: greatestBook + 4
 				});
 
 
@@ -248,16 +269,53 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 				}
 
 
-				//// CHART SPECS ////
-				Chart.defaults.global.defaultFontSize = 18;
+				//// CHART DEFAULTS ////
+				Chart.defaults.global.defaultFontSize = 16;
 				Chart.defaults.global.defaultFontColor = '#000';
 
-				if (regen)
-					exampleChart.destroy();
-				exampleChart = new Chart(myChart,{
-					type: 'line',
-					data:{
-						datasets:[{
+				//// X AXES CALLBACKS ////
+				let xAxesSpecs = {
+					monthAxis: function(label){
+						var s = labelDates[label - lowestDate];
+						if (s != null && s != undefined)
+							return s.month + 1;
+					},
+					yearAxis: function(label){
+						var s = labelDates[label - lowestDate];
+						if (s != null && s != undefined) {
+							if(s.month == 6)
+								return s.year;
+							else if (s.month == 0)
+								return "|";
+						}
+					},
+					gradeAxis: function(label){
+						var s = labelDates[label - lowestDate];
+						if (s != null && s != undefined) {
+							if(s.month == 1) {
+								if(s.grade == 0)
+									return "Kindergarten";
+								else if(s.grade == 1)
+									return "1st Grade";
+								else if(s.grade == 2)
+									return "2nd Grade";
+								else if(s.grade == 3)
+									return "3rd Grade";
+								else if(s.grade <= -1)
+									return "Pre-K";
+								else
+									return `${grade}th Grade`;
+							} else if (s.month == 7) {
+								return "|";
+							}
+						}
+					}
+				}
+
+				//// CHART SPECIFICATIONS ////
+				let chartSpecs = {
+					datasets: [
+						{
 							label: $scope.studentName,
 							data: points,
 							backgroundColor: "rgba(255, 0, 0, 0.4)",
@@ -271,9 +329,131 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 							backgroundColor: "rgba(0, 0, 255, 0.4)",
 							borderColor: "rgba(0, 0, 255, 0.4)",
 							fill: false,
+							borderDash: [2],
+							lineTension: 0,
+							pointRadius: 0
+						}, {
+							label: "IGL",
+							backgroundColor: "rgba(0, 255, 255, 0.4)",
+							borderColor: "rgba(0, 255, 255, 0.4)",
+							fill: false,
 							borderDash: [5],
-							lineTension: 0
-						}]
+							lineTension: 0,
+							pointRadius: 0
+						}, {
+							label: "Now",
+							data: points4,
+							backgroundColor: "rgba(0, 0, 0, 0.2)",
+							borderColor: "rgba(0, 0, 0, 0.2)",
+							fill: false,
+							lineTension: 0,
+							pointRadius: 0
+						}
+					],
+					tooltipCallbacks: {
+						title:function(tooltipItem, data) {
+							return labelToBookTitle(tooltipItem[0].yLabel, false);
+						},
+						label:function(tooltipItem, data) { // callback function converts x-axis numeral to MM/DD/YYYY formatted string
+							var theDate = dateAdd(zeroDate, Math.trunc(tooltipItem.xLabel));
+
+							var daysInMonth = moment(`${theDate.year} ${theDate.month + 1}`, "YYYY MM").daysInMonth();
+							theDate.date = Math.round((tooltipItem.xLabel % 1) * daysInMonth) + 1;
+
+							return `started on ${theDate.month + 1}/${theDate.date}/${theDate.year}`;
+						}
+					},
+					xAxes: [
+						{
+							id:"xAxis1",
+							type: 'linear',
+							scaleLabel: {
+								display: false,
+								padding: -5
+							},
+							ticks: {
+								dislay: false,
+								stepSize: 1,
+								autoSkip: true,
+								min: lowestDate,
+								max: highestDate,
+								maxRotation: 0,
+								callback: xAxesSpecs.monthAxis
+							}
+						}, {
+							id: "xAxis2",
+							type: 'linear',
+							gridLines: {
+								display: false,
+								drawBorder: true
+							},
+							scaleLabel: {
+								display: false,
+								padding: 0
+							},
+							ticks: {
+								stepSize: 1,
+								autoSkip: false,
+								min: lowestDate,
+								max: highestDate,
+								maxRotation: 0,
+								padding: 0,
+								callback: xAxesSpecs.yearAxis
+							}
+
+						}, {
+							id: "xAxis3",
+							type: 'linear',
+							gridLines: {
+								display: false,
+								drawBorder: true,
+								drawOnChartArea: false
+							},
+							scaleLabel: {
+								display: false
+							},
+							ticks: {
+								stepSize: 1,
+								autoSkip: false,
+								min: lowestDate,
+								max: highestDate,
+								maxRotation: 0,
+								callback: xAxesSpecs.gradeAxis
+							}
+						}
+					],
+					yAxes: [
+						{
+							type: 'linear',
+							position: 'left',
+							display: true,
+							scaleLabel: {
+								display: true,
+								labelString: $scope.selectedCategory
+							},
+							ticks: {
+								stepSize: 1,
+								autoSkip: true,
+								autoSkipPadding: 50,
+								min: leastBook - 1,
+								max: greatestBook + 3,
+								lineHeight: 1,
+								callback:function(label) {
+									return labelToBookTitle(label, true);
+								}
+							}
+						}
+					]
+
+				}
+
+				//// BUILD CHART ////
+				if (regen)
+					exampleChart.destroy();
+				exampleChart = new Chart(myChart,{
+					type: 'line',
+					data:{
+						datasets: chartSpecs.datasets
 					},
 					options: {
 						responsive: true,
@@ -285,19 +465,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 						},
 						tooltips: {
 							enabled: true,
-							callbacks: {
-								title:function(tooltipItem, data) {
-									return labelToBookTitle(tooltipItem[0].yLabel, false);
-								},
-								label:function(tooltipItem, data) { // callback function converts x-axis numeral to MM/DD/YYYY formatted string
-									var theDate = dateAdd(zeroDate, Math.trunc(tooltipItem.xLabel));
-
-									var daysInMonth = moment(`${theDate.year} ${theDate.month + 1}`, "YYYY MM").daysInMonth();
-									theDate.date = Math.round((tooltipItem.xLabel % 1) * daysInMonth) + 1;
-
-									return `started on ${theDate.month + 1}/${theDate.date}/${theDate.year}`;
-								}
-							}
+							callbacks: chartSpecs.tooltipCallbacks
 						},
 						layout: {
 							padding: {
@@ -306,114 +474,8 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 							}
 						},
 						scales: {
-							xAxes: [{
-								id:"xAxis1",
-								type: 'linear',
-								scaleLabel: {
-									display: false,
-									padding: -5
-								},
-								ticks: {
-									dislay: false,
-									stepSize: 1,
-									autoSkip: true,
-									min: lowestDate,
-									max: highestDate,
-									maxRotation: 0,
-									callback:function(label){
-										var s = labelDates[label - lowestDate];
-										if (s != null && s != undefined)
-											return s.month + 1;
-									}
-								}
-							}, {
-								id: "xAxis2",
-								type: 'linear',
-								gridLines: {
-									display: false,
-									drawBorder: true
-								},
-								scaleLabel: {
-									display: false,
-									padding: 0
-								},
-								ticks: {
-									stepSize: 1,
-									autoSkip: false,
-									min: lowestDate,
-									max: highestDate,
-									callback:function(label){
-										var s = labelDates[label - lowestDate];
-										if (s != null && s != undefined) {
-											if(s.month == 6)
-												return s.year;
-											else if (s.month == 0)
-												return "|";
-										}
-									},
-									maxRotation: 0,
-									padding: 0
-								}
-
-							}, {
-								id: "xAxis3",
-								type: 'linear',
-								gridLines: {
-									display: false,
-									drawBorder: true,
-									drawOnChartArea: false
-								},
-								scaleLabel: {
-									display: false
-								},
-								ticks: {
-									stepSize: 1,
-									autoSkip: false,
-									min: lowestDate,
-									max: highestDate,
-									callback:function(label){
-										var s = labelDates[label - lowestDate];
-										if (s != null && s != undefined) {
-											if(s.month == 1) {
-												if(s.grade == 0)
-													return "Kindergarten";
-												else if(s.grade == 1)
-													return "1st Grade";
-												else if(s.grade == 2)
-													return "2nd Grade";
-												else if(s.grade == 3)
-													return "3rd Grade";
-												else if(s.grade <= -1)
-													return "Pre-K";
-												else
-													return `${grade}th Grade`;
-											} else if (s.month == 7) {
-												return "|";
-											}
-										}
-									},
-									maxRotation: 0
-								}
-							}],
-							yAxes: [{
-								type: 'linear',
-								position: 'left',
-								display: true,
-								scaleLabel: {
-									display: true,
-									labelString: $scope.selectedCategory
-								},
-								ticks: {
-									stepSize: 1,
-									autoSkip: true,
-									min: leastBook - 1,
-									max: greatestBook + 3,
-									lineHeight: 1,
-									callback:function(label) {
-										return labelToBookTitle(label, true);
-									}
-								}
-							}]
+							xAxes: chartSpecs.xAxes,
+							yAxes: chartSpecs.yAxes
 						}
 					}
 				});
@@ -427,7 +489,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 				$scope.formStatusText = "";
 			}
 			catch (err) {
-				console.log(err.message);
+				console.error(err);
 				$scope.formStatus = 0;
 				$scope.formStatusText = "Error - check console";
 			}

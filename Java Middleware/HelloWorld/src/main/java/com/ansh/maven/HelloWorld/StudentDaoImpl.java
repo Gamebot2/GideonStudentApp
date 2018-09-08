@@ -51,6 +51,13 @@ public class StudentDaoImpl implements StudentDao {
 		rowMapper = new StudentRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
+	
+	// Returns the grade of a single student
+	@Override
+	public List<String> getGrade(int StudentId) {
+		sql = "SELECT Grade FROM students WHERE StudentId = ?";
+		return jdbcTemplate.queryForList(sql, String.class, StudentId + ";");
+	}
 
 	// Returns the categories of books for which a student has records
 	@Override

@@ -39,10 +39,8 @@ public class StudentServiceImpl implements StudentService{
 	// Returns the numeric grade of a student
 	@Override
 	public int getGrade(int StudentId) {
-		Student obj = studentDao.getStudentById(StudentId);
-		String gradeString = obj.getGrade();
-		int grade = Integer.parseInt(gradeString.replaceAll("[^\\d.-]",""));
-		return grade;
+		String gradeString = studentDao.getGrade(StudentId).get(0);
+		return Integer.parseInt(gradeString.replaceAll("[^\\d.-]",""));
 	}
 
 	// Adds a student to the database
