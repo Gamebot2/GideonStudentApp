@@ -4,6 +4,32 @@
 var app = angular.module('gideonApp', ['ngAnimate']);
 
 
+// MULTITEST.HTML
+var newApp = angular.module('testApp', ['ngAnimate']);
+
+app.controller('testCtrl', function($scope) {
+	
+	$scope.students = [];
+
+	for (var i = 0; i < 5; i++) {
+		$scope.students.push({
+			one: "ping",
+			two: "pong",
+			switch: function() {
+				var temp = this.one;
+				this.one = this.two;
+				this.two = temp;
+			}
+		});
+	}
+
+});
+
+
+
+
+
+
 /******************\
 * STUDENTLIST.HTML *
 \******************/
@@ -52,11 +78,6 @@ app.controller('studentCtrl', function($scope, $http, $window) {
 * LINECHART.HTML *
 \****************/
 app.controller('chartCtrl', function($scope, $http, $window) {
-	$scope.expanded = true;
-	$scope.logoDisplay = false;
-
-	$scope.studentId = $window.localStorage.getItem(0);
-	$scope.studentName = $window.localStorage.getItem(1);
 
 	// vvvv DATES MANAGEMENT STUFF vvvv
 	var zeroDate;
@@ -91,6 +112,13 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 	}
 	// ^^^^ DATES MANAGEMENT STUFF ^^^^
 
+
+	
+	$scope.expanded = true;
+	$scope.logoDisplay = false;
+
+	$scope.studentId = $window.localStorage.getItem(0);
+	$scope.studentName = $window.localStorage.getItem(1);
 
 	//Retrieves all categories the selected student is working in
 	$http.get(`http://localhost:8081/categoriesByStudent?Id=${$scope.studentId}`)
