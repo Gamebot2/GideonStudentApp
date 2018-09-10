@@ -11,4 +11,5 @@ public interface RecordDao {
 	boolean recordExists(int RecordId);
 	int addRecord(int id, Book book, Date startDate, int rep);
 	int updateRecord(int recordId, Date endDate, int testTime, int minutes);
+	List<Data> getInternationalData(String category);
 }

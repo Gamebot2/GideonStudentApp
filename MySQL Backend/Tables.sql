@@ -72,8 +72,9 @@ CREATE TABLE `students` (
 -- international data
 CREATE TABLE `internationaldata` (
 	`DataId` INT(11) NOT NULL AUTO_INCREMENT,
-    -- need another column to indicate grade level and time
+    `Month` INT(11) NOT NULL,
     `BookId` INT(11) NOT NULL,
     PRIMARY KEY (`DataId`),
     CONSTRAINT FOREIGN KEY (`BookId`) REFERENCES `books`(`BookId`)
 )	ENGINE=INNODB AUTO_INCREMENT=66 DEFAULT CHARSET=UTF8;
+DROP TABLE internationaldata;

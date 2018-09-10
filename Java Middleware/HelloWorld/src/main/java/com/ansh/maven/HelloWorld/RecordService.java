@@ -11,4 +11,5 @@ public interface RecordService {
 	List<Record> getAllRecordsById(int StudentId, String category);
 	int addRecord(int id, String category, String subcategory, String title, Date startDate, int rep);
 	int updateRecord(int recordId, Date endDate, int testTime, int minutes);
+	List<Data> getInternationalData(String category);
 }

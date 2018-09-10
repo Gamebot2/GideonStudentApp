@@ -25,6 +25,7 @@ public class RecordDaoImpl implements RecordDao{
 	
 	private String sql;
 	private RowMapper<Record> rowMapper;
+	private RowMapper<Data> rowMapperD;
 
 	//Retrieves all records from every student in the database
 	@Override
@@ -113,6 +114,16 @@ public class RecordDaoImpl implements RecordDao{
 		System.out.println(sql);
 		rowMapper = new RecordRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper, StudentId, category);
+	}
+	
+	
+	
+	// Gathers international goal line
+	@Override
+	public List<Data> getInternationalData(String category) {
+		sql = "SELECT * FROM internationaldata WHERE Category = ?";
+		rowMapperD = new DataRowMapper();
+		return this.jdbcTemplate.query(sql, rowMapperD, category);
 	}
 	
 }

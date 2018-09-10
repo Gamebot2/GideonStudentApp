@@ -33,21 +33,19 @@ public class RecordServiceImpl implements RecordService{
 		DateTime dt = new DateTime().withTimeAtStartOfDay().withDayOfMonth(1);
 		Date monthsAgo = dt.minusMonths(months).toDate();
 		Date untilDate = dt.minusMonths(until - 1).toDate(); // subtracting 1 from until in order to display the entire most recent month, rather than just the beginning of it
-		//System.out.println(monthsAgo.toString() + " , " + untilDate.toString());
 		
 		boolean firstRecordFlag = true;
 		for(int r = 0; r < records.size(); r++) {
 			Record currentRecord = records.get(r);
 			if(currentRecord.getStartDate().compareTo(monthsAgo) > 0) {
-				if (firstRecordFlag && r > 0) {
+				if (firstRecordFlag && r > 0)
 					returnRecords.add(records.get(r-1)); // adds one record before the timeframe, if possible
-				}
+
 				returnRecords.add(currentRecord);
 				firstRecordFlag = false;
 				
-				if (currentRecord.getStartDate().compareTo(untilDate) > 0) { // adds one record after the timeframe, if possible
+				if (currentRecord.getStartDate().compareTo(untilDate) > 0) // adds one record after the timeframe, if possible
 					break;
-				}
 			}
 		}
 		
@@ -77,6 +75,14 @@ public class RecordServiceImpl implements RecordService{
 	@Override
 	public int updateRecord(int recordId, Date endDate, int testTime, int minutes) {
 		return recordDao.updateRecord(recordId, endDate, testTime, minutes);
+	}
+	
+	
+	
+	// Gathers international goal line
+	@Override
+	public List<Data> getInternationalData(String category) {
+		return recordDao.getInternationalData(category);
 	}
 
 }

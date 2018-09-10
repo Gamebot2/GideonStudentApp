@@ -207,5 +207,10 @@ public class HelloController {
 	}
 	
 
-	
+	//Gathers international goal line
+	@CrossOrigin(origins = webOrigin)
+	@RequestMapping("/internationaldata")
+	public List<Data> getInternationalData(@RequestParam("category") String category) {
+		return recordService.getInternationalData(category);
+	}
 }
