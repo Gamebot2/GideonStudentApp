@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface RecordDao {
 	List<Record> getAllRecords();
-	List<Record> getRecordsById(int RecordId, String category, String whichReps);
+	List<Record> getRecordsForChart(int StudentId, String category, int months, int until, String whichReps);
 	List<Record> getAllRecordsById(int StudentId, String category);
 	List<Record> getIncompleteRecords();
 	boolean recordExists(int RecordId);

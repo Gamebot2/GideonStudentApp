@@ -87,7 +87,15 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 		year: n.year(),
 		date: (n.date() - 1) / n.daysInMonth()
 	}
-	let getStartDateAt = function(index) { // function that returns a month/year/floating-point-date object from a specified record, for use in plotting points
+
+	// a better modulo function that loops around for negative numbers
+	let mod = (x, n) => (x % n + n) % n;
+
+	// a better truncation function that loops around for negative numbers
+	let modtrunc = (x) => Math.trunc(x) - (x < 0 ? 1 : 0);
+	
+	// function that returns a month/year/floating-point-date object from a specified record, for use in plotting points
+	let getStartDateAt = function(index) {
 		var d = moment($scope.records[index].startDate.split(" ")[0]);
 		return {
 			month: d.month(),
@@ -95,19 +103,25 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			date: (d.date() - 1) / d.daysInMonth()
 		}
 	}
-	let dateAdd = function(originalDate, addition) { // function that returns a month/year/floating-point-date object a certain number of months after another one of those objects
+
+	// function that returns a month/year/floating-point-date object a certain number of months after another one of those objects
+	let dateAdd = function(originalDate, addition) {
 		var numeral = originalDate.year * 12 + originalDate.month;
 		numeral += addition;
 		return {
-			month: numeral % 12,
-			year: Math.trunc(numeral / 12),
+			month: mod(numeral, 12),
+			year: modtrunc(numeral / 12),
 			date: 0
 		}
 	}
-	let dateSubtract = function(originalDate, subtraction) { // function that returns a month/year/floating-point-date object a certain number of months prior to another one of those objects
+
+	// function that returns a month/year/floating-point-date object a certain number of months prior to another one of those objects
+	let dateSubtract = function(originalDate, subtraction) {
 		return dateAdd(originalDate, -1 * subtraction);
 	}
-	let dateCompare = function(date1, date2) { // function that returns the month difference between two month/year/floating-point-date objects
+
+	// function that returns the month difference between two month/year/floating-point-date objects
+	let dateCompare = function(date1, date2) {
 		return (date1.year - date2.year) * 12 + (date1.month - date2.month) + (date1.date - date2.date);
 	}
 	// ^^^^ DATES MANAGEMENT STUFF ^^^^
@@ -136,6 +150,8 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			year: now.year - $scope.currentGrade - (now.month < 7 ? 1 : 0), // subtract an extra 1 from the year if it's before august
 			date: 0
 		}
+
+		console.log(now.year + " - " + $scope.currentGrade + " - " + (now.month < 7 ? 1 : 0));
 	});
 
 	//Retrieves all the books for use later in y-axis plotting
@@ -169,13 +185,13 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			$scope.formStatusText = "Processing...";
 		}
 
-		$scope.until = $scope.months2 == 0 ? -Math.max($scope.monthsF, 0) : $scope.months2;
+		$scope.until = $scope.months2 == 0 && Number.isInteger($scope.monthsF) ? -Math.max($scope.monthsF, 0) : $scope.months2;
 
 		var date1 = dateSubtract(now, $scope.months);
 		var date2 = dateSubtract(now, $scope.until);
 
 		//// GIANT CHART GENERATION METHOD ////
-		$http.get(`http://localhost:8081/recordsById?StudentId=${$scope.studentId}&Category=${$scope.selectedCategory}&Months=${$scope.months}&Reps=${$scope.selectedRep}&Until=${$scope.until}`)
+		$http.get(`http://localhost:8081/recordsForChart?StudentId=${$scope.studentId}&Category=${$scope.selectedCategory}&Months=${$scope.months}&Until=${$scope.until}&Reps=${$scope.selectedRep}`)
 		.then(function(response) {
 			$scope.records = response.data;
 			
@@ -197,16 +213,11 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 
 				//// Maps the internal linear scale of the x axis (lowestDate, ... highestDate) with labels containing dates and grades ////
 				for(j = lowestDate; j < highestDate; j++) {
-					var currentDate = dateAdd(zeroDate, j);
-					labelDates.push(currentDate);
+					var theLabel = dateAdd(zeroDate, j);
+					theLabel.grade = modtrunc(j / 12);
 
-					if(currentDate.month == 7) // grade goes up in August = 7
-						currentGradeOffset++;
-					grades.push(currentGradeOffset); // maps an offset value for the grade relating to each month, starting from 0 and increasing until the present
+					labelDates.push(theLabel);
 				}
-				for(j = 0; j < labelDates.length; j++)
-					labelDates[j].grade = $scope.currentGrade + grades[j] - currentGradeOffset; // uses the final grade offset and the known current grade to calculate the final grade value for each month
-				console.log(labelDates);
 
 				//// Creates a point mapping each record to its respective spot on the x and y axis ////
 				var a = 0; // Helps display error message if there is no data, couldn't find a better solution for some reason: this value will increase for every existing record
@@ -383,10 +394,10 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 							return labelToBookTitle(tooltipItem[0].yLabel, false);
 						},
 						label:function(tooltipItem, data) { // callback function converts x-axis numeral to MM/DD/YYYY formatted string
-							var theDate = dateAdd(zeroDate, Math.trunc(tooltipItem.xLabel));
+							var theDate = dateAdd(zeroDate, modtrunc(tooltipItem.xLabel));
 
 							var daysInMonth = moment(`${theDate.year} ${theDate.month + 1}`, "YYYY MM").daysInMonth();
-							theDate.date = Math.round((tooltipItem.xLabel % 1) * daysInMonth) + 1;
+							theDate.date = Math.round(mod(tooltipItem.xLabel, 1) * daysInMonth) + 1;
 
 							return `started on ${theDate.month + 1}/${theDate.date}/${theDate.year}`;
 						}

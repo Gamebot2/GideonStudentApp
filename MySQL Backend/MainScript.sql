@@ -25,7 +25,7 @@ INSERT INTO students (Client, FirstName, LastName, Grade, Gender)
 VALUES ("Test Student", "Test", "Student", "5th", "Male");
 
 ALTER TABLE books ADD COLUMN Abbreviation VARCHAR(255) DEFAULT NULL;
-UPDATE books SET Abbreviation = Title WHERE (Category = "Word Problems" OR Category = "Grammar") AND BookId >= 0;
+UPDATE books SET Abbreviation = Title WHERE BookId >= 0;
 
 
 
@@ -108,6 +108,36 @@ FROM records
 INNER JOIN students
 	ON records.StudentId = students.StudentId
 	WHERE records.StudentId = 3;
+    
+-- all records belonging to a student within a time period, with one record outside each boundary if possible
+-- '2015-01-01 00:00:00' '2017-01-01 00:00:00'
+SELECT * FROM books b
+INNER JOIN
+(
+	(SELECT * FROM records WHERE
+			StudentId = 3 AND
+			StartDate < '2015-01-01 00:00:00'
+		ORDER BY StartDate DESC
+		LIMIT 1)
+	UNION
+	(SELECT * FROM records WHERE
+			StudentId = 3 AND
+			StartDate > '2016-01-01 00:00:00'
+		ORDER BY StartDate ASC
+		LIMIT 1)
+	UNION
+	(SELECT * FROM records WHERE
+			StudentId = 3 AND
+			StartDate >= '2015-01-01 00:00:00' AND
+			StartDate <= '2016-01-01 00:00:00')
+)
+	r ON r.BookId = b.BookId
+INNER JOIN
+	students s ON r.StudentId = s.StudentId
+WHERE
+	b.Category = "Comprehension" AND
+    r.Rep = 1
+ORDER BY r.StartDate;
     
 -- all unfinished records
 SELECT *

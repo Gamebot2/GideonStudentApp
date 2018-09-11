@@ -158,11 +158,10 @@ public class HelloController {
 	
 	//Returns all records for a given student and a given category with time and repetition constraints (NOTE: includes one record before the start time, useful for graphing)
 	@CrossOrigin(origins = webOrigin)
-	@RequestMapping("/recordsById")
-	@ResponseBody
-	public List<Record> getRecordsById(@RequestParam("StudentId") int StudentId, @RequestParam("Category") String category, @RequestParam("Months") int months, @RequestParam("Reps") String whichReps, @RequestParam("Until") int until) {
-		System.out.println("Method getRecordsById() called for Student ID " + StudentId + ", category " + category + ", month number " + months + ", and rep number " + whichReps + ", and until " + until);
-		return recordService.getRecordsById(StudentId, category, months, whichReps, until);
+	@RequestMapping("/recordsForChart")
+	public List<Record> getRecordsForChart(@RequestParam("StudentId") int StudentId, @RequestParam("Category") String category, @RequestParam("Months") int months, @RequestParam("Until") int until, @RequestParam("Reps") String whichReps) {
+		System.out.println("Method getRecordsById() called for Student ID " + StudentId + ", category " + category + ", month number " + months + ", and until " + until + ", and rep number " + whichReps);
+		return recordService.getRecordsForChart(StudentId, category, months, until, whichReps);
 	}
 	
 	//Returns all records for a given student and a given category

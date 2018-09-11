@@ -24,32 +24,10 @@ public class RecordServiceImpl implements RecordService{
 		return recordDao.getAllRecords();
 	}
 	
-	// Gets records to include in a progress chart for a certain student, given a certain repetition number and a certain timeframe to plot
+	// Returns records for a student within a certain range, plus or minus one record, with a specific category and rep count
 	@Override
-	public List<Record> getRecordsById(int RecordId, String category, int months, String whichReps, int until) {
-		List<Record> records = recordDao.getRecordsById(RecordId, category, whichReps);
-		List<Record> returnRecords = new ArrayList<Record>();
-		
-		DateTime dt = new DateTime().withTimeAtStartOfDay().withDayOfMonth(1);
-		Date monthsAgo = dt.minusMonths(months).toDate();
-		Date untilDate = dt.minusMonths(until - 1).toDate(); // subtracting 1 from until in order to display the entire most recent month, rather than just the beginning of it
-		
-		boolean firstRecordFlag = true;
-		for(int r = 0; r < records.size(); r++) {
-			Record currentRecord = records.get(r);
-			if(currentRecord.getStartDate().compareTo(monthsAgo) > 0) {
-				if (firstRecordFlag && r > 0)
-					returnRecords.add(records.get(r-1)); // adds one record before the timeframe, if possible
-
-				returnRecords.add(currentRecord);
-				firstRecordFlag = false;
-				
-				if (currentRecord.getStartDate().compareTo(untilDate) > 0) // adds one record after the timeframe, if possible
-					break;
-			}
-		}
-		
-		return returnRecords;
+	public List<Record> getRecordsForChart(int StudentId, String category, int months, int until, String whichReps) {
+		return recordDao.getRecordsForChart(StudentId, category, months, until, whichReps);
 	}
 	
 	// Gets records to include in a progress chart for a given student

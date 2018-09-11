@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.joda.time.DateTime;
 import org.springframework.aop.interceptor.ExposeBeanNameAdvisors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.session.SessionProperties.Jdbc;
@@ -34,22 +35,31 @@ public class RecordDaoImpl implements RecordDao{
 		rowMapper = new RecordRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
-
-	//Returns all records of a student in a specific category and a specific repetition number
+	
+	// Returns records for a student within a certain range, plus or minus one record, with a specific category and rep count
 	@Override
-	public List<Record> getRecordsById(int RecordId, String category, String whichReps) {	
-		sql = "SELECT * FROM records INNER JOIN books ON records.BookId = books.BookId INNER JOIN students ON records.StudentId ="
-				+ " students.StudentId WHERE records.StudentId = ? AND books.Category = ? # ORDER BY StartDate";
-
+	public List<Record> getRecordsForChart(int StudentId, String category, int months, int until, String whichReps) {
+		sql = "SELECT * FROM books b INNER JOIN ("
+				+ "(SELECT * FROM records WHERE StudentId = ? AND StartDate < ? ORDER BY StartDate DESC LIMIT 1) UNION" // note: this sql query can be edited and tested in the MainScript file in the backend
+				+ "(SELECT * FROM records WHERE StudentId = ? AND StartDate > ? ORDER BY StartDate ASC LIMIT 1) UNION"
+				+ "(SELECT * FROM records WHERE StudentId = ? AND StartDate >= ? AND StartDate <= ?))"
+				+ "r ON r.BookId = b.BookId INNER JOIN students s ON r.StudentId = s.StudentId WHERE b.Category = ? # ORDER BY r.StartDate";
+		
 		rowMapper = new RecordRowMapper();
 		List<Record> output;
 		
+		DateTime dt = new DateTime().withTimeAtStartOfDay().withDayOfMonth(1);
+		Date monthsDate = dt.minusMonths(months).toDate();
+		Date untilDate =  dt.minusMonths(until - 1).toDate(); // subtracting 1 from until in order to display the entire most recent month, rather than just the beginning of it
+		
 		if(whichReps.equalsIgnoreCase("All")) {		// Content of query depends on repetition selection
 			sql = sql.replace("#","");
-			output = this.jdbcTemplate.query(sql, rowMapper, RecordId, category);
+			System.out.println(sql);
+			output = this.jdbcTemplate.query(sql, rowMapper, StudentId, monthsDate, StudentId, untilDate, StudentId, monthsDate, untilDate, category);
 		} else {
-			sql = sql.replace("#", "AND records.Rep = ?");
-			output = this.jdbcTemplate.query(sql, rowMapper, RecordId, category, whichReps);
+			sql = sql.replace("#", "AND r.Rep = ?");
+			System.out.println(sql);
+			output = this.jdbcTemplate.query(sql, rowMapper, StudentId, monthsDate, StudentId, untilDate, StudentId, monthsDate, untilDate, category, whichReps);
 		}
 		return output;
 	}

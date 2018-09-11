@@ -6,7 +6,7 @@ import java.util.List;
 public interface RecordService {
 
 	List<Record> getAllRecords();
-	List<Record> getRecordsById(int RecordId, String category, int months, String whichReps, int until);
+	List<Record> getRecordsForChart(int StudentId, String category, int months, int until, String whichReps);
 	List<Record> getIncompleteRecords();
 	List<Record> getAllRecordsById(int StudentId, String category);
 	int addRecord(int id, String category, String subcategory, String title, Date startDate, int rep);
