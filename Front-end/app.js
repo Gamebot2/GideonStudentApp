@@ -79,53 +79,8 @@ app.controller('studentCtrl', function($scope, $http, $window) {
 \****************/
 app.controller('chartCtrl', function($scope, $http, $window) {
 
-	// vvvv DATES MANAGEMENT STUFF vvvv
-	var zeroDate;
-	var n = moment();
-	now = {
-		month: n.month(),
-		year: n.year(),
-		date: (n.date() - 1) / n.daysInMonth()
-	}
-
-	// a better modulo function that loops around for negative numbers
-	let mod = (x, n) => (x % n + n) % n;
-
-	// a better truncation function that loops around for negative numbers
-	let modtrunc = (x) => Math.trunc(x) - (x < 0 ? 1 : 0);
-	
-	// function that returns a month/year/floating-point-date object from a specified record, for use in plotting points
-	let getStartDateAt = function(index) {
-		var d = moment($scope.records[index].startDate.split(" ")[0]);
-		return {
-			month: d.month(),
-			year: d.year(),
-			date: (d.date() - 1) / d.daysInMonth()
-		}
-	}
-
-	// function that returns a month/year/floating-point-date object a certain number of months after another one of those objects
-	let dateAdd = function(originalDate, addition) {
-		var numeral = originalDate.year * 12 + originalDate.month;
-		numeral += addition;
-		return {
-			month: mod(numeral, 12),
-			year: modtrunc(numeral / 12),
-			date: 0
-		}
-	}
-
-	// function that returns a month/year/floating-point-date object a certain number of months prior to another one of those objects
-	let dateSubtract = function(originalDate, subtraction) {
-		return dateAdd(originalDate, -1 * subtraction);
-	}
-
-	// function that returns the month difference between two month/year/floating-point-date objects
-	let dateCompare = function(date1, date2) {
-		return (date1.year - date2.year) * 12 + (date1.month - date2.month) + (date1.date - date2.date);
-	}
-	// ^^^^ DATES MANAGEMENT STUFF ^^^^
-
+	var Dates = require('/momentbymonth.js');
+	console.log(Dates);
 
 	
 	$scope.expanded = true;
@@ -144,14 +99,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 	$http.get(`http://localhost:8081/gradeOfStudent?Id=${$scope.studentId}`)
 	.then(function(response) {
 		$scope.currentGrade = response.data;
-
-		zeroDate = {
-			month: 7,
-			year: now.year - $scope.currentGrade - (now.month < 7 ? 1 : 0), // subtract an extra 1 from the year if it's before august
-			date: 0
-		}
-
-		console.log(now.year + " - " + $scope.currentGrade + " - " + (now.month < 7 ? 1 : 0));
+		Dates.setZeroDate($scope.currentGrade);
 	});
 
 	//Retrieves all the books for use later in y-axis plotting
@@ -187,8 +135,8 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 
 		$scope.until = $scope.months2 == 0 && Number.isInteger($scope.monthsF) ? -Math.max($scope.monthsF, 0) : $scope.months2;
 
-		var date1 = dateSubtract(now, $scope.months);
-		var date2 = dateSubtract(now, $scope.until);
+		var date1 = Dates.dateSubtract(now, $scope.months);
+		var date2 = Dates.dateSubtract(now, $scope.until);
 
 		//// GIANT CHART GENERATION METHOD ////
 		$http.get(`http://localhost:8081/recordsForChart?StudentId=${$scope.studentId}&Category=${$scope.selectedCategory}&Months=${$scope.months}&Until=${$scope.until}&Reps=${$scope.selectedRep}`)
@@ -196,8 +144,8 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			$scope.records = response.data;
 			
 			try {
-				var lowestDate = dateCompare(date1, zeroDate); // x-axis bounds
-				var highestDate = dateCompare(date2, zeroDate);
+				var lowestDate = Dates.dateCompare(date1, Dates.zeroDate); // x-axis bounds
+				var highestDate = Dates.dateCompare(date2, Dates.zeroDate);
 				var greatestBook = 0; // y-axis bounds
 				var leastBook = 999;
 
@@ -213,7 +161,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 
 				//// Maps the internal linear scale of the x axis (lowestDate, ... highestDate) with labels containing dates and grades ////
 				for(j = lowestDate; j < highestDate; j++) {
-					var theLabel = dateAdd(zeroDate, j);
+					var theLabel = Dates.dateAdd(Dates.zeroDate, j);
 					theLabel.grade = modtrunc(j / 12);
 
 					labelDates.push(theLabel);
@@ -226,7 +174,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 						a++;
 
 						points.push({
-							x: dateCompare(getStartDateAt(i), zeroDate),
+							x: Dates.dateCompare(Dates.toDateObject($scope.records[i].startDate), Dates.zeroDate),
 							y: $scope.records[i].bookId
 						})
 
@@ -280,11 +228,11 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 
 				//// NOW LINE: a vertical black line to indicate the current date
 				points4.push({
-					x: dateCompare(now, zeroDate) - 0.001,
+					x: Dates.dateCompare(now, Dates.zeroDate) - 0.001,
 					y: leastBook - 2
 				});
 				points4.push({
-					x: dateCompare(now, zeroDate) + 0.001,
+					x: Dates.dateCompare(now, Dates.zeroDate) + 0.001,
 					y: greatestBook + 4
 				});
 
@@ -394,11 +342,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 							return labelToBookTitle(tooltipItem[0].yLabel, false);
 						},
 						label:function(tooltipItem, data) { // callback function converts x-axis numeral to MM/DD/YYYY formatted string
-							var theDate = dateAdd(zeroDate, modtrunc(tooltipItem.xLabel));
-
-							var daysInMonth = moment(`${theDate.year} ${theDate.month + 1}`, "YYYY MM").daysInMonth();
-							theDate.date = Math.round(mod(tooltipItem.xLabel, 1) * daysInMonth) + 1;
-
+							var theDate = Dates.getDateObject(tooltipItem.xLabel);
 							return `started on ${theDate.month + 1}/${theDate.date}/${theDate.year}`;
 						}
 					},
