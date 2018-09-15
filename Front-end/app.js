@@ -79,15 +79,15 @@ app.controller('studentCtrl', function($scope, $http, $window) {
 \****************/
 app.controller('chartCtrl', function($scope, $http, $window) {
 
-	var Dates = require('/momentbymonth.js');
-	console.log(Dates);
-
-	
-	$scope.expanded = true;
-	$scope.logoDisplay = false;
-
 	$scope.studentId = $window.localStorage.getItem(0);
 	$scope.studentName = $window.localStorage.getItem(1);
+
+	// Pre-generation chart management
+	var regen = false;
+	$scope.expanded = true;
+	$scope.logoDisplay = false;
+	var exampleChart;
+	let myChart = document.getElementById('lineChart').getContext('2d');
 
 	//Retrieves all categories the selected student is working in
 	$http.get(`http://localhost:8081/categoriesByStudent?Id=${$scope.studentId}`)
@@ -117,14 +117,10 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 		}
 	}
 
-	// Pre-generation chart management
-	var regen = false;
-	var exampleChart;
-	let myChart = document.getElementById('lineChart').getContext('2d');
-
 	//Generates the lineChart based on instructor specifications
 	$scope.generateChart = function() {
-		if ($scope.form.$invalid) { // Ensures form is valid before generation
+		// Ensures form is valid before generation
+		if ($scope.form.$invalid) { 
 			$scope.formStatus = 0;
 			$scope.formStatusText = "Invalid Form";
 			return;
@@ -133,10 +129,11 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			$scope.formStatusText = "Processing...";
 		}
 
-		$scope.until = $scope.months2 == 0 && Number.isInteger($scope.monthsF) ? -Math.max($scope.monthsF, 0) : $scope.months2;
-
-		var date1 = Dates.dateSubtract(now, $scope.months);
-		var date2 = Dates.dateSubtract(now, $scope.until);
+		if ($scope.months2 == 0 && Number.isInteger($scope.monthsF)) {
+			$scope.until = -Math.max($scope.monthsF, 0)
+		} else {
+			$scope.until = $scope.months2;
+		}
 
 		//// GIANT CHART GENERATION METHOD ////
 		$http.get(`http://localhost:8081/recordsForChart?StudentId=${$scope.studentId}&Category=${$scope.selectedCategory}&Months=${$scope.months}&Until=${$scope.until}&Reps=${$scope.selectedRep}`)
@@ -144,48 +141,43 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 			$scope.records = response.data;
 			
 			try {
-				var lowestDate = Dates.dateCompare(date1, Dates.zeroDate); // x-axis bounds
-				var highestDate = Dates.dateCompare(date2, Dates.zeroDate);
+				var lowestDate = Dates.inputToDate($scope.months); // x-axis bounds
+				var highestDate = Dates.inputToDate($scope.until);
 				var greatestBook = 0; // y-axis bounds
 				var leastBook = 999;
-
-				var currentGradeOffset = 0;
 				
-				var labelDates = []; // main container of x axis labels, labels are objects containing properties "month", "year", and "grade" (also date, but that's irrelevant here)
-				var grades = [];
-				var points = []; // container with points: x is date, y is bookid
-				var points2 = []; 			// currently contains the best fit line
-				var points3 = []; 			// currently contains nothing, but will contain something soon
-				var points4 = [];			// currently contains the vertical NOW line
+				var xAxisLabels = []; // main container of x axis labels, labels are objects containing properties "month", "year", and "grade" (also date, but that's irrelevant here)
+				var dataPoints = []; 		// data points: x is date, y is bookid, main graph plot
+				var bestFitPoints = []; 	// best fit line: will contain two points outside the horizontal range of the graph
+				var iglPoints = []; 		// will contain the international goal line, or IGL
+				var nowPoints = [];			// vertical NOW line: will contain two points with nearly the same x value denoting the current date
 
 
 				//// Maps the internal linear scale of the x axis (lowestDate, ... highestDate) with labels containing dates and grades ////
 				for(j = lowestDate; j < highestDate; j++) {
 					var theLabel = Dates.dateAdd(Dates.zeroDate, j);
-					theLabel.grade = modtrunc(j / 12);
+					theLabel.grade = Dates.modtrunc(j / 12);
 
-					labelDates.push(theLabel);
+					xAxisLabels.push(theLabel);
 				}
 
-				//// Creates a point mapping each record to its respective spot on the x and y axis ////
+				//// DATA POINTS: Creates a point mapping each record to its respective spot on the x and y axis ////
 				var a = 0; // Helps display error message if there is no data, couldn't find a better solution for some reason: this value will increase for every existing record
-				for(i = 0; i < $scope.records.length; i++) {
-					if($scope.records[i].startDate != null) {
+				$scope.records.forEach(function(record) {
+					if(record.startDate != null) {
 						a++;
 
-						points.push({
-							x: Dates.dateCompare(Dates.toDateObject($scope.records[i].startDate), Dates.zeroDate),
-							y: $scope.records[i].bookId
-						})
+						dataPoints.push({
+							x: Dates.dateCompare(Dates.toDateObject(record.startDate), Dates.zeroDate),
+							y: record.bookId,
+						});
 
-						if ($scope.records[i].bookId > greatestBook)
-							greatestBook = $scope.records[i].bookId;
-						if ($scope.records[i].bookId < leastBook)
-							leastBook = $scope.records[i].bookId;
+						greatestBook = Math.max(record.bookId, greatestBook); // adjust y-axis bounds
+						leastBook = Math.min(record.bookId, leastBook);
 					}
-				}
-
-				if (a <= 0) { // no data check
+				});
+				// no data check
+				if (a <= 0) { 
 					$scope.errorMessage = true;
 					$scope.formStatus = 0;
 					$scope.formStatusText = "Error: No data";
@@ -197,43 +189,43 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 				
 
 				//// BEST FIT LINE: least squares method ////
-				var metrics = {xmean: 0, ymean: 0, diff: 0, squares: 0};
-				metrics.getY = function(x) {
-					return metrics.slope * (x - metrics.xmean) + metrics.ymean
-				};
+				var metrics = {
+					init() {
+						this.xmean = dataPoints.map(p => p.x).reduce((a, b) => a + b) / dataPoints.length; // average x
+						this.ymean = dataPoints.map(p => p.y).reduce((a, b) => a + b) / dataPoints.length; // average y
 
-				for(b = 0; b < points.length; b++) {
-					metrics.xmean += points[b].x;
-					metrics.ymean += points[b].y;
-				}
-				metrics.xmean /= points.length;
-				metrics.ymean /= points.length;
-				for(b = 0; b < points.length; b++) {
-					metrics.diff += (points[b].x - metrics.xmean) * (points[b].y - metrics.ymean);
-					metrics.squares += (points[b].x - metrics.xmean) * (points[b].x - metrics.xmean);
-				}
-				metrics.slope = metrics.diff / metrics.squares;
-				points2.push({
+						this.getDiff = p => (p.x - this.xmean) * (p.y - this.ymean);      // numerator of formula, per term
+						this.getSquares = p => (p.x - this.xmean) * (p.x - this.xmean);   // denominator of formula, per term
+
+						this.diffSum = dataPoints.map(p => this.getDiff(p)).reduce((a, b) => a + b);            // numerator of formula, summation
+						this.squaresSum = dataPoints.map(p => this.getSquares(p)).reduce((a, b) => a + b);      // denominator of formula, summation
+
+						this.slope = this.diffSum / this.squaresSum;					// complete formula
+						this.getY = x => this.slope * (x - this.xmean) + this.ymean;	// point-slope form linear equation
+
+						delete this.init; // remove this function from the object, to avoid clutter
+						return this;
+					}
+				}.init();
+
+				bestFitPoints.push({
 					x: lowestDate - 1,
-					y: metrics.getY(lowestDate - 1)
-				});
-				points2.push({
+					y: metrics.getY(lowestDate - 1),
+				}, {
 					x: highestDate + 1,
-					y: metrics.getY(highestDate + 1)
+					y: metrics.getY(highestDate + 1),
 				});
+				// move greatestBook upward if the best fit line goes above the data line
+				greatestBook = Math.max(metrics.getY(highestDate), greatestBook);
 
-				if (metrics.getY(highestDate) > greatestBook) // move greatestBook upward if the best fit line goes above the data line
-					greatestBook = metrics.getY(highestDate);
 
-
-				//// NOW LINE: a vertical black line to indicate the current date
-				points4.push({
-					x: Dates.dateCompare(now, Dates.zeroDate) - 0.001,
-					y: leastBook - 2
-				});
-				points4.push({
-					x: Dates.dateCompare(now, Dates.zeroDate) + 0.001,
-					y: greatestBook + 4
+				//// NOW LINE: a vertical black line to indicate the current date ////
+				nowPoints.push({
+					x: Dates.dateCompare(Dates.now, Dates.zeroDate) - 0.001,
+					y: leastBook - 2,
+				}, {
+					x: Dates.dateCompare(Dates.now, Dates.zeroDate) + 0.001,
+					y: greatestBook + 4,
 				});
 
 
@@ -262,13 +254,13 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 
 				//// X AXES CALLBACKS ////
 				let xAxesSpecs = {
-					monthAxis: function(label){
-						var s = labelDates[label - lowestDate];
+					monthAxis(label) {
+						var s = xAxisLabels[label - lowestDate];
 						if (s != null && s != undefined)
 							return s.month + 1;
 					},
-					yearAxis: function(label){
-						var s = labelDates[label - lowestDate];
+					yearAxis(label) {
+						var s = xAxisLabels[label - lowestDate];
 						if (s != null && s != undefined) {
 							if(s.month == 6)
 								return s.year;
@@ -276,8 +268,8 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 								return "|";
 						}
 					},
-					gradeAxis: function(label){
-						var s = labelDates[label - lowestDate];
+					gradeAxis(label) {
+						var s = xAxisLabels[label - lowestDate];
 						if (s != null && s != undefined) {
 							if(s.month == 1) {
 								if(s.grade == 0)
@@ -296,7 +288,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 								return "|";
 							}
 						}
-					}
+					},
 				}
 
 				//// CHART SPECIFICATIONS ////
@@ -304,7 +296,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 					datasets: [
 						{
 							label: $scope.studentName,
-							data: points,
+							data: dataPoints,
 							backgroundColor: "rgba(255, 0, 0, 0.4)",
 							borderColor: "rgba(255, 0, 0, 0.4)",
 							fill: false,
@@ -312,7 +304,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 							hitRadius: 30
 						}, {
 							label: "Best Fit Line",
-							data: points2,
+							data: bestFitPoints,
 							backgroundColor: "rgba(0, 0, 255, 0.4)",
 							borderColor: "rgba(0, 0, 255, 0.4)",
 							fill: false,
@@ -321,6 +313,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 							pointRadius: 0
 						}, {
 							label: "IGL",
+							data: iglPoints,
 							backgroundColor: "rgba(0, 255, 255, 0.4)",
 							borderColor: "rgba(0, 255, 255, 0.4)",
 							fill: false,
@@ -329,22 +322,23 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 							pointRadius: 0
 						}, {
 							label: "Now",
-							data: points4,
+							data: nowPoints,
 							backgroundColor: "rgba(0, 0, 0, 0.2)",
 							borderColor: "rgba(0, 0, 0, 0.2)",
 							fill: false,
 							lineTension: 0,
 							pointRadius: 0
-						}
+						},
 					],
 					tooltipCallbacks: {
-						title:function(tooltipItem, data) {
+						title(tooltipItem, data) {
 							return labelToBookTitle(tooltipItem[0].yLabel, false);
 						},
-						label:function(tooltipItem, data) { // callback function converts x-axis numeral to MM/DD/YYYY formatted string
+						// callback function converts x-axis numeral to MM/DD/YYYY formatted string
+						label(tooltipItem, data) { 
 							var theDate = Dates.getDateObject(tooltipItem.xLabel);
 							return `started on ${theDate.month + 1}/${theDate.date}/${theDate.year}`;
-						}
+						},
 					},
 					xAxes: [
 						{
@@ -403,7 +397,7 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 								maxRotation: 0,
 								callback: xAxesSpecs.gradeAxis
 							}
-						}
+						},
 					],
 					yAxes: [
 						{
@@ -421,22 +415,22 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 								min: leastBook - 1,
 								max: greatestBook + 3,
 								lineHeight: 1,
-								callback:function(label) {
+								callback(label) {
 									return labelToBookTitle(label, true);
 								}
 							}
-						}
-					]
+						},
+					],
 
 				}
 
 				//// BUILD CHART ////
 				if (regen)
 					exampleChart.destroy();
-				exampleChart = new Chart(myChart,{
+				exampleChart = new Chart(myChart, {
 					type: 'line',
 					data:{
-						datasets: chartSpecs.datasets
+						datasets: chartSpecs.datasets,
 					},
 					options: {
 						responsive: true,
@@ -459,12 +453,11 @@ app.controller('chartCtrl', function($scope, $http, $window) {
 						scales: {
 							xAxes: chartSpecs.xAxes,
 							yAxes: chartSpecs.yAxes
-						}
-					}
+						},
+					},
 				});
 
 				regen = true;
-
 				$scope.logoDisplay = true;
 				$scope.expanded = false;
 
@@ -493,10 +486,13 @@ app.controller('insertCtrl', function($scope, $http, $window){
 		$scope.students = response.data;
 
 		$scope.names = [];
-		for(i = 0; i < $scope.students.length; i++) {
-			var nameWithId = { name: $scope.students[i].client, id: $scope.students[i].studentId };
-			$scope.names.push(nameWithId); // names contain ids to make sure every name is distinct - the name will be displayed but the id will be used
-		}
+		$scope.students.forEach(function(student) {
+			// names contain ids to make sure every name is distinct - the name will be displayed but the id will be used
+			$scope.names.push({ 
+				name: student.client,
+				id: student.studentId
+			}); 
+		});
 
 	});
 
@@ -519,7 +515,7 @@ app.controller('insertCtrl', function($scope, $http, $window){
 	//Returns all books
 	$http.get("http://localhost:8081/categories")
 	.then(function(response) {
-		$scope.categories = response.data
+		$scope.categories = response.data;
 	});
 
 	//Creates JSON for the record based on form data
@@ -536,7 +532,7 @@ app.controller('insertCtrl', function($scope, $http, $window){
 				startDate: 		$scope.startDate,
 				testTime: 		$scope.testTime,
 				mistakes: 		$scope.mistakes,
-				rep: 			$scope.rep
+				rep: 			$scope.rep,
 			});
 			//Inserts the record with an HTTP post call
 			$http({
@@ -546,7 +542,7 @@ app.controller('insertCtrl', function($scope, $http, $window){
 					"Content-Type": "application/json",
 					"Accept": "application/json"
 				},
-				data:newRecordDetails
+				data:newRecordDetails,
 			}).then(function(response) {
 				if (response.data == 0) {
 					$scope.formStatus = 1;
@@ -585,22 +581,26 @@ app.controller('updateCtrl', function($scope, $http, $window){
 	.then(function(response) {
 		$scope.records = response.data;
 		$scope.displayRecords = [];
-		for(i = 0; i < $scope.records.length; i++) {
-			var splitDate = $scope.records[i].startDate.split('-');
+
+		$scope.records.forEach(function(record) {
+			var splitDate = record.startDate.split('-');
 
 			var year = parseInt(splitDate[0]);
 			var month = parseInt(splitDate[1]);
 			var day = parseInt(splitDate[2]);
 
-			var startDate = new Date(year, month-1, day).toISOString();
+			var startDate = new Date(year, month-1, day).toISOString();		// the date representation that the application uses
+			var formattedDate = `${month}/${day}/${year}`;					// the date representation that is readable for humans
 
-			//Formats date for readability
-			var formattedDate = `${month}/${day}/${year}`;
+			var displayRecord = `${record.name} started book ${record.bookTitle} on ${formattedDate} | RecordId: ${record.recordId}`;
 
-			var displayRecord = `${$scope.records[i].name} started book ${$scope.records[i].bookTitle} on ${formattedDate} | RecordId: ${$scope.records[i].recordId}`;
-
-			$scope.displayRecords.push({ name: $scope.records[i].name, id: $scope.records[i].recordId, date: startDate, display: displayRecord }); // "display" for the shown selections, everything else is actual data
-		}
+			$scope.displayRecords.push({
+				name: record.name,
+				id: record.recordId,
+				date: startDate,
+				display: displayRecord, // "display" for the shown selections, everything else is actual data
+			}); 
+		});
 	});
 
 	//Updates an incomplete record based on instructor data
@@ -642,7 +642,7 @@ app.controller('insertStudentCtrl', function($scope, $http, $window) {
 			var newStudentDetails = JSON.stringify({
 				client: $scope.Client,
 				grade: 	$scope.Grade,
-				gender: $scope.Gender
+				gender: $scope.Gender,
 			});
 			//Inserts the record with an HTTP post call
 			$http({
@@ -652,7 +652,7 @@ app.controller('insertStudentCtrl', function($scope, $http, $window) {
 					"Content-Type": "application/json",
 					"Accept": "application/json"
 				},
-				data:newStudentDetails
+				data:newStudentDetails,
 			}).then(function(response) {
 				if (response.data == 0) {
 					$scope.formStatus = 1;
@@ -711,7 +711,7 @@ app.controller('editStudentCtrl', function($scope, $http, $window) {
 					"Content-Type": "application/json",
 					"Accept": "application/json"
 				},
-				data:newStudentDetails
+				data:newStudentDetails,
 			}).then(function(response) {
 				if (response.data == 0) {
 					window.location.href = "StudentList.html";
