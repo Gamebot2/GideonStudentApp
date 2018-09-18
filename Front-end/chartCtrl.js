@@ -5,12 +5,13 @@
  * NOTES:
  * - The variable "gideonApp" is defined in gideonApp.js. That file must be included prior to this one in html.
  * - The variable "Dates" is defined in momentbymonth.js. That file must be included prior to this one in html.
+ * - The variable "Verify" is defined in verify.js. That file must be included prior to this one in html.
  * - The application expects there to be the id and name of a student in the local storage of the window. Make sure these exist before opening LineChart.html.
  */
 
-
 gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 
+	// Fetch relevant information from the window
 	$scope.studentId = $window.localStorage.getItem(0);
 	$scope.studentName = $window.localStorage.getItem(1);
 
@@ -18,8 +19,12 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 	var regen = false;
 	$scope.expanded = true;
 	$scope.logoDisplay = false;
+
 	var exampleChart;
 	let myChart = document.getElementById('lineChart').getContext('2d');
+
+	// initialize Verify
+	Verify.setScope($scope);
 
 	//Retrieves all categories the selected student is working in
 	$http.get(`http://localhost:8081/categoriesByStudent?Id=${$scope.studentId}`)
@@ -52,14 +57,8 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 	//Generates the lineChart based on instructor specifications
 	$scope.generateChart = function() {
 		// Ensures form is valid before generation
-		if ($scope.form.$invalid) { 
-			$scope.formStatus = 0;
-			$scope.formStatusText = "Invalid Form";
+		if (!Verify.check())
 			return;
-		} else {
-			$scope.formStatus = 2;
-			$scope.formStatusText = "Processing...";
-		}
 
 		if ($scope.months2 == 0 && Number.isInteger($scope.monthsF)) {
 			$scope.until = -Math.max($scope.monthsF, 0)
@@ -73,16 +72,16 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 			$scope.records = response.data;
 			
 			try {
-				var lowestDate = Dates.inputToDate($scope.months); // x-axis bounds
-				var highestDate = Dates.inputToDate($scope.until);
-				var greatestBook = 0; // y-axis bounds
-				var leastBook = 999;
+				var lowestDate   = Dates.inputToDate($scope.months), // x-axis bounds
+					highestDate  = Dates.inputToDate($scope.until),
+				    greatestBook = 0, // y-axis bounds
+					leastBook    = 999;
 				
-				var xAxisLabels = []; // main container of x axis labels, labels are objects containing properties "month", "year", and "grade" (also date, but that's irrelevant here)
-				var dataPoints = []; 		// data points: x is date, y is bookid, main graph plot
-				var bestFitPoints = []; 	// best fit line: will contain two points outside the horizontal range of the graph
-				var iglPoints = []; 		// will contain the international goal line, or IGL
-				var nowPoints = [];			// vertical NOW line: will contain two points with nearly the same x value denoting the current date
+				var xAxisLabels 	= [], // main container of x axis labels, labels are objects containing properties "month", "year", and "grade" (also date, but that's irrelevant here)
+					dataPoints 		= [], 		// data points: x is date, y is bookid, main graph plot
+					bestFitPoints 	= [], 		// best fit line: will contain two points outside the horizontal range of the graph
+					iglPoints 		= [], 		// will contain the international goal line, or IGL
+					nowPoints 		= [];		// vertical NOW line: will contain two points with nearly the same x value denoting the current date
 
 
 				//// Maps the internal linear scale of the x axis (lowestDate, ... highestDate) with labels containing dates and grades ////
@@ -109,15 +108,12 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 					}
 				});
 				// no data check
-				if (a <= 0) { 
+				if (Verify.errorIf(a <= 0, "No data")) { 
 					$scope.errorMessage = true;
-					$scope.formStatus = 0;
-					$scope.formStatusText = "Error: No data";
 					return;
 				}
-				else {
+				else
 					$scope.errorMessage = false;
-				}
 				
 
 				//// BEST FIT LINE: least squares method ////
@@ -393,13 +389,11 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 				$scope.logoDisplay = true;
 				$scope.expanded = false;
 
-				$scope.formStatus = 1;
-				$scope.formStatusText = "";
+				Verify.remove();
 			}
 			catch (err) {
 				console.error(err);
-				$scope.formStatus = 0;
-				$scope.formStatusText = "Error - check console";
+				Verify.error();
 			}
 		});	
 	};

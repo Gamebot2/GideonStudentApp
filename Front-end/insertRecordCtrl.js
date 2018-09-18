@@ -4,10 +4,14 @@
  * 
  * NOTES:
  * - The variable "gideonApp" is defined in gideonApp.js. That file must be included prior to this one in html.
+ * - The variable "Verify" is defined in verify.js. That file must be included prior to this one in html.
  */
 
 
 gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
+
+	// initialize Verify
+	Verify.setScope($scope);
 
 	// Returns a list of all students for easy name selection	
 	$http.get("http://localhost:8081/students")
@@ -44,44 +48,32 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 
 	// Form submission
 	$scope.createRecord = function() {
-		if ($scope.form.$valid) {
-			$scope.formStatus = 2;
-			$scope.formStatusText = "Processing...";
+		if (!Verify.check())
+			return;
 
-			//Creates JSON for the record based on form data
-			var newRecordDetails = JSON.stringify({
-				id: 			$scope.client.id,
-				category: 		$scope.selectedCategory,
-				subcategory: 	$scope.selectedSubCategory,
-				title: 			$scope.selectedTitle,
-				startDate: 		$scope.startDate,
-				testTime: 		$scope.testTime,
-				mistakes: 		$scope.mistakes,
-				rep: 			$scope.rep,
-			});
+		//Creates JSON for the record based on form data
+		var newRecordDetails = JSON.stringify({
+			id: 			$scope.client.id,
+			category: 		$scope.selectedCategory,
+			subcategory: 	$scope.selectedSubCategory,
+			title: 			$scope.selectedTitle,
+			startDate: 		$scope.startDate,
+			testTime: 		$scope.testTime,
+			mistakes: 		$scope.mistakes,
+			rep: 			$scope.rep,
+		});
 
-			//Inserts the record with an HTTP post call
-			$http({
-				url: 'http://localhost:8081/addRecord',
-				method: 'POST',
-				headers: {
-					"Content-Type": "application/json",
-					"Accept": "application/json"
-				},
-				data:newRecordDetails,
-			}).then(function(response) {
-				if (response.data == 0) {
-					$scope.formStatus = 1;
-					$scope.formStatusText = `Successfully added record for ${$scope.client.name}`;
-				} else {
-					$scope.formStatus = 0;
-					$scope.formStatusText = "Error";
-				}
-			});
-		}
-		else {
-			$scope.formStatus = 0;
-			$scope.formStatusText = "Invalid Form";
-		}
+		//Inserts the record with an HTTP post call
+		$http({
+			url: 'http://localhost:8081/addRecord',
+			method: 'POST',
+			headers: {
+				"Content-Type": "application/json",
+				"Accept": "application/json"
+			},
+			data:newRecordDetails,
+		}).then(function(response) {
+			Verify.successIf(response.data == 0, `Successfully added record for ${$scope.client.name}`);
+		});
 	}
 });

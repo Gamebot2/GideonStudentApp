@@ -4,10 +4,14 @@
  * 
  * NOTES:
  * - The variable "gideonApp" is defined in gideonApp.js. That file must be included prior to this one in html.
+ * - The variable "Verify" is defined in verify.js. That file must be included prior to this one in html.
  */
 
 
 gideonApp.controller('updateRecordCtrl', function($scope, $http, $window){
+
+	// initialize Verify
+	Verify.setScope($scope);
 
 	//Returns all student names for easy selection
 	$http.get("http://localhost:8081/students")
@@ -42,25 +46,13 @@ gideonApp.controller('updateRecordCtrl', function($scope, $http, $window){
 
 	// Form submission
 	$scope.updateRecord = function() {
-		if ($scope.form.$valid) {
-			$scope.formStatus = 2;
-			$scope.formStatusText = "Processing...";
+		if (!Verify.check())
+			return;
 
-			// Updates an incomplete record based on instructor data
-			$http.get(`http://localhost:8081/updateRecord?recordId=${$scope.selectedRecord.id}&endDate=${$scope.endDate}&testTime=${$scope.testTime}&mistakes=${$scope.mistakes}`)
-			.then(function(response) {
-				if (response.data == 0) {
-					$scope.formStatus = 1;
-					$scope.formStatusText = `Successfully updated record for ${$scope.selectedRecord.name}`;
-				} else {
-					$scope.formStatus = 0;
-					$scope.formStatusText = "Error";
-				}
-			});	
-		}
-		else {
-			$scope.formStatus = 0;
-			$scope.formStatusText = "Invalid Form";
-		}
+		// Updates an incomplete record based on instructor data
+		$http.get(`http://localhost:8081/updateRecord?recordId=${$scope.selectedRecord.id}&endDate=${$scope.endDate}&testTime=${$scope.testTime}&mistakes=${$scope.mistakes}`)
+		.then(function(response) {
+			Verify.successIf(response.data == 0, `Successfully updated record for ${$scope.selectedRecord.name}`);
+		});	
 	}
 });

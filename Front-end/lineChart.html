@@ -20,6 +20,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
 		<script src="momentbymonth.js"></script>
+		<script src="verify.js"></script>
 		<script src="app.js"></script>
 		<script src="chartCtrl.js"></script>
 		<script src="ripple.js"></script>
@@ -93,7 +94,7 @@
 			</div>
 
 			<!--Error message in case no data is retrieved-->
-			<span ng-class="{'errorText':formStatus == 0, 'successText':formStatus == 1}">{{formStatusText}}</span>
+			<span ng-class="{'errorText':formStatus.id == 0, 'successText':formStatus.id == 1}">{{formStatus.text}}</span>
 			<br><br>
 
 			
