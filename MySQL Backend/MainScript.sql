@@ -84,8 +84,8 @@ WHERE Category = 'Comprehension';
 -- total number of books in a sequence
 SELECT
 	CASE
-		WHEN Category != "Comprehension" THEN CONCAT(Category, Subcategory)
-        ELSE CONCAT(Category, GradeLevel)
+		WHEN BookId < 376 THEN Subcategory
+        ELSE CONCAT(Category, " ", GradeLevel)
     END AS sequenceName,
     COUNT(*) AS sequenceLength
 FROM books
