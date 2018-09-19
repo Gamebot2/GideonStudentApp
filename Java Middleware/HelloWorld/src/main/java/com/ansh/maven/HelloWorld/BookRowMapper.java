@@ -8,7 +8,6 @@ public class BookRowMapper implements RowMapper<Book>{
 
 	@Override
 	public Book mapRow(ResultSet row, int rowNum) throws SQLException {
-		// TODO Auto-generated method stub
 		Book book = new Book();
 		book.setBookId(row.getInt("BookId"));
 		book.setSubject(row.getString("Subject"));

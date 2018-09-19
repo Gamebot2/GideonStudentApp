@@ -10,7 +10,6 @@ public class RecordRowMapper implements RowMapper<Record>{
 
 	@Override
 	public Record mapRow(ResultSet row, int rowNum) throws SQLException {
-		// TODO Auto-generated method stub
 		Record record = new Record();
 		record.setBookId(row.getInt("BookId"));
 		record.setEndDate(row.getDate("EndDate"));

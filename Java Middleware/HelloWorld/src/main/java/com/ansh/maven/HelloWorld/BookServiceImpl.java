@@ -11,9 +11,6 @@ public class BookServiceImpl implements BookService {
 	
 	@Autowired
 	private BookDao bookDao;
-	
-	@Autowired
-	private RecordDao recordDao;
 
 	//Gets all books
 	@Override
@@ -44,20 +41,6 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public List<String> getTitles(String subcategory) {
 		return bookDao.getTitles(subcategory);
-	}
-	
-	//Gets all subcategories within a certain student's data that actually contain values in the record database
-	@Override
-	public List<String> getDataSubcategories(int studentId, String category) {
-		List<Record> midList = recordDao.getAllRecordsById(studentId, category);
-		List<String> subcategories = new ArrayList<String>();
-		for(Record r: midList) {
-			if(!subcategories.contains(r.getSubcategory())) {
-				subcategories.add(r.getSubcategory());
-			}
-		}
-		return subcategories;
-		
 	}
 
 	//Gets all books between two sequenceLarge values within a certain category

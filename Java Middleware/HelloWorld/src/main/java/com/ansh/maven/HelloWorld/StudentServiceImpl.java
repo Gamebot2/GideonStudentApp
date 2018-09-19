@@ -46,7 +46,7 @@ public class StudentServiceImpl implements StudentService{
 	// Adds a student to the database
 	@Override
 	public int addStudent(StudentMaster student) {
-		return studentDao.addStudent(student.getClient(), student.getGrade(), student.getGender());
+		return studentDao.addStudent(student);
 	}
 	
 	// Updates student information in the database

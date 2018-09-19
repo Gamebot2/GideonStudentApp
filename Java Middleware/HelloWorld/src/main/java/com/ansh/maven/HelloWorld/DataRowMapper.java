@@ -10,7 +10,6 @@ public class DataRowMapper implements RowMapper<Data>{
 
 	@Override
 	public Data mapRow(ResultSet row, int rowNum) throws SQLException {
-		// TODO Auto-generated method stub
 		Data data = new Data();
 		data.setDataId(row.getInt("DataId"));
 		data.setCategory(row.getString("Category"));

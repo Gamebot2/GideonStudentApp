@@ -35,19 +35,10 @@ public class StudentDaoImpl implements StudentDao {
 		return jdbcTemplate.queryForObject(sql, rowMapper, StudentId);
 	}
 
-	// Unused and unwritten: returns a single student by their first and last name
-	@Override
-	public boolean studentExists(String firstName, String lastName) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	// Returns the students in the database that have records associated with them
 	@Override
 	public List<Student> getStudentsWithData() {
-		sql = "SELECT DISTINCT students.StudentId, students.Client, students.Email, students.Phone, students.Address, students.ClientId, students.CurrentPasses, students.FirstName,\r\n" + 
-				"students.Gender, students.Grade, students.LastName, students.MiddleName, students.PrimaryStaffMember\r\n" + 
-				"FROM students RIGHT JOIN records ON records.StudentId = students.StudentId;";
+		sql = "SELECT DISTINCT s.StudentId, s.Client, s.Email, s.Phone, s.Address, s.ClientId, s.CurrentPasses, s.FirstName, s.Gender, s.Grade, s.LastName, s.MiddleName, s.PrimaryStaffMember FROM students s RIGHT JOIN records r ON r.StudentId = s.StudentId";
 		rowMapper = new StudentRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
@@ -56,25 +47,22 @@ public class StudentDaoImpl implements StudentDao {
 	@Override
 	public List<String> getGrade(int StudentId) {
 		sql = "SELECT Grade FROM students WHERE StudentId = ?";
-		return jdbcTemplate.queryForList(sql, String.class, StudentId + ";");
+		return jdbcTemplate.queryForList(sql, String.class, StudentId);
 	}
 
 	// Returns the categories of books for which a student has records
 	@Override
 	public List<String> getCategories(int StudentId) {
 		sql = "SELECT DISTINCT books.Category FROM records INNER JOIN students ON records.StudentId = students.StudentId INNER JOIN books ON records.BookId = books.BookId WHERE students.StudentId = ?";
-		return this.jdbcTemplate.queryForList(sql, String.class, StudentId + ";");
-	
+		return this.jdbcTemplate.queryForList(sql, String.class, StudentId);
 	}
 
 	// Adds a student to the database
 	@Override
-	public int addStudent(String Client, String Grade, String Gender) {
-		StudentMaster student1 = new StudentMaster(Client, Grade, Gender);
-		
+	public int addStudent(StudentMaster student) {
 		sql = "INSERT INTO students (Client, FirstName, LastName, Grade, Gender) VALUES (?, ?, ?, ?, ?);";
 		//System.out.println(sql);
-		this.jdbcTemplate.update(sql, Client, student1.getFirstName(), student1.getLastName(), student1.getGrade(), student1.getGender());
+		this.jdbcTemplate.update(sql, student.getClient(), student.getFirstName(), student.getLastName(), student.getGrade(), student.getGender());
 		return 0;
 	}
 	

@@ -73,16 +73,6 @@ public class BookDaoImpl implements BookDao {
 		rowMapper = new BookRowMapper();
 		return jdbcTemplate.query(sql, rowMapper, category, startSequence, endSequence);
 	}
-	
-
-	//Returns whether or not a book exists by checking for its category and subcategory
-	@Override
-	public boolean bookExists(String category, String subcategory) {
-		sql = "SELECT COUNT(*) FROM books WHERE Category = ? and Subcategory = ?";
-		int count = jdbcTemplate.queryForObject(sql, Integer.class, category, subcategory);
-
-		return count > 0;
-	}
 
 	
 	

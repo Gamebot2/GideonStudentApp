@@ -28,12 +28,31 @@ public class RecordDaoImpl implements RecordDao{
 	private RowMapper<Record> rowMapper;
 	private RowMapper<Data> rowMapperD;
 
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	
 	//Retrieves all records from every student in the database
 	@Override
 	public List<Record> getAllRecords() {
 		sql = "SELECT * FROM records INNER JOIN books ON records.BookId = books.BookId INNER JOIN students ON records.StudentId = students.StudentId";
 		rowMapper = new RecordRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
+	}
+	
+	//Returns all records that have start dates, but do not have end dates
+	@Override
+	public List<Record> getIncompleteRecords() {
+		sql = "SELECT * FROM records INNER JOIN books ON records.BookId = books.BookId INNER JOIN students ON records.StudentId = students.StudentId WHERE records.EndDate IS NULL";
+		rowMapper = new RecordRowMapper();
+		return this.jdbcTemplate.query(sql, rowMapper);
+	}
+
+	//Returns all records for a certain student and a certain category
+	@Override
+	public List<Record> getAllRecordsById(int StudentId, String category) {
+		sql = "SELECT * FROM records INNER JOIN students ON records.StudentId = students.StudentId INNER JOIN books ON records.BookId = books.BookId WHERE students.StudentId = ? AND books.Category = ? AND records.rep = 1;";
+		System.out.println(sql);
+		rowMapper = new RecordRowMapper();
+		return this.jdbcTemplate.query(sql, rowMapper, StudentId, category);
 	}
 	
 	// Returns records for a student within a certain range, plus or minus one record, with a specific category and rep count
@@ -64,13 +83,6 @@ public class RecordDaoImpl implements RecordDao{
 		return output;
 	}
 
-	//Unwritten and unused: returns whether or not a record exists given its ID
-	@Override
-	public boolean recordExists(int RecordId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	//Adds a new record to the record database with all of the following information, formats the appropriate SQL string
 	@Override
 	public int addRecord(int studentId, Book book, Date startDate, int rep) {
@@ -81,8 +93,7 @@ public class RecordDaoImpl implements RecordDao{
 		else
 			sql = sql.replace("#", "0");
 		
-		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-		String formatted = format1.format(startDate);
+		String formatted = dateFormat.format(startDate);
 		
 		System.out.println(sql);
 		this.jdbcTemplate.update(sql, studentId, book.getBookId(), formatted, rep);
@@ -94,8 +105,7 @@ public class RecordDaoImpl implements RecordDao{
 	public int updateRecord(int recordId, Date endDate, int testTime, int mistakes) {	
 		sql = "UPDATE records SET EndDate = ?, TestTime = #, Mistakes = #  WHERE RecordId = ?";
 		
-		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-		String formatted = format1.format(endDate);
+		String formatted = dateFormat.format(endDate);
 		
 		if(testTime < 0 || mistakes < 0) {		// Content of query depends on whether testTime and mistakes are valid values
 			sql = sql.replaceAll("#", "null");
@@ -107,23 +117,6 @@ public class RecordDaoImpl implements RecordDao{
 			this.jdbcTemplate.update(sql, formatted, testTime, mistakes, recordId);
 		}
 		return 0;
-	}
-
-	//Returns all records that have start dates, but do not have end dates
-	@Override
-	public List<Record> getIncompleteRecords() {
-		sql = "SELECT * FROM records INNER JOIN books ON records.BookId = books.BookId INNER JOIN students ON records.StudentId = students.StudentId WHERE records.EndDate IS NULL";
-		rowMapper = new RecordRowMapper();
-		return this.jdbcTemplate.query(sql, rowMapper);
-	}
-
-	//Returns all records for a certain student and a certain category
-	@Override
-	public List<Record> getAllRecordsById(int StudentId, String category) {
-		sql = "SELECT * FROM records INNER JOIN students ON records.StudentId = students.StudentId INNER JOIN books ON records.BookId = books.BookId WHERE students.StudentId = ? AND books.Category = ? AND records.rep = 1;";
-		System.out.println(sql);
-		rowMapper = new RecordRowMapper();
-		return this.jdbcTemplate.query(sql, rowMapper, StudentId, category);
 	}
 	
 	
