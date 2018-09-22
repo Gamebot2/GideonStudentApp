@@ -1,7 +1,5 @@
 package com.ansh.maven.HelloWorld;
 
-import java.util.*;
-
 public class Data {
 	
 	private int DataId;

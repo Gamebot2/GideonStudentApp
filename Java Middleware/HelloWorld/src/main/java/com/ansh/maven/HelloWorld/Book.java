@@ -7,31 +7,33 @@ public class Book {
 	private String category;
 	private String subcategory;
 	private String title;
-	private String abbreviation;
 	private int gradeLevel;
 	private int test;
 	private int timeAllowed;
 	private int mistakesAllowed;
+	private String sequenceName;
+	private int sequenceLength;
 	private int sequence;
 	private int sequenceLarge;
-	
+
 	public Book() {
 		super();
 	}
 
-	public Book(int bookId, String subject, String category, String subcategory, String title, String abbreviation, 
-			int gradeLevel, int test, int timeAllowed, int mistakesAllowed, int sequence, int sequenceLarge) {
+	public Book(int bookId, String subject, String category, String subcategory, String title, int gradeLevel, 
+			int test, int timeAllowed, int mistakesAllowed, String sequenceName, int sequenceLength, int sequence, int sequenceLarge) {
 		super();
 		this.bookId = bookId;
 		this.subject = subject;
 		this.category = category;
 		this.subcategory = subcategory;
 		this.title = title;
-		this.abbreviation = abbreviation;
 		this.gradeLevel = gradeLevel;
 		this.test = test;
 		this.timeAllowed = timeAllowed;
 		this.mistakesAllowed = mistakesAllowed;
+		this.sequenceName = sequenceName;
+		this.sequenceLength = sequenceLength;
 		this.sequence = sequence;
 		this.sequenceLarge = sequenceLarge;
 	}
@@ -75,14 +77,6 @@ public class Book {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
-	public String getAbbreviation() {
-		return abbreviation;
-	}
-	
-	public void setAbbreviation(String abbreviation) {
-		this.abbreviation = abbreviation;
-	}
 
 	public int getGradeLevel() {
 		return gradeLevel;
@@ -114,6 +108,22 @@ public class Book {
 
 	public void setMistakesAllowed(int mistakesAllowed) {
 		this.mistakesAllowed = mistakesAllowed;
+	}
+	
+	public String getSequenceName() {
+		return sequenceName;
+	}
+	
+	public void setSequenceName(String sequenceName) {
+		this.sequenceName = sequenceName;
+	}
+	
+	public int getSequenceLength() {
+		return sequenceLength;
+	}
+
+	public void setSequenceLength(int sequenceLength) {
+		this.sequenceLength = sequenceLength;
 	}
 
 	public int getSequence() {

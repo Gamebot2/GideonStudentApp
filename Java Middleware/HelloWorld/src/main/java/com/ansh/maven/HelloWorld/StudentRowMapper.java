@@ -3,7 +3,6 @@ package com.ansh.maven.HelloWorld;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.hibernate.cache.spi.entry.StructuredMapCacheEntry;
 import org.springframework.jdbc.core.RowMapper;
 
 public class StudentRowMapper implements RowMapper<Student>{

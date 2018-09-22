@@ -2,7 +2,6 @@ package com.ansh.maven.HelloWorld;
 
 import java.util.List;
 
-import org.hibernate.hql.internal.ast.tree.AbstractRestrictableStatement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;

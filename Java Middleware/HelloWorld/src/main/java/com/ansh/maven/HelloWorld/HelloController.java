@@ -1,11 +1,7 @@
 package com.ansh.maven.HelloWorld;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
-import org.h2.util.IntArray;
-import org.hibernate.validator.internal.util.privilegedactions.GetAnnotationParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -7,15 +7,10 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.joda.time.DateTime;
-import org.springframework.aop.interceptor.ExposeBeanNameAdvisors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.session.SessionProperties.Jdbc;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-
-import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.StringKeySerializer;
 
 @Transactional
 @Repository

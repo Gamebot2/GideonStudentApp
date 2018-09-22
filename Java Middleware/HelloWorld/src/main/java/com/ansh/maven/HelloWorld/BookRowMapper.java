@@ -14,11 +14,12 @@ public class BookRowMapper implements RowMapper<Book>{
 		book.setCategory(row.getString("Category"));
 		book.setSubcategory(row.getString("Subcategory"));
 		book.setTitle(row.getString("Title"));
-		book.setAbbreviation(row.getString("Abbreviation"));
 		book.setGradeLevel(row.getInt("GradeLevel"));
 		book.setTest(row.getInt("Test"));
 		book.setTimeAllowed(row.getInt("TimeAllowed"));
 		book.setMistakesAllowed(row.getInt("MistakesAllowed"));
+		book.setSequenceName(row.getString("SequenceName"));
+		book.setSequenceLength(row.getInt("SequenceLength"));
 		book.setSequence(row.getInt("Sequence"));
 		book.setSequenceLarge(row.getInt("SequenceLarge"));
 		return book;

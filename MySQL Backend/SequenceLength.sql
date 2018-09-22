@@ -25,7 +25,7 @@ SELECT * FROM backup;
 ALTER TABLE books
 	CHANGE COLUMN Abbreviation SequenceName VARCHAR(255) NULL DEFAULT NULL;
 UPDATE books
-	SET Abbreviation = CASE
+	SET SequenceName = CASE
 		WHEN BookId < 376 THEN Subcategory
         ELSE CONCAT(Category, " ", GradeLevel) END
 	WHERE
@@ -33,21 +33,19 @@ UPDATE books
 SELECT * FROM books;
 
 -- The real-deal scripting part: loading sequenceLength with the right values  
-SELECT * FROM sequences;
 UPDATE books b
 	SET b.SequenceLength = (
 		SELECT Length FROM (
 			SELECT
-				Abbreviation Name,
+				SequenceName Name,
 				COUNT(*) Length
 			FROM books
 				GROUP BY 1
 				ORDER BY BookId) s
-        WHERE b.Abbreviation = s.Name
+        WHERE b.SequenceName = s.Name
     )
     WHERE b.BookId >= 0;
 SELECT * FROM books;
-DROP TABLE sequences;
 
 -- Run this once you're sure that absolutely everything works!
 DROP TABLE backup;

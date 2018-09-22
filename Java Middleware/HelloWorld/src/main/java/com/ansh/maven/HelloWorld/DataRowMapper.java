@@ -3,7 +3,6 @@ package com.ansh.maven.HelloWorld;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.aspectj.weaver.reflect.ReflectionBasedResolvedMemberImpl;
 import org.springframework.jdbc.core.RowMapper;
 
 public class DataRowMapper implements RowMapper<Data>{

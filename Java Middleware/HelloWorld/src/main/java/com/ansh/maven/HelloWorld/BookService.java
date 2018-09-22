@@ -1,7 +1,6 @@
 package com.ansh.maven.HelloWorld;
 
 import java.util.*;
-import com.ansh.maven.HelloWorld.*;
 
 
 public interface BookService {
