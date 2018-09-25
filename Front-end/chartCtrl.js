@@ -312,7 +312,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 						min: lowestDate,
 						max: highestDate,
 						maxRotation: 0,
-						/*callback: callbacks.monthXAxis,*/
+						callback: callbacks.monthXAxis,
 					},
 				}, {
 					id: "xAxis2",
