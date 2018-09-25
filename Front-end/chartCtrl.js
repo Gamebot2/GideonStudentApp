@@ -74,8 +74,8 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 	let gen = function(response) {
 		$scope.records = response.data;
 			
-		var lowestDate   = Dates.inputToDate($scope.months), // x-axis bounds
-			highestDate  = Dates.inputToDate($scope.until),
+		var lowestDate   = Dates.monthsAgoToMonthIndex($scope.months), // x-axis bounds
+			highestDate  = Dates.monthsAgoToMonthIndex($scope.until),
 		    greatestBook = 0, // y-axis bounds
 			leastBook    = 999;
 		
@@ -86,28 +86,26 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 			nowPoints 		= [];		// vertical NOW line: will contain two points with nearly the same x value denoting the current date
 
 		//// DATA POINTS: Creates a point mapping each record to its respective spot on the x and y axis ////
-		var a = 0; // Helps display error message if there is no data, couldn't find a better solution for some reason: this value will increase for every existing record
+		var a = 0; // Helps display error message if there is no data, couldn't find a better solution for some reason: this value will increase for every record strictly in the time range
 		$scope.records.forEach(function(record) {
 			if(record.startDate != null) {
-				a++;
-
-				dataPoints.push({
-					x: Dates.dateCompare(Dates.toDateObject(record.startDate), Dates.zeroDate),
+				var currPoint = {
+					x: Dates.dateToMonthIndex(Dates.stringToDateObject(record.startDate)),
 					y: record.sequenceLarge,
-				});
+				};
+
+				if (currPoint.x >= lowestDate && currPoint.x <= highestDate)
+					a++;
+
+				dataPoints.push(currPoint);
 
 				greatestBook = Math.max(record.sequenceLarge, greatestBook); // adjust y-axis bounds
 				leastBook = Math.min(record.sequenceLarge, leastBook);
 			}
 		});
 		// no data check
-		if (Verify.errorIf(a <= 0, "No data")) { 
-			$scope.errorMessage = true;
+		if (Verify.errorIf(a == 0, "No data"))
 			return;
-		}
-		else
-			$scope.errorMessage = false;
-		
 
 		//// Maps the internal linear scale of the x axis (lowestDate, ... highestDate) with labels containing dates and grades ////
 		for(j = lowestDate; j < highestDate; j++) {
@@ -170,11 +168,12 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 		
 
 		//// NOW LINE: a vertical black line to indicate the current date ////
+		var nowIndex = Dates.dateToMonthIndex(Dates.now);
 		nowPoints.push({
-			x: Dates.dateCompare(Dates.now, Dates.zeroDate) - 0.001,
+			x: nowIndex - 0.001,
 			y: leastBook - 1,
 		}, {
-			x: Dates.dateCompare(Dates.now, Dates.zeroDate) + 0.001,
+			x: nowIndex + 0.001,
 			y: greatestBook + 1,
 		});
 
@@ -250,7 +249,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 			},
 			// callback for the tooltip: displaying exact dates
 			descTooltip(tooltipItem, data) {
-				var theDate = Dates.getDateObject(tooltipItem.xLabel);
+				var theDate = Dates.indexToDateObject(tooltipItem.xLabel);
 				return `started on ${theDate.month + 1}/${theDate.date}/${theDate.year}`;
 			},
 		}

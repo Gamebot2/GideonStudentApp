@@ -4,9 +4,9 @@
  * Other variables exist specifically to faciliate the x-axis on the graph
  *
  * NOTES:
- * - The value on the x-axis that is "zero" is the month in which a student starts Kindergarten. Everything else is based around that number.
- * - Each month corresponds to a value of 1 on the x-axis. Days are decimals in between, whose translations to integer values depends on the number of days in the month.
- * - Months are numbered 0 through x instead of 1 through x for easy calculations. When displaying, you should use month + 1.
+ * - The date objects that are manipulated by the methods are formatted: {month: m, year: y, date: d}. m is an integer from 0-11, y is an integer from 0-xxxx, and d is a decimal from 0-1
+ * - A "month index" is a single number that encapsulates the entire object. 0 is the object corresponding to August of Kindergarten. Each additional month from there is +1.
+ * - Months are numbered 0 through 11 instead of 1 through 12 for easy calculations. When displaying, you should use month + 1.
  * - Because the exact month value is not always needed in a calculation, sometimes the "date" property is ignored and simply set to be 0. This is for simplicity
  */
 
@@ -18,7 +18,7 @@ Math.truncN = (x) => Number.isInteger(x) ? x : Math.trunc(x) - (x < 0 ? 1 : 0);
 
 var Dates = {
 
-	// function that figures out when this "month in which a student starts Kindergarten" is
+	// function that figures out when this "Augest of Kindergarten" month is
 	setZeroDate(currentGrade) {
 		this.zeroDate = {
 			month: 7,
@@ -27,10 +27,9 @@ var Dates = {
 		}
 	},
 
-	// function that returns a month/year/floating-point-date object a certain number of months after another one of those objects
+	// function that returns a date object a certain number of months after another one of those objects (note: object loses floating point day)
 	dateAdd(originalDate, addition) {
-		var numeral = originalDate.year * 12 + originalDate.month;
-		numeral += addition;
+		var numeral = (originalDate.year * 12 + originalDate.month) + addition;
 		return {
 			month: Math.modN(numeral, 12),
 			year: Math.truncN(numeral / 12),
@@ -38,18 +37,20 @@ var Dates = {
 		}
 	},
 
-	// function that returns a month/year/floating-point-date object a certain number of months prior to another one of those objects
+	// function that returns a date object a certain number of months prior to another one of those objects (note: object loses floating point day)
 	dateSubtract(originalDate, subtraction) {
 		return this.dateAdd(originalDate, -1 * subtraction);
 	},
 
-	// function that returns the month difference between two month/year/floating-point-date objects
+	// function that returns the month difference between two date objects
 	dateCompare(date1, date2) {
 		return (date1.year - date2.year) * 12 + (date1.month - date2.month) + (date1.date - date2.date);
 	},
 
-	// function that returns a month/year/floating-point-date object from a normal date object
-	toDateObject(startDate) {
+
+
+	// Converts a Date string or DateTime string into a date object
+	stringToDateObject(startDate) {
 		var d = moment(startDate.split(" ")[0]);
 		return {
 			month: d.month(),
@@ -58,8 +59,8 @@ var Dates = {
 		}
 	},
 
-	// function that returns a month/year/floating-point-date object from a specific index, relative to zeroDate
-	getDateObject(index) {
+	// Converts a month index into a date object
+	indexToDateObject(index) {
 		var theDate = this.dateAdd(this.zeroDate, Math.truncN(index));
 
 		var daysInMonth = moment(`${theDate.year} ${theDate.month + 1}`, "YYYY MM").daysInMonth();
@@ -68,9 +69,14 @@ var Dates = {
 		return theDate;
 	},
 
-	// function that converts an input month (represents # of months in the past) to a date object
-	inputToDate(months) {
-		return this.dateCompare(this.dateSubtract(this.now, months), this.zeroDate);
+	// Converts a date object into a month index
+	dateToMonthIndex(date) {
+		return this.dateCompare(date, this.zeroDate);
+	},
+
+	// Converts an input index (based on months in the past) to a month index
+	monthsAgoToMonthIndex(months) {
+		return this.dateToMonthIndex(this.dateSubtract(this.now, months));
 	},
 
 

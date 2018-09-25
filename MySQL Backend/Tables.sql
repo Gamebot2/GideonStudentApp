@@ -72,7 +72,7 @@ CREATE TABLE `students` (
 -- international data
 CREATE TABLE `internationaldata` (
 	`DataId` INT(11) NOT NULL AUTO_INCREMENT,
-    `Category` VARCHAR(25) NOT NULL,
+    `Category` VARCHAR(255) NOT NULL,
     `Month` INT(11) NOT NULL,
     `BookId` INT(11) NOT NULL,
     PRIMARY KEY (`DataId`),

@@ -110,35 +110,41 @@ INNER JOIN students
 	ON records.StudentId = students.StudentId
 	WHERE records.StudentId = 78;
     
--- all records belonging to a student within a time period, with one record outside each boundary if possible
--- '2015-01-01 00:00:00' '2017-01-01 00:00:00'
-SELECT * FROM books b
-INNER JOIN
-(
-	(SELECT * FROM records WHERE
-			StudentId = 3 AND
-			StartDate < '2015-01-01 00:00:00'
+    
+    
+SELECT * FROM records INNER JOIN books ON records.BookId = books.BookId WHERE
+			records.StudentId = 3 AND
+			records.StartDate < '2017-06-01 00:00:00' AND
+            books.Category = "Comprehension"
 		ORDER BY StartDate DESC
-		LIMIT 1)
-	UNION
-	(SELECT * FROM records WHERE
-			StudentId = 3 AND
-			StartDate > '2016-01-01 00:00:00'
-		ORDER BY StartDate ASC
-		LIMIT 1)
-	UNION
-	(SELECT * FROM records WHERE
-			StudentId = 3 AND
-			StartDate >= '2015-01-01 00:00:00' AND
-			StartDate <= '2016-01-01 00:00:00')
-)
-	r ON r.BookId = b.BookId
-INNER JOIN
-	students s ON r.StudentId = s.StudentId
-WHERE
-	b.Category = "Comprehension" AND
-    r.Rep = 1
-ORDER BY r.StartDate;
+		LIMIT 1;
+        
+        
+-- all records belonging to a student within a time period, with one record outside each boundary if possible (very repetitive, therefore unused)
+(SELECT * FROM records r JOIN books b ON r.BookId = b.BookId JOIN students s ON r.StudentId = s.StudentId WHERE
+		r.StudentId = 3 AND
+        r.Rep = 1 AND
+        b.Category = "Comprehension" AND
+		r.StartDate < '2017-06-01 00:00:00'
+	ORDER BY r.StartDate DESC
+	LIMIT 1)
+UNION
+(SELECT * FROM records r JOIN books b ON r.BookId = b.BookId JOIN students s ON r.StudentId = s.StudentId WHERE
+		r.StudentId = 3 AND
+        r.Rep = 1 AND
+        b.Category = "Comprehension" AND
+		r.StartDate >= '2017-06-01 00:00:00' AND StartDate <= '2018-06-01 00:00:00'
+	ORDER BY r.StartDate ASC
+    LIMIT 1000)
+UNION
+(SELECT * FROM records r JOIN books b ON r.BookId = b.BookId JOIN students s ON r.StudentId = s.StudentId WHERE
+		r.StudentId = 3 AND
+        r.Rep = 1 AND
+        b.Category = "Comprehension" AND
+		r.StartDate > '2018-06-01 00:00:00'
+	ORDER BY r.StartDate ASC
+	LIMIT 1)
+;
     
 -- all unfinished records
 SELECT *
