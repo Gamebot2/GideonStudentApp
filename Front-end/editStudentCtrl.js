@@ -15,7 +15,7 @@ gideonApp.controller('editStudentCtrl', function($scope, $http, $window) {
 	Verify.setScope($scope);
 
 	// Gather all information about the student
-	$http.get(`http://localhost:8081/student?Id=${$window.localStorage.getItem(0)}`) // getItem(0) should return the student's id
+	$http.get(`${URL}student?Id=${$window.localStorage.getItem(0)}`) // getItem(0) should return the student's id
 	.then(function(response) {
 		$scope.student = response.data;
 		$scope.Id 				= $scope.student.studentId;
@@ -33,30 +33,34 @@ gideonApp.controller('editStudentCtrl', function($scope, $http, $window) {
 		if (!Verify.check())
 			return;
 
-		// Creates JSON for the student based on form data
-		var newStudentDetails = JSON.stringify({
-			id: 			$scope.Id,
-			client:			$scope.Client,
-			email: 			$scope.Email,
-			phone: 			$scope.Phone,
-			address: 		$scope.Address,
-			grade: 			$scope.Grade,
-			gender: 		$scope.Gender,
-			currentPasses: 	$scope.CurrentPasses,
-		});
+		try {
+			// Creates JSON for the student based on form data
+			var newStudentDetails = JSON.stringify({
+				id: 			$scope.Id,
+				client:			$scope.Client,
+				email: 			$scope.Email,
+				phone: 			$scope.Phone,
+				address: 		$scope.Address,
+				grade: 			$scope.Grade,
+				gender: 		$scope.Gender,
+				currentPasses: 	$scope.CurrentPasses,
+			});
 
-		// Updates the student with an HTTP post call
-		$http({
-			url: 'http://localhost:8081/updateStudent',
-			method: 'POST',
-			headers: {
-				"Content-Type": "application/json",
-				"Accept": "application/json"
-			},
-			data:newStudentDetails,
-		}).then(function(response) {
-			if (Verify.successIf(response.data == 0, ""))
-				window.location.href = "StudentList.html"; // return back to the list if the update was successful
-		});
+			// Updates the student with an HTTP post call
+			$http({
+				url: `${URL}updateStudent`,
+				method: 'POST',
+				headers: {
+					"Content-Type": "application/json",
+					"Accept": "application/json"
+				},
+				data:newStudentDetails,
+			})
+			.then(function(response) {
+				if (Verify.successIf(response.data == 0, ""))
+					window.location.href = "StudentList.html"; // return back to the list if the update was successful
+			})
+			.catch(Verify.error);
+		}
 	}
 });

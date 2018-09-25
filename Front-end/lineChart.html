@@ -47,7 +47,7 @@
 					<div class="threeColumn">
 					<label for="category">Category</label><br>
 						<div class="inputWrapperBig">
-							<select white big id = "category" name = "category" ng-model = "selectedCategory" required ng-options = "y for y in categoriesOfStudent" ng-change = "getReps()"></select>
+							<select white big id = "category" name = "category" ng-model = "selectedCategory" required ng-options = "y for y in categoriesOfStudent" ng-change = "didUpdateCategory()"></select>
 							<div class="invalidContainer" ng-class="{'invalid':form.category.$touched && form.category.$invalid}"></div>
 						</div>
 						<span class="errorText" ng-show="form.category.$touched && form.category.$invalid">Category is required.</span>

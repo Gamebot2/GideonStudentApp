@@ -3,15 +3,19 @@
  * This angular module is the basis for all sitewide controllers.
  * 
  * NOTES:
- * - Below the declaration of "app" is a space for testing quick html files on the side
+ * - "gideonApp" and "HTTP_LINK" are universal references used in every Ctrl.js script
  */
 
 
 var gideonApp = angular.module('gideonApp', ['ngAnimate']);
 
+const URL = "http://localhost:8081/";
 
 
 
+
+
+//// TESTING SPACE ////
 
 
 // MULTITEST.HTML

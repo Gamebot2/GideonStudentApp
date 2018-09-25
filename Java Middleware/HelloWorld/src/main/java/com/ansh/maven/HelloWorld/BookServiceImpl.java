@@ -42,10 +42,10 @@ public class BookServiceImpl implements BookService {
 		return bookDao.getTitles(subcategory);
 	}
 
-	//Gets all books between two sequenceLarge values within a certain category
+	//Gets all books, ordered in sequence, in a category
 	@Override
-	public List<Book> getBooksInRange(String category, int startSequence, int endSequence) {
-		return bookDao.getBooksInRange(category, startSequence, endSequence);
+	public List<Book> getBooksInCategory(String category) {
+		return bookDao.getBooksInCategory(category);
 	}
 	
 	

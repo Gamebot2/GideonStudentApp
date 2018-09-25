@@ -10,7 +10,7 @@
 gideonApp.controller('listCtrl', function($scope, $http, $window) {
 
 	$scope.getStudents = function() {
-		$http.get(`http://localhost:8081/${$scope.dataOn ? "dataStudents" : "students"}`)
+		$http.get(`${URL}${$scope.dataOn ? "dataStudents" : "students"}`)
 		.then(function(response) {
 			$scope.students = response.data;
 		});

@@ -6,18 +6,19 @@ public class Data {
 	private String Category;
 	private int Month;
 	private int BookId;
-	
+	private int SequenceLarge;
 	
 	public Data() {
 		super();
 	}
 
-	public Data(int dataId, String category, int month, int bookId) {
+	public Data(int dataId, String category, int month, int bookId, int sequenceLarge) {
 		super();
 		DataId = dataId;
 		Category = category;
 		Month = month;
 		BookId = bookId;
+		SequenceLarge = sequenceLarge;
 	}
 	
 	public int getDataId() {
@@ -50,6 +51,14 @@ public class Data {
 
 	public void setBookId(int bookId) {
 		BookId = bookId;
+	}
+	
+	public int getSequenceLarge() {
+		return SequenceLarge;
+	}
+	
+	public void setSequenceLarge(int sequenceLarge) {
+		SequenceLarge = sequenceLarge;
 	}
 
 	@Override

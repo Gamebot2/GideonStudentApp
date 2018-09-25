@@ -10,12 +10,13 @@
  * - Because the exact month value is not always needed in a calculation, sometimes the "date" property is ignored and simply set to be 0. This is for simplicity
  */
 
-var Dates = {
-	// a better modulo function that loops around for negative numbers
-	mod: (x, n) => (x % n + n) % n,
 
-	// a better truncation function that loops around for negative numbers
-	modtrunc: (x) => Math.trunc(x) - (x < 0 ? 1 : 0),
+// Custom extension to the Math class: modN and truncN are the same as mod and trunc but loop around for negative numbers
+Math.modN = (x, n) => (x % n + n) % n;
+Math.truncN = (x) => Number.isInteger(x) ? x : Math.trunc(x) - (x < 0 ? 1 : 0);
+
+
+var Dates = {
 
 	// function that figures out when this "month in which a student starts Kindergarten" is
 	setZeroDate(currentGrade) {
@@ -31,8 +32,8 @@ var Dates = {
 		var numeral = originalDate.year * 12 + originalDate.month;
 		numeral += addition;
 		return {
-			month: this.mod(numeral, 12),
-			year: this.modtrunc(numeral / 12),
+			month: Math.modN(numeral, 12),
+			year: Math.truncN(numeral / 12),
 			date: 0
 		}
 	},
@@ -59,10 +60,10 @@ var Dates = {
 
 	// function that returns a month/year/floating-point-date object from a specific index, relative to zeroDate
 	getDateObject(index) {
-		var theDate = this.dateAdd(this.zeroDate, this.modtrunc(index));
+		var theDate = this.dateAdd(this.zeroDate, Math.truncN(index));
 
 		var daysInMonth = moment(`${theDate.year} ${theDate.month + 1}`, "YYYY MM").daysInMonth();
-		theDate.date = Math.round(this.mod(index, 1) * daysInMonth) + 1;
+		theDate.date = Math.round(Math.modN(index, 1) * daysInMonth) + 1;
 
 		return theDate;
 	},

@@ -14,7 +14,7 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 	Verify.setScope($scope);
 
 	// Returns a list of all students for easy name selection	
-	$http.get("http://localhost:8081/students")
+	$http.get(`${URL}students`)
 	.then(function(response) {
 		$scope.names = response.data.map(function(student) { 
 			return {
@@ -25,14 +25,14 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 	});
 
 	//Returns all books
-	$http.get("http://localhost:8081/categories")
+	$http.get(`${URL}categories`)
 	.then(function(response) {
 		$scope.categories = response.data;
 	});
 
 	//Returns a list of subcategories based on the selected category
 	$scope.getSubcategories = function() {
-		$http.get(`http://localhost:8081/subcategories?Category=${$scope.selectedCategory}`)
+		$http.get(`${URL}subcategories?Category=${$scope.selectedCategory}`)
 		.then(function(response) {
 			$scope.subcategories = response.data;
 		});
@@ -40,7 +40,7 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 
 	//Returns a list of titles based on the selected subCategory
 	$scope.getTitles = function() {
-		$http.get(`http://localhost:8081/titles?Subcategory=${$scope.selectedSubCategory}`)
+		$http.get(`${URL}titles?Subcategory=${$scope.selectedSubCategory}`)
 		.then(function(response) {
 			$scope.titles = response.data;
 		});
@@ -51,29 +51,36 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 		if (!Verify.check())
 			return;
 
-		//Creates JSON for the record based on form data
-		var newRecordDetails = JSON.stringify({
-			id: 			$scope.client.id,
-			category: 		$scope.selectedCategory,
-			subcategory: 	$scope.selectedSubCategory,
-			title: 			$scope.selectedTitle,
-			startDate: 		$scope.startDate,
-			testTime: 		$scope.testTime,
-			mistakes: 		$scope.mistakes,
-			rep: 			$scope.rep,
-		});
+		try {
+			//Creates JSON for the record based on form data
+			var newRecordDetails = JSON.stringify({
+				id: 			$scope.client.id,
+				category: 		$scope.selectedCategory,
+				subcategory: 	$scope.selectedSubCategory,
+				title: 			$scope.selectedTitle,
+				startDate: 		$scope.startDate,
+				testTime: 		$scope.testTime,
+				mistakes: 		$scope.mistakes,
+				rep: 			$scope.rep,
+			});
 
-		//Inserts the record with an HTTP post call
-		$http({
-			url: 'http://localhost:8081/addRecord',
-			method: 'POST',
-			headers: {
-				"Content-Type": "application/json",
-				"Accept": "application/json"
-			},
-			data:newRecordDetails,
-		}).then(function(response) {
-			Verify.successIf(response.data == 0, `Successfully added record for ${$scope.client.name}`);
-		});
+			//Inserts the record with an HTTP post call
+			$http({
+				url: `${URL}addRecord`,
+				method: 'POST',
+				headers: {
+					"Content-Type": "application/json",
+					"Accept": "application/json"
+				},
+				data:newRecordDetails,
+			})
+			.then(function(response) {
+				Verify.successIf(response.data == 0, `Successfully added record for ${$scope.client.name}`);
+			})
+			.catch(Verify.error);
+		}
+		catch (err) {
+			Verify.error(err);
+		}
 	}
 });

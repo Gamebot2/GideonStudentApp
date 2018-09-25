@@ -56,12 +56,12 @@ public class HelloController {
 		return bookService.getTitles(subcategory);
 	}
 	
-	//Returns all books between two sequence large values given a category
+	//Returns all books, ordered in sequence, in a category
 	@CrossOrigin(origins = webOrigin)
-	@RequestMapping("/booksInRange")
-	public List<Book> getBooksInRange(@RequestParam("Category") String category, @RequestParam("StartSequence") int startSequence, @RequestParam("EndSequence") int endSequence) {
-		System.out.println("Method getBooksInRange() called for category " + category + " and range " + startSequence + " to " + endSequence);
-		return bookService.getBooksInRange(category, startSequence, endSequence);
+	@RequestMapping("/booksInCategory")
+	public List<Book> getBooksInCategory(@RequestParam("Category") String category) {
+		System.out.println("Method getBooksInCategory() called for category " + category);
+		return bookService.getBooksInCategory(category);
 	}
 	
 	//Returns all students in the student database
@@ -187,9 +187,8 @@ public class HelloController {
 	//Updates an existing record in the database
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/updateRecord")
-	public int updateRecord(@RequestParam("recordId") int recordId, @RequestParam("endDate") Date endDate, @RequestParam("testTime") int testTime, @RequestParam("mistakes") int mistakes) {
+	public int updateRecord(@RequestParam("RecordId") int recordId, @RequestParam("EndDate") Date endDate, @RequestParam("TestTime") int testTime, @RequestParam("Mistakes") int mistakes) {
 		System.out.println("Method updateRecord() called");
-		System.out.println(testTime + " " + mistakes);
 		int a; 
 		try {
 			a = recordService.updateRecord(recordId, endDate, testTime, mistakes);
@@ -204,8 +203,9 @@ public class HelloController {
 
 	//Gathers international goal line
 	@CrossOrigin(origins = webOrigin)
-	@RequestMapping("/internationaldata")
-	public List<Data> getInternationalData(@RequestParam("category") String category) {
+	@RequestMapping("/internationalData")
+	public List<Data> getInternationalData(@RequestParam("Category") String category) {
+		System.out.println("Method getInternationalData() called for category " + category);
 		return recordService.getInternationalData(category);
 	}
 }

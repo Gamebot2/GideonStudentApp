@@ -10,5 +10,5 @@ public interface BookService {
 	List<String> getCategories();
 	List<String> getSubcategories(String category);
 	List<String> getTitles(String subcategory);
-	List<Book> getBooksInRange(String category, int startSequence, int endSequence);
+	List<Book> getBooksInCategory(String category);
 }

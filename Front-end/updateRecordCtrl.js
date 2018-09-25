@@ -14,13 +14,13 @@ gideonApp.controller('updateRecordCtrl', function($scope, $http, $window){
 	Verify.setScope($scope);
 
 	//Returns all student names for easy selection
-	$http.get("http://localhost:8081/students")
+	$http.get(`${URL}students`)
 	.then(function(response) {
 		$scope.names = response.data.map(student => student.client);
 	});
 
 	//Retrieves incomplete records for instructors to choose from
-	$http.get("http://localhost:8081/incompleteRecords")
+	$http.get(`${URL}incompleteRecords`)
 	.then(function(response) {
 		$scope.records = response.data;
 		$scope.displayRecords = [];
@@ -50,9 +50,10 @@ gideonApp.controller('updateRecordCtrl', function($scope, $http, $window){
 			return;
 
 		// Updates an incomplete record based on instructor data
-		$http.get(`http://localhost:8081/updateRecord?recordId=${$scope.selectedRecord.id}&endDate=${$scope.endDate}&testTime=${$scope.testTime}&mistakes=${$scope.mistakes}`)
+		$http.get(`${URL}updateRecord?RecordId=${$scope.selectedRecord.id}&EndDate=${$scope.endDate}&TestTime=${$scope.testTime}&Mistakes=${$scope.mistakes}`)
 		.then(function(response) {
 			Verify.successIf(response.data == 0, `Successfully updated record for ${$scope.selectedRecord.name}`);
-		});	
+		})
+		.catch(Verify.error);
 	}
 });

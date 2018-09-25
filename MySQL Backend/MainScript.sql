@@ -13,16 +13,17 @@ SHOW TABLES;
 DESCRIBE books;
 DESCRIBE records;
 DESCRIBE students;
+DESCRIBE internationaldata;
 
 -- table view
 SELECT * FROM books;
 SELECT * FROM records;
-SELECT * from students;
+SELECT * FROM students;
+SELECT * FROM internationaldata;
 
 -- put whatever here
 
-INSERT INTO students (Client, FirstName, LastName, Grade, Gender)
-VALUES ("Test Student", "Test", "Student", "5th", "Male");
+INSERT INTO internationaldata (Category, Month, BookId) VALUES ("Calculation", 0, 1);
 
 ALTER TABLE books ADD COLUMN Abbreviation VARCHAR(255) DEFAULT NULL;
 UPDATE books SET Abbreviation = Title WHERE BookId >= 0;
@@ -107,7 +108,7 @@ SELECT
 FROM records
 INNER JOIN students
 	ON records.StudentId = students.StudentId
-	WHERE records.StudentId = 3;
+	WHERE records.StudentId = 78;
     
 -- all records belonging to a student within a time period, with one record outside each boundary if possible
 -- '2015-01-01 00:00:00' '2017-01-01 00:00:00'
@@ -145,11 +146,20 @@ FROM records
 WHERE records.EndDate IS NULL;
 
 -- all categories in which a certain student has records
-SELECT DISTINCT book.Category
+SELECT DISTINCT books.Category
 FROM records
 INNER JOIN students
 	ON records.StudentId = students.StudentId
 INNER JOIN books
 	ON records.BookId = books.BookId
 WHERE
-    students.StudentId = 3;
+    students.StudentId = 77;
+    
+-- select international data with relevant book data attached
+SELECT
+	i.DataId, i.Category, i.Month, i.BookId, b.SequenceLarge
+FROM internationaldata i
+JOIN books b
+	ON i.BookId = b.BookId
+WHERE i.Category = "Calculation"
+ORDER BY i.Month;

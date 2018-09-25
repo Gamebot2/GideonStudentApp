@@ -46,7 +46,8 @@ var Verify = {
 			}
 		}
 
-		this.error = function() {
+		this.error = function(err) {
+			console.error(err);
 			this.scope.formStatus = this.genericError;
 		}
 

@@ -66,11 +66,12 @@ public class BookDaoImpl implements BookDao {
 		return jdbcTemplate.queryForList(sql, String.class, subcategory);
 	}
 	
-	//Returns all books between two sequenceLarge values within a certain category
-	public List<Book> getBooksInRange(String category, int startSequence, int endSequence) {
-		sql = "SELECT * FROM books WHERE UPPER(Category) = UPPER(?) AND SequenceLarge > ? AND SequenceLarge <= ?";
+	//Returns all books, ordered in sequence, in a category
+	@Override
+	public List<Book> getBooksInCategory(String category) {
+		sql = "SELECT * FROM books WHERE UPPER(Category) = UPPER(?) ORDER BY SequenceLarge";
 		rowMapper = new BookRowMapper();
-		return jdbcTemplate.query(sql, rowMapper, category, startSequence, endSequence);
+		return jdbcTemplate.query(sql, rowMapper, category);
 	}
 
 	

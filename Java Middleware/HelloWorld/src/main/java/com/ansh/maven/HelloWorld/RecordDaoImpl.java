@@ -119,7 +119,7 @@ public class RecordDaoImpl implements RecordDao{
 	// Gathers international goal line
 	@Override
 	public List<Data> getInternationalData(String category) {
-		sql = "SELECT * FROM internationaldata WHERE Category = ?";
+		sql = "SELECT i.DataId, i.Category, i.Month, i.BookId, b.SequenceLarge FROM internationaldata i JOIN books b ON i.BookId = b.BookId WHERE i.Category = ? ORDER BY i.Month";
 		rowMapperD = new DataRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapperD, category);
 	}

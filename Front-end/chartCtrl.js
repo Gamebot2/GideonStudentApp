@@ -13,7 +13,7 @@
 // Custom extension to the Math class: clamp returns the median of three numbers, modN and truncN are the same but loop around for negative numbers
 Math.clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 Math.modN = (x, n) => (x % n + n) % n;
-Math.truncN = (x) => Math.trunc(x) - (x < 0 ? 1 : 0);
+Math.truncN = (x) => Number.isInteger(x) ? x : Math.trunc(x) - (x < 0 ? 1 : 0);
 
 
 gideonApp.controller('chartCtrl', function($scope, $http, $window) {
@@ -34,31 +34,36 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 	Verify.setScope($scope);
 
 	//Retrieves all categories the selected student is working in
-	$http.get(`http://localhost:8081/categoriesByStudent?Id=${$scope.studentId}`)
+	$http.get(`${URL}categoriesByStudent?Id=${$scope.studentId}`)
 	.then(function(response) {
 		$scope.categoriesOfStudent = response.data;
 	});
 
 	//Retrieves the student's grade level and does time calculations
-	$http.get(`http://localhost:8081/gradeOfStudent?Id=${$scope.studentId}`)
+	$http.get(`${URL}gradeOfStudent?Id=${$scope.studentId}`)
 	.then(function(response) {
 		$scope.currentGrade = response.data;
 		Dates.setZeroDate($scope.currentGrade);
 	});
 
-	//Retrieves all the books for use later in y-axis plotting
-	$http.get("http://localhost:8081/books")
-	.then(function(response) {
-		$scope.allBooks = response.data;
-	});
+	//Updates information for the selected category
+	$scope.didUpdateCategory = function() {
+		// Update repetition count for the form
+		$scope.repOptions = ["1","2"];
+		if ($scope.selectedCategory == "Calculation")
+			$scope.repOptions.push("3","4","5");
 
-	//Retrieves possible repetition selection options for the selected category
-	$scope.getReps = function() {
-		if($scope.selectedCategory == "Calculation") {
-			$scope.repOptions = ["1", "2", "3", "4", "5"];
-		} else {
-			$scope.repOptions = ["1", "2"];
-		}
+		// Retrives all books in the selected category for use later in y-axis labeling
+		$http.get(`${URL}booksInCategory?Category=${$scope.selectedCategory}`)
+		.then(function(response) {
+			$scope.allBooks = response.data;
+		});
+
+		// Fetch international data for the selected category for use later in line plotting
+		$http.get(`${URL}internationalData?Category=${$scope.selectedCategory}`)
+		.then(function(response) {
+			$scope.iglRaw = response.data;
+		});
 	}
 
 
@@ -75,7 +80,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 			leastBook    = 999;
 		
 		var xAxisLabels 	= [], // main container of x axis labels, labels are objects containing properties "month", "year", and "grade" (also date, but that's irrelevant here)
-			dataPoints 		= [], 		// data points: x is date, y is bookid, main graph plot
+			dataPoints 		= [], 		// data points: x is date, y is large sequence number, main graph plot
 			bestFitPoints 	= [], 		// best fit line: will contain two points outside the horizontal range of the graph
 			iglPoints 		= [], 		// will contain the international goal line, or IGL
 			nowPoints 		= [];		// vertical NOW line: will contain two points with nearly the same x value denoting the current date
@@ -88,11 +93,11 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 
 				dataPoints.push({
 					x: Dates.dateCompare(Dates.toDateObject(record.startDate), Dates.zeroDate),
-					y: record.bookId,
+					y: record.sequenceLarge,
 				});
 
-				greatestBook = Math.max(record.bookId, greatestBook); // adjust y-axis bounds
-				leastBook = Math.min(record.bookId, leastBook);
+				greatestBook = Math.max(record.sequenceLarge, greatestBook); // adjust y-axis bounds
+				leastBook = Math.min(record.sequenceLarge, leastBook);
 			}
 		});
 		// no data check
@@ -126,30 +131,43 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 				this.squaresSum = dataPoints.map(p => this.getSquares(p)).reduce((a, b) => a + b);      // denominator of formula, summation
 
 				this.slope = this.diffSum / this.squaresSum;					// complete formula
+				if (Number.isNaN(this.slope))								// undefined check: happens when squaresSum is 0
+					this.slope = 0;
+
 				this.getY = x => this.slope * (x - this.xmean) + this.ymean;	// point-slope form linear equation
+				this.getPoint = function(x) {
+					var y = this.getY(x);
+					return {x: x, y: y};
+				}
 
 				delete this.init; // remove this function from the object, to avoid clutter
 				return this;
 			}
 		}.init();
 
-		bestFitPoints.push({
-			x: lowestDate - 1,
-			y: metrics.getY(lowestDate - 1),
-		}, {
-			x: highestDate + 1,
-			y: metrics.getY(highestDate + 1),
-		});
-		// move greatestBook upward if the best fit line goes above the data line
-		greatestBook = Math.clamp(greatestBook, Math.trunc(metrics.getY(highestDate)), $scope.allBooks.length);
+		// add two points beyond the edges of the graph
+		bestFitPoints.push(metrics.getPoint(lowestDate - 1), metrics.getPoint(highestDate + 1));
 
+		// move greatestBook upward (if possible) if the best fit line goes above the data line
+		greatestBook = Math.clamp(greatestBook, Math.trunc(metrics.getY(highestDate)), $scope.allBooks.length);
+		
 
 		//// FINALIZE Y-AXIS BOUNDS ///
 		var s = $scope.allBooks[leastBook-1];
-		leastBook = s.bookId - (s.sequence - 1); // bottom bound is the start of a sequence
-		s = $scope.allBooks[greatestBook-1];
-		greatestBook = s.bookId + (s.sequenceLength - s.sequence) + 1; // top bound is the start of a sequence
+		leastBook = s.sequenceLarge - (s.sequence - 1); // set bottom bound to the start of a sequence
 
+		s = $scope.allBooks[greatestBook-1];
+		greatestBook = s.sequenceLarge + (s.sequenceLength - s.sequence) + 1; // set top bound to the start of a sequence
+
+
+		//// IGL LINE: an arbitrary goal line which is fixed for each category ////
+		$scope.iglRaw.forEach(function(data) {
+			iglPoints.push({
+				x: data.month,
+				y: data.sequenceLarge,
+			});
+		});
+		
 
 		//// NOW LINE: a vertical black line to indicate the current date ////
 		nowPoints.push({
@@ -208,7 +226,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 			// callback for the y axis: displaying book sequences
 			bookYAxis(label) {
 				var s = $scope.allBooks[label-1];
-				if (s != null && s != undefined && s.category == $scope.selectedCategory && s.sequenceLength > 1) { // if the sequence length is 1, there's no good display for the y-axis, so just ignore that sequence
+				if (s != null && s != undefined && s.sequenceLength > 1) { // if the sequence length is 1, there's no good display for the y-axis, so just ignore that sequence
 					if (s.sequence == 1)
 						return "_________";
 					else {
@@ -223,7 +241,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 			// callback for the tooltip: displaying book titles
 			titleTooltip(tooltipItem, data) {
 				var s = $scope.allBooks[tooltipItem[0].yLabel-1];
-				if (s != null && s != undefined && s.category == $scope.selectedCategory) {
+				if (s != null && s != undefined) {
 					if ($scope.selectedCategory == "Comprehension" || $scope.selectedCategory == "Calculation")
 						return `${s.subcategory} - ${s.title}`;
 					else
@@ -263,7 +281,6 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 					backgroundColor: "rgba(0, 255, 255, 0.4)",
 					borderColor: "rgba(0, 255, 255, 0.4)",
 					fill: false,
-					borderDash: [5],
 					lineTension: 0,
 					pointRadius: 0,
 				}, {
@@ -295,7 +312,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 						min: lowestDate,
 						max: highestDate,
 						maxRotation: 0,
-						callback: callbacks.monthXAxis,
+						/*callback: callbacks.monthXAxis,*/
 					},
 				}, {
 					id: "xAxis2",
@@ -420,16 +437,12 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 			else
 				$scope.until = $scope.months2;
 
-			$http.get(`http://localhost:8081/recordsForChart?StudentId=${$scope.studentId}&Category=${$scope.selectedCategory}&Months=${$scope.months}&Until=${$scope.until}&Reps=${$scope.selectedRep}`)
+			$http.get(`${URL}recordsForChart?StudentId=${$scope.studentId}&Category=${$scope.selectedCategory}&Months=${$scope.months}&Until=${$scope.until}&Reps=${$scope.selectedRep}`)
 			.then(gen)
-			.catch(function(err) {
-				console.error(err);
-				Verify.error();
-			});
+			.catch(Verify.error);
 		}
 		catch (err) {
-			console.error(err);
-			Verify.error();
+			Verify.error(err);
 		}
 	};
 
