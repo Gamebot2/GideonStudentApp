@@ -99,7 +99,7 @@
 
 			
 			<div ng-class="{'logoOff':!logoDisplay, 'logoOn':logoDisplay}">
-				<img id = "logo" src = "img/gideon-logo.jpg" height = "60" width = "160" ng-hide="errorMessage">
+				<img id = "logo" src = "img/gideon-logo.jpg" height = "60" width = "160" ng-hide="formStatus.id == 0">
 				<button id = "invisibleButton" ng-click="expanded=!expanded">(show/hide form)</button>
 			</div>
 

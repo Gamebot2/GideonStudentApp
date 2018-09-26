@@ -271,7 +271,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 					backgroundColor: "rgba(0, 0, 255, 0.4)",
 					borderColor: "rgba(0, 0, 255, 0.4)",
 					fill: false,
-					borderDash: [2],
+					borderDash: [5],
 					lineTension: 0,
 					pointRadius: 0,
 				}, {
@@ -280,7 +280,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 					backgroundColor: "rgba(0, 255, 255, 0.4)",
 					borderColor: "rgba(0, 255, 255, 0.4)",
 					fill: false,
-					lineTension: 0,
+					cubicInterpolationMode: 'monotone',
 					pointRadius: 0,
 				}, {
 					label: "Now",

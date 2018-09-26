@@ -23,12 +23,10 @@ SELECT * FROM internationaldata;
 
 -- put whatever here
 
-INSERT INTO internationaldata (Category, Month, BookId) VALUES ("Calculation", 0, 1);
+INSERT INTO internationaldata (Category, Month, BookId) VALUES ("Calculation", 7*12, 79);
 
 ALTER TABLE books ADD COLUMN Abbreviation VARCHAR(255) DEFAULT NULL;
 UPDATE books SET Abbreviation = Title WHERE BookId >= 0;
-
-
 
 
 
@@ -109,15 +107,6 @@ FROM records
 INNER JOIN students
 	ON records.StudentId = students.StudentId
 	WHERE records.StudentId = 78;
-    
-    
-    
-SELECT * FROM records INNER JOIN books ON records.BookId = books.BookId WHERE
-			records.StudentId = 3 AND
-			records.StartDate < '2017-06-01 00:00:00' AND
-            books.Category = "Comprehension"
-		ORDER BY StartDate DESC
-		LIMIT 1;
         
         
 -- all records belonging to a student within a time period, with one record outside each boundary if possible (very repetitive, therefore unused)

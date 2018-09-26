@@ -4,6 +4,8 @@
 This file will temporarily exist for several commits. It generates a sequenceLength column in the books table.
 */
 
+-- target the database
+USE gideon;
 
 -- Create the new column that the data will get dumped into
 ALTER TABLE books
