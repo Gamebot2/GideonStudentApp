@@ -21,7 +21,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
 		<script src="momentbymonth.js"></script>
 		<script src="verify.js"></script>
-		<script src="app.js"></script>
+		<script src="gideonApp.js"></script>
 		<script src="chartCtrl.js"></script>
 		<script src="ripple.js"></script>
 
@@ -99,12 +99,12 @@
 
 			
 			<div ng-class="{'logoOff':!logoDisplay, 'logoOn':logoDisplay}">
-				<img id = "logo" src = "img/gideon-logo.jpg" height = "60" width = "160" ng-hide="formStatus.id == 0">
+				<img id = "logo" src = "img/gideon-logo.png" ng-hide="formStatus.id == 0">
 				<button id = "invisibleButton" ng-click="expanded=!expanded">(show/hide form)</button>
 			</div>
 
 			<!--HTML element for the generated chart-->
-			<div class = "exterior" id = "chartspecs">
+			<div id = "chartspecs">
 				<canvas id = "lineChart" ng-hide="errorMessage"></canvas>
 			</div>
 		</div>

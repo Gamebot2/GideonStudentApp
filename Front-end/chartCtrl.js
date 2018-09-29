@@ -227,10 +227,10 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 				var s = $scope.allBooks[label-1];
 				if (s != null && s != undefined && s.sequenceLength > 1) { // if the sequence length is 1, there's no good display for the y-axis, so just ignore that sequence
 					if (s.sequence == 1)
-						return "_________";
+						return "_____";
 					else {
 						var middle = Math.trunc(s.sequenceLength / 2) + 1;
-						if (s.sequence == Math.max(middle, 2)) // ensures that the sequence number in the middle is at least 2 (and thus not 1, which would be the edge)
+						if (s.sequence == Math.max(middle, 2)) // max function ensures that the sequence number in the middle is at least 2 (and thus not 1, which would be the edge)
 							return s.sequenceName
 
 						return " ";

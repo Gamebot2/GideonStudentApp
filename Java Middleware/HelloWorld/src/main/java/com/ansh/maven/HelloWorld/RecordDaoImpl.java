@@ -44,7 +44,6 @@ public class RecordDaoImpl implements RecordDao{
 	@Override
 	public List<Record> getAllRecordsById(int StudentId, String category) {
 		sql = "SELECT * FROM records INNER JOIN students ON records.StudentId = students.StudentId INNER JOIN books ON records.BookId = books.BookId WHERE students.StudentId = ? AND books.Category = ? AND records.rep = 1;";
-		System.out.println(sql);
 		rowMapper = new RecordRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper, StudentId, category);
 	}
@@ -60,11 +59,9 @@ public class RecordDaoImpl implements RecordDao{
 		
 		if(whichReps.equalsIgnoreCase("All")) {		// Content of query depends on repetition selection
 			sql = sql.replace("#","");
-			System.out.println(sql);
 			allRecords = this.jdbcTemplate.query(sql, rowMapper, StudentId, category);
 		} else {
 			sql = sql.replace("#", "AND r.Rep = ?");
-			System.out.println(sql);
 			allRecords = this.jdbcTemplate.query(sql, rowMapper, StudentId, category, whichReps);
 		}
 
@@ -99,8 +96,6 @@ public class RecordDaoImpl implements RecordDao{
 			sql = sql.replace("#", "0");
 		
 		String formatted = dateFormat.format(startDate);
-		
-		System.out.println(sql);
 		this.jdbcTemplate.update(sql, studentId, book.getBookId(), formatted, rep);
 		return 0;
 	}
@@ -114,11 +109,9 @@ public class RecordDaoImpl implements RecordDao{
 		
 		if(testTime < 0 || mistakes < 0) {		// Content of query depends on whether testTime and mistakes are valid values
 			sql = sql.replaceAll("#", "null");
-			System.out.println(sql);
 			this.jdbcTemplate.update(sql, formatted, recordId);
 		} else {
 			sql = sql.replace("#", "?");
-			System.out.println(sql);
 			this.jdbcTemplate.update(sql, formatted, testTime, mistakes, recordId);
 		}
 		return 0;

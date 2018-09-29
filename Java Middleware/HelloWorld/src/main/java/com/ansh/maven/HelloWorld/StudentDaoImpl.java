@@ -61,7 +61,6 @@ public class StudentDaoImpl implements StudentDao {
 	@Override
 	public int addStudent(StudentMaster student) {
 		sql = "INSERT INTO students (Client, FirstName, LastName, Grade, Gender) VALUES (?, ?, ?, ?, ?);";
-		//System.out.println(sql);
 		this.jdbcTemplate.update(sql, student.getClient(), student.getFirstName(), student.getLastName(), student.getGrade(), student.getGender());
 		return 0;
 	}
@@ -81,7 +80,6 @@ public class StudentDaoImpl implements StudentDao {
 			currentPasses = "";
 		
 		sql = "UPDATE students SET Client = ?, Email = ?, Phone = ?, Address = ?, Grade = ?, Gender = ?, CurrentPasses = ? WHERE StudentId = ?";
-		System.out.println(sql);
 		this.jdbcTemplate.update(sql, client, email, phone, address, grade, gender, currentPasses, studentId);
 		return 0;
 	}
