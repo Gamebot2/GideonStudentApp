@@ -12,8 +12,8 @@ public class DataRowMapper implements RowMapper<Data>{
 		Data data = new Data();
 		data.setDataId(row.getInt("DataId"));
 		data.setCategory(row.getString("Category"));
-		data.setMonth(row.getInt("Month"));
 		data.setBookId(row.getInt("BookId"));
+		data.setGrade(row.getString("Grade"));
 		data.setSequenceLarge(row.getInt("SequenceLarge"));
 		return data;
 	}

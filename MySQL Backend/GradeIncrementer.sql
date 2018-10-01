@@ -4,6 +4,7 @@
 Bumps up the grade of every student in the database, meant to be used once a year
 */
 
+
 -- target the database
 USE gideon;
 

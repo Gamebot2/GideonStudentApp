@@ -33,17 +33,17 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 	// initialize Verify
 	Verify.setScope($scope);
 
-	//Retrieves all categories the selected student is working in
-	$http.get(`${URL}categoriesByStudent?Id=${$scope.studentId}`)
-	.then(function(response) {
-		$scope.categoriesOfStudent = response.data;
-	});
-
 	//Retrieves the student's grade level and does time calculations
 	$http.get(`${URL}gradeOfStudent?Id=${$scope.studentId}`)
 	.then(function(response) {
 		$scope.currentGrade = response.data;
 		Dates.setZeroDate($scope.currentGrade);
+	});
+
+	//Retrieves all categories the selected student is working in
+	$http.get(`${URL}categoriesByStudent?Id=${$scope.studentId}`)
+	.then(function(response) {
+		$scope.categoriesOfStudent = response.data;
 	});
 
 	//Updates information for the selected category
@@ -161,7 +161,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 		//// IGL LINE: an arbitrary goal line which is fixed for each category ////
 		$scope.iglRaw.forEach(function(data) {
 			iglPoints.push({
-				x: data.month,
+				x: parseInt(data.grade.split(/\D+/).join("")) * 12,  // extracts number from grade string and multiplies by 12 to create a month index
 				y: data.sequenceLarge,
 			});
 		});
@@ -227,7 +227,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 				var s = $scope.allBooks[label-1];
 				if (s != null && s != undefined && s.sequenceLength > 1) { // if the sequence length is 1, there's no good display for the y-axis, so just ignore that sequence
 					if (s.sequence == 1)
-						return "_____";
+						return "-----";
 					else {
 						var middle = Math.trunc(s.sequenceLength / 2) + 1;
 						if (s.sequence == Math.max(middle, 2)) // max function ensures that the sequence number in the middle is at least 2 (and thus not 1, which would be the edge)

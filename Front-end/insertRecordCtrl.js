@@ -35,6 +35,7 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 		$http.get(`${URL}subcategories?Category=${$scope.selectedCategory}`)
 		.then(function(response) {
 			$scope.subcategories = response.data;
+			console.log($scope.subcategories);
 		});
 	}
 

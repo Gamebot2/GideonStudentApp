@@ -4,20 +4,20 @@ public class Data {
 	
 	private int DataId;
 	private String Category;
-	private int Month;
 	private int BookId;
+	private String Grade;
 	private int SequenceLarge;
 	
 	public Data() {
 		super();
 	}
 
-	public Data(int dataId, String category, int month, int bookId, int sequenceLarge) {
+	public Data(int dataId, String category, int bookId, String grade, int sequenceLarge) {
 		super();
 		DataId = dataId;
 		Category = category;
-		Month = month;
 		BookId = bookId;
+		Grade = grade;
 		SequenceLarge = sequenceLarge;
 	}
 	
@@ -37,20 +37,20 @@ public class Data {
 		Category = category;
 	}
 
-	public int getMonth() {
-		return Month;
-	}
-
-	public void setMonth(int month) {
-		Month = month;
-	}
-
 	public int getBookId() {
 		return BookId;
 	}
 
 	public void setBookId(int bookId) {
 		BookId = bookId;
+	}
+	
+	public String getGrade() {
+		return Grade;
+	}
+
+	public void setGrade(String grade) {
+		Grade = grade;
 	}
 	
 	public int getSequenceLarge() {
@@ -63,6 +63,6 @@ public class Data {
 
 	@Override
 	public String toString() {
-		return "Int. Data [DataId=" + DataId + ", Category=" + Category + ", Month=" + Month + ", BookId=" + BookId + "]";
+		return "Int. Data [DataId=" + DataId + ", Category=" + Category + ", BookId=" + BookId + ", Grade=" + Grade + "]";
 	}	
 }

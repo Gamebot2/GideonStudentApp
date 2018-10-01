@@ -22,11 +22,10 @@ SELECT * FROM students;
 SELECT * FROM internationaldata;
 
 -- put whatever here
+SELECT * FROM internationaldata i JOIN books b ON b.BookId = i.BookId ORDER BY i.Category, i.Month;
+INSERT INTO internationaldata (Category, Month, BookId) VALUES ("Comprehension", 8*12, 423);
 
-INSERT INTO internationaldata (Category, Month, BookId) VALUES ("Calculation", 7*12, 79);
-
-ALTER TABLE books ADD COLUMN Abbreviation VARCHAR(255) DEFAULT NULL;
-UPDATE books SET Abbreviation = Title WHERE BookId >= 0;
+SELECT DISTINCT Subcategory FROM books WHERE Category = "Comprehension";
 
 
 
@@ -152,9 +151,9 @@ WHERE
     
 -- select international data with relevant book data attached
 SELECT
-	i.DataId, i.Category, i.Month, i.BookId, b.SequenceLarge
+	i.DataId, i.Category, i.BookId, i.Grade, b.SequenceLarge
 FROM internationaldata i
 JOIN books b
 	ON i.BookId = b.BookId
 WHERE i.Category = "Calculation"
-ORDER BY i.Month;
+ORDER BY b.SequenceLarge;
