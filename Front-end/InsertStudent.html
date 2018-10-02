@@ -37,7 +37,7 @@
 				<!--Simple text box for instructors to enter the new student's full name-->
 				<label for = "student">Full Name</label><br>
 					<div class="inputWrapperBig">
-						<input white big type = "text" name = "student" id = "nameBox" ng-model = "Client" required>
+						<input white big type = "text" name = "student" id = "nameBox" ng-model = "student.client" required>
 						<div class="invalidContainer" ng-class="{'invalid':form.student.$touched && form.student.$invalid}"></div>
 					</div>
 					<span class="errorText" ng-show="form.student.$touched && form.student.$invalid">Name is required.</span>
@@ -47,7 +47,7 @@
 				<label for = "grade">Grade</label><br>
 					<!--<input type = "text" name = "grade" id = "gradeBox" ng-model = "Grade" required><br><br>-->
 					<div class="inputWrapperBig">
-						<select white big name = "grade" id = "gradeBox" ng-model = "Grade" required ng-class="{'invalid':form.grade.$touched && form.grade.$invalid}">
+						<select white big name = "grade" id = "gradeBox" ng-model = "student.grade" required ng-class="{'invalid':form.grade.$touched && form.grade.$invalid}">
 							<option value = "PreK (-1)">PreK</option>
 							<option value = "Kinder (0)">Kinder</option>
 							<option value = "1st">1st</option>
@@ -71,7 +71,7 @@
 				<!--Simple selection field for instructors to enter the new student's gender-->
 				<label for = "gender">Gender</label><br>
 					<div class="inputWrapperBig">
-						<select white big name = "gender" id = "genderBox" ng-model = "Gender" required ng-class="{'invalid':form.gender.$touched && form.gender.$invalid}">
+						<select white big name = "gender" id = "genderBox" ng-model = "student.gender" required ng-class="{'invalid':form.gender.$touched && form.gender.$invalid}">
 							<option value = "Male">Male</option>
 							<option value = "Female">Female</option>
 						</select>

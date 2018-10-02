@@ -39,7 +39,7 @@
 					<div class="threeColumn">
 						<label for = "student">Full Name</label><br>
 						<div class="inputWrapperBig">
-							<input white big type = "text" name = "client" ng-model = "Client" required>
+							<input white big type = "text" name = "client" ng-model = "student.client" required>
 							<div class="invalidContainer" ng-class="{'invalid':form.client.$touched && form.client.$invalid}"></div>
 						</div>
 						<span class="errorText" ng-show="form.client.$touched && form.client.$invalid">Name is required.</span>
@@ -48,13 +48,13 @@
 					<!--Email input, no required format-->
 					<div class="threeColumn">
 						<label for = "email">Email</label><br>
-						<input white big type = "text" ng-model = "Email">
+						<input white big type = "text" ng-model = "student.email">
 					</div>
 
 					<!--Grade selection-->
 					<div class="threeColumn">
 						<label for = "email">Grade</label><br>
-						<select white big name = "grade" id = "gradeBox" ng-model = "Grade">
+						<select white big name = "grade" id = "gradeBox" ng-model = "student.grade">
 								<option value = "PreK (-1)">PreK</option>
 								<option value = "Kinder (0)">Kinder</option>
 								<option value = "1st">1st</option>
@@ -77,13 +77,13 @@
 					<!--Phone input, no required format-->
 					<div class="twoColumn">
 						<label for = "email">Phone</label><br>
-						<input white big type = "text" ng-model = "Phone">
+						<input white big type = "text" ng-model = "student.phone">
 					</div>
 
 					<!--Address input, no required format-->
 					<div class="twoColumn">
 						<label for = "email">Address</label><br>
-						<input white big type = "text" ng-model = "Address">
+						<input white big type = "text" ng-model = "student.address">
 					</div>
 				</div><br>
 				
@@ -91,7 +91,7 @@
 					<!--Gender selection-->
 					<div class="twoColumn">
 						<label for = "email">Gender</label><br>
-						<select white big name = "gender" id = "genderBox" ng-model = "Gender">
+						<select white big name = "gender" id = "genderBox" ng-model = "student.gender">
 							<option value = "Male">Male</option>
 							<option value = "Female">Female</option>
 						</select>
@@ -100,7 +100,7 @@
 					<!--Current passes input-->
 					<div class="twoColumn">
 						<label for = "email">Current Passes</label><br>
-						<input white big type = "text" ng-model = "CurrentPasses">
+						<input white big type = "text" ng-model = "student.currentPasses">
 					</div>
 				</div><br><br>
 

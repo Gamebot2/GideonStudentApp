@@ -152,7 +152,7 @@ button:hover {
 
 @keyframes rippleAnim {
 	from { opacity: 1; transform: scale(0, 0); }
-	to { opacity: 0; transform: scale(35, 35); }
+	to { opacity: 0; transform: scale(10, 1); }
 }
 
 
@@ -181,7 +181,7 @@ button:hover {
 	overflow-y: hidden;
 	word-wrap: break-word;
 	padding: 0px 10px;
-	transition: all cubic-bezier(0,0,0,1) 0.5s;
+	transition: all ease-in-out 0.5s;
 }
 .collapsedContent {
 	height: 0px;

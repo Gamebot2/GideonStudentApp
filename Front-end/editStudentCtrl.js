@@ -18,14 +18,6 @@ gideonApp.controller('editStudentCtrl', function($scope, $http, $window) {
 	$http.get(`${URL}student?Id=${$window.localStorage.getItem(0)}`) // getItem(0) should return the student's id
 	.then(function(response) {
 		$scope.student = response.data;
-		$scope.Id 				= $scope.student.studentId;
-		$scope.Client 			= $scope.student.client;
-		$scope.Email 			= $scope.student.email;
-		$scope.Phone 			= $scope.student.phone;
-		$scope.Address 			= $scope.student.address;
-		$scope.Grade 			= $scope.student.grade;
-		$scope.Gender 			= $scope.student.gender;
-		$scope.CurrentPasses 	= $scope.student.currentPasses;
 	});
 
 	// Form submission
@@ -33,20 +25,8 @@ gideonApp.controller('editStudentCtrl', function($scope, $http, $window) {
 		if (!Verify.check())
 			return;
 
+		// Updates the student with an HTTP post call
 		try {
-			// Creates JSON for the student based on form data
-			var newStudentDetails = JSON.stringify({
-				id: 			$scope.Id,
-				client:			$scope.Client,
-				email: 			$scope.Email,
-				phone: 			$scope.Phone,
-				address: 		$scope.Address,
-				grade: 			$scope.Grade,
-				gender: 		$scope.Gender,
-				currentPasses: 	$scope.CurrentPasses,
-			});
-
-			// Updates the student with an HTTP post call
 			$http({
 				url: `${URL}updateStudent`,
 				method: 'POST',
@@ -54,13 +34,15 @@ gideonApp.controller('editStudentCtrl', function($scope, $http, $window) {
 					"Content-Type": "application/json",
 					"Accept": "application/json"
 				},
-				data:newStudentDetails,
+				data: JSON.stringify($scope.student),
 			})
 			.then(function(response) {
 				if (Verify.successIf(response.data == 0, ""))
 					window.location.href = "StudentList.html"; // return back to the list if the update was successful
 			})
 			.catch(Verify.error);
+		} catch (err) {
+			Verify.error(err);
 		}
 	}
 });

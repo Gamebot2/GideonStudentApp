@@ -2,7 +2,7 @@ package com.ansh.maven.HelloWorld;
 
 public class StudentMasterExtra extends StudentMaster {
 	
-	private int id;
+	private int studentId;
 	private String email;
 	private String phone;
 	private String address;
@@ -14,18 +14,18 @@ public class StudentMasterExtra extends StudentMaster {
 	
 	public StudentMasterExtra(int id, String client, String email, String phone, String address, String grade, String gender, String currentPasses) {
 		super(client, grade, gender);
-		this.id = id;
+		this.studentId = id;
 		this.email = email;
 		this.phone = phone;
 		this.address = address;
 		this.currentPasses = currentPasses;
 	}
 
-	public int getId() {
-		return id;
+	public int getStudentId() {
+		return studentId;
 	}
-	public void setId(int id) {
-		this.id = id;
+	public void setStudentId(int id) {
+		this.studentId = id;
 	}
 	public String getEmail() {
 		return email;

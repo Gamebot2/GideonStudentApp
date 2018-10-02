@@ -13,6 +13,8 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 	// initialize Verify
 	Verify.setScope($scope);
 
+	$scope.record = {};
+
 	// Returns a list of all students for easy name selection	
 	$http.get(`${URL}students`)
 	.then(function(response) {
@@ -32,7 +34,7 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 
 	//Returns a list of subcategories based on the selected category
 	$scope.getSubcategories = function() {
-		$http.get(`${URL}subcategories?Category=${$scope.selectedCategory}`)
+		$http.get(`${URL}subcategories?Category=${$scope.record.category}`)
 		.then(function(response) {
 			$scope.subcategories = response.data;
 			console.log($scope.subcategories);
@@ -41,31 +43,24 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 
 	//Returns a list of titles based on the selected subCategory
 	$scope.getTitles = function() {
-		$http.get(`${URL}titles?Subcategory=${$scope.selectedSubCategory}`)
+		$http.get(`${URL}titles?Subcategory=${$scope.record.subcategory}`)
 		.then(function(response) {
 			$scope.titles = response.data;
 		});
+	}
+
+	// Facilitates the JSON packaging by setting the id property
+	$scope.setId = function() {
+		$scope.record.id = $scope.client.id;
 	}
 
 	// Form submission
 	$scope.createRecord = function() {
 		if (!Verify.check())
 			return;
-
+		
+		//Inserts the record with an HTTP post call
 		try {
-			//Creates JSON for the record based on form data
-			var newRecordDetails = JSON.stringify({
-				id: 			$scope.client.id,
-				category: 		$scope.selectedCategory,
-				subcategory: 	$scope.selectedSubCategory,
-				title: 			$scope.selectedTitle,
-				startDate: 		$scope.startDate,
-				testTime: 		$scope.testTime,
-				mistakes: 		$scope.mistakes,
-				rep: 			$scope.rep,
-			});
-
-			//Inserts the record with an HTTP post call
 			$http({
 				url: `${URL}addRecord`,
 				method: 'POST',
@@ -73,7 +68,7 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 					"Content-Type": "application/json",
 					"Accept": "application/json"
 				},
-				data:newRecordDetails,
+				data: JSON.stringify($scope.record),
 			})
 			.then(function(response) {
 				Verify.successIf(response.data == 0, `Successfully added record for ${$scope.client.name}`);
