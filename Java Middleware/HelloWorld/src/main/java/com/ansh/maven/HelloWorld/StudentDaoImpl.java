@@ -15,52 +15,49 @@ public class StudentDaoImpl implements StudentDao {
 	
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	
-	private String sql;
-	private RowMapper<Student> rowMapper;
 
 	// Returns all students in the database
 	@Override
 	public List<Student> getAllStudents() {
-		sql = "SELECT * FROM students";
-		rowMapper = new StudentRowMapper();
+		String sql = "SELECT * FROM students";
+		RowMapper<Student> rowMapper = new StudentRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
 
 	// Returns a single student with a certain id number
 	@Override
 	public Student getStudentById(int StudentId) {
-		sql = "SELECT * FROM students WHERE StudentId = ?";
-		rowMapper = new StudentRowMapper();
+		String sql = "SELECT * FROM students WHERE StudentId = ?";
+		RowMapper<Student> rowMapper = new StudentRowMapper();
 		return jdbcTemplate.queryForObject(sql, rowMapper, StudentId);
 	}
 
 	// Returns the students in the database that have records associated with them
 	@Override
 	public List<Student> getStudentsWithData() {
-		sql = "SELECT DISTINCT s.StudentId, s.Client, s.Email, s.Phone, s.Address, s.ClientId, s.CurrentPasses, s.FirstName, s.Gender, s.Grade, s.LastName, s.MiddleName, s.PrimaryStaffMember FROM students s RIGHT JOIN records r ON r.StudentId = s.StudentId";
-		rowMapper = new StudentRowMapper();
+		String sql = "SELECT DISTINCT s.StudentId, s.Client, s.Email, s.Phone, s.Address, s.ClientId, s.CurrentPasses, s.FirstName, s.Gender, s.Grade, s.LastName, s.MiddleName, s.PrimaryStaffMember FROM students s RIGHT JOIN records r ON r.StudentId = s.StudentId";
+		RowMapper<Student> rowMapper = new StudentRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
 	
 	// Returns the grade of a single student
 	@Override
-	public List<String> getGrade(int StudentId) {
-		sql = "SELECT Grade FROM students WHERE StudentId = ?";
-		return jdbcTemplate.queryForList(sql, String.class, StudentId);
+	public String getGrade(int StudentId) {
+		String sql = "SELECT Grade FROM students WHERE StudentId = ? LIMIT 1";
+		return jdbcTemplate.queryForObject(sql, String.class, StudentId);
 	}
 
 	// Returns the categories of books for which a student has records
 	@Override
 	public List<String> getCategories(int StudentId) {
-		sql = "SELECT DISTINCT books.Category FROM records INNER JOIN students ON records.StudentId = students.StudentId INNER JOIN books ON records.BookId = books.BookId WHERE students.StudentId = ?";
+		String sql = "SELECT DISTINCT books.Category FROM records INNER JOIN students ON records.StudentId = students.StudentId INNER JOIN books ON records.BookId = books.BookId WHERE students.StudentId = ?";
 		return this.jdbcTemplate.queryForList(sql, String.class, StudentId);
 	}
 
 	// Adds a student to the database
 	@Override
 	public int addStudent(StudentMaster student) {
-		sql = "INSERT INTO students (Client, FirstName, LastName, Grade, Gender) VALUES (?, ?, ?, ?, ?);";
+		String sql = "INSERT INTO students (Client, FirstName, LastName, Grade, Gender) VALUES (?, ?, ?, ?, ?);";
 		this.jdbcTemplate.update(sql, student.getClient(), student.getFirstName(), student.getLastName(), student.getGrade(), student.getGender());
 		return 0;
 	}
@@ -79,7 +76,7 @@ public class StudentDaoImpl implements StudentDao {
 		if (currentPasses == null)
 			currentPasses = "";
 		
-		sql = "UPDATE students SET Client = ?, Email = ?, Phone = ?, Address = ?, Grade = ?, Gender = ?, CurrentPasses = ? WHERE StudentId = ?";
+		String sql = "UPDATE students SET Client = ?, Email = ?, Phone = ?, Address = ?, Grade = ?, Gender = ?, CurrentPasses = ? WHERE StudentId = ?";
 		this.jdbcTemplate.update(sql, client, email, phone, address, grade, gender, currentPasses, studentId);
 		return 0;
 	}

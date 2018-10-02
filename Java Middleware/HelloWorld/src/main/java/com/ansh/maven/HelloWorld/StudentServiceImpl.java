@@ -39,7 +39,7 @@ public class StudentServiceImpl implements StudentService{
 	// Returns the numeric grade of a student
 	@Override
 	public int getGrade(int StudentId) {
-		String gradeString = studentDao.getGrade(StudentId).get(0);
+		String gradeString = studentDao.getGrade(StudentId);
 		return Integer.parseInt(gradeString.replaceAll("\\D+",""));
 	}
 
