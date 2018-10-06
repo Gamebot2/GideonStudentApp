@@ -13,6 +13,11 @@ gideonApp.controller('updateRecordCtrl', function($scope, $http, $window){
 	// initialize Verify
 	Verify.setScope($scope);
 
+
+	//Preload selections with disabled "Loading" options
+	$scope.names = ["Loading#"];
+	$scope.displayRecords = [{display: "Loading", disabled: true}];
+
 	//Returns all student names for easy selection
 	$http.get(`${URL}students`)
 	.then(function(response) {
@@ -23,7 +28,7 @@ gideonApp.controller('updateRecordCtrl', function($scope, $http, $window){
 	$http.get(`${URL}incompleteRecords`)
 	.then(function(response) {
 		$scope.records = response.data;
-		$scope.displayRecords = [];
+		var displayRecords = [];
 
 		$scope.records.forEach(function(record) {
 			var splitDate = record.startDate.split('-').map(d => parseInt(d));
@@ -35,13 +40,15 @@ gideonApp.controller('updateRecordCtrl', function($scope, $http, $window){
 
 			var displayRecord = `${record.name} started book ${record.bookTitle} on ${formattedDate} | RecordId: ${record.recordId}`;
 
-			$scope.displayRecords.push({
+			displayRecords.push({
 				name: record.name,
 				id: record.recordId,
 				date: startDate,
 				display: displayRecord, // "display" for the shown selections, everything else is actual data
 			}); 
 		});
+
+		$scope.displayRecords = displayRecords;
 	});
 
 	// Form submission

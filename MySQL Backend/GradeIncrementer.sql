@@ -38,34 +38,34 @@ VALUES
     (12, '12th');
 
 -- increments the grade level for all students, with checks to make sure that grades above 12, below -1, and undefined are accounted for
-UPDATE students
+UPDATE students s
 SET Grade = CASE
-	WHEN students.Grade = null OR students.Grade = ""
+	WHEN s.Grade = null OR s.Grade = ""
     THEN ""
-	/*WHEN students.Grade = "PreK (-1)" 	-- uncomment if decrementing grades
+	/*WHEN s.Grade = "PreK (-1)" 	-- IF DECREMENTING GRADES: uncomment by removing / and *
     THEN "PreK (-1)"*/
 	WHEN
-		students.Grade IN (
+		s.Grade IN (
 			SELECT
-				grades.GradeString
+				GradeString
 			FROM grades
 		)
-		&& NOT students.Grade = "12th"
+		&& NOT s.Grade = "12th"
 	THEN (
 		SELECT
-			grades.GradeString
+			GradeString
 		FROM grades
-		WHERE grades.GradeNumber = (
+		WHERE GradeNumber = (
 			SELECT
-				grades.GradeNumber + 1 		-- if you need to decrement everyone's grade, change this to grades.GradeNumber - 1, and uncomment the above WHEN clause
-			FROM grades
-			WHERE grades.GradeString = students.Grade
+				g.GradeNumber + 1 		-- IF DECREMENTING GRADES: change + to - so that the line reads "grades.GradeNumber - 1"
+			FROM grades g
+			WHERE g.GradeString = s.Grade
 		)
 	)
 	ELSE
-		CONCAT(CAST(CAST(SUBSTRING(students.Grade, 1, 2) AS SIGNED) + 1 AS CHAR), "th")
+		CONCAT(CAST(CAST(SUBSTRING(s.Grade, 1, 2) AS SIGNED) + 1 AS CHAR), "th") 		-- IF DECREMENTING GRADES: change + to - so that it reads "- 1 AS CHAR"
 END
-WHERE StudentId >= 0; -- replace this line with "WHERE StudentId = @testId" when testing
+WHERE s.StudentId >= 0; -- replace this line with "WHERE StudentId = @testId" when testing
 
 -- debug clauses, for use in testing
 /*

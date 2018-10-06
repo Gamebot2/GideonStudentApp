@@ -71,6 +71,10 @@ input[white]:focus, select[white]:focus {
 	box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4), 5px 5px 20px rgba(0, 0, 0, 0.3);
 }
 
+select {
+	cursor: pointer;
+}
+
 
 /*Form validation CSS*/
 .inputWrapper {
@@ -152,7 +156,7 @@ button:hover {
 
 @keyframes rippleAnim {
 	from { opacity: 1; transform: scale(0, 0); }
-	to { opacity: 0; transform: scale(10, 1); }
+	to { opacity: 0; transform: scale(35, 35); }
 }
 
 

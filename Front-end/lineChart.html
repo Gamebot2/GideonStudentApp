@@ -47,7 +47,7 @@
 					<div class="threeColumn">
 					<label for="category">Category</label><br>
 						<div class="inputWrapperBig">
-							<select white big id = "category" name = "category" ng-model = "selectedCategory" required ng-options = "y for y in categoriesOfStudent" ng-change = "didUpdateCategory()"></select>
+							<select white big id = "category" name = "category" ng-model = "selectedCategory" required ng-options = "y.replace('#','') disable when y.endsWith('#') for y in categoriesOfStudent" ng-change = "didUpdateCategory()"></select>
 							<div class="invalidContainer" ng-class="{'invalid':form.category.$touched && form.category.$invalid}"></div>
 						</div>
 						<span class="errorText" ng-show="form.category.$touched && form.category.$invalid">Category is required.</span>
@@ -98,9 +98,9 @@
 			<br><br>
 
 			
-			<div ng-class="{'logoOff':!logoDisplay, 'logoOn':logoDisplay}">
-				<img id = "logo" src = "img/gideon-logo.png" ng-hide="formStatus.id == 0">
-				<button id = "invisibleButton" ng-click="expanded=!expanded">(show/hide form)</button>
+			<div id = "logoContainer" ng-class="{'logoOff':!logoDisplay, 'logoOn':logoDisplay}" ng-hide="formStatus.id == 0" ng-click="expanded=!expanded">
+				<img id = "logo" src = "img/gideon-logo-white.png" alt = "show/hide form">
+				<div id = "logoTint"></div>
 			</div>
 
 			<!--HTML element for the generated chart-->

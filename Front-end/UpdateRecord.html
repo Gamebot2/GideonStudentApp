@@ -37,13 +37,13 @@
 				<!--Displays list of all current students upon selection, with a custom filter; meant only to filter for the record, not a required input-->
 				<label for = "name">Filter By Name: </label>
 				<input black id = "textFilter" name = "textFilter" type = "text" ng-model="clientFilter">
-          			<select white big id="clientSelect" name = "client" ng-model = "selectedStudent" ng-options = "v for v in names | filter: clientFilter">
+          			<select white big id="clientSelect" name = "client" ng-model = "selectedStudent" ng-options = "v.replace('#','') disable when v.endsWith('#') for v in names | filter: clientFilter">
   					</select><br><br>
 
 				<!--Only displays incomplete records-->
 				<label for = "title">Record</label><br>
 					<div class="inputWrapperBig">
-						<select white big id = "title" name = "record" ng-model = "selectedRecord" ng-options = "y as y.display for y in displayRecords | filter: {display: selectedStudent}" required></select>
+						<select white big id = "title" name = "record" ng-model = "selectedRecord" ng-options = "y as y.display disable when y.disabled for y in displayRecords | filter: {display: selectedStudent}" required></select>
 						<div class="invalidContainer" ng-class="{'invalid':form.record.$touched && form.record.$invalid}"></div>
 					</div>
 					<span class="errorText" ng-show="form.record.$touched && form.record.$invalid">Record is required.</span>

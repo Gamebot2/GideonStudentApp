@@ -7,6 +7,7 @@
  * - The variable "Dates" is defined in momentbymonth.js. That file must be included prior to this one in html.
  * - The variable "Verify" is defined in verify.js. That file must be included prior to this one in html.
  * - The application expects there to be the id and name of a student in the local storage of the window. Make sure these exist before opening LineChart.html.
+ * - Disabled options in selections will end with "#". Anything meant to be selected should not contain "#".
  */
 
 
@@ -41,9 +42,13 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 	});
 
 	//Retrieves all categories the selected student is working in
+	$scope.categoriesOfStudent = ["Loading#"];
 	$http.get(`${URL}categoriesByStudent?Id=${$scope.studentId}`)
 	.then(function(response) {
-		$scope.categoriesOfStudent = response.data;
+		if (response.data.length == 0)
+			$scope.categoriesOfStudent = ["No data#"];
+		else
+			$scope.categoriesOfStudent = response.data;
 	});
 
 	//Updates information for the selected category

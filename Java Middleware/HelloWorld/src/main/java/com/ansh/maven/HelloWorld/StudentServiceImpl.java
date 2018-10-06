@@ -40,7 +40,10 @@ public class StudentServiceImpl implements StudentService{
 	@Override
 	public int getGrade(int StudentId) {
 		String gradeString = studentDao.getGrade(StudentId);
-		return Integer.parseInt(gradeString.replaceAll("\\D+",""));
+		if (gradeString == null || gradeString.isEmpty())
+			return -1;
+		else
+			return Integer.parseInt(gradeString.replaceAll("\\D+",""));
 	}
 
 	// Adds a student to the database

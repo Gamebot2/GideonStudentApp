@@ -9,22 +9,26 @@
 
 gideonApp.controller('listCtrl', function($scope, $http, $window) {
 
+	var dataOn = {
+		true: ["dataStudents", "Display All Students"],
+		false: ["students", "Display Students With Records"],
+		switch: false,
+	};
+
 	$scope.getStudents = function() {
-		$http.get(`${URL}${$scope.dataOn ? "dataStudents" : "students"}`)
+		$http.get(`${URL}${dataOn[dataOn.switch][0]}`)
 		.then(function(response) {
 			$scope.students = response.data;
 		});
-		$scope.toggleButtonText = $scope.dataOn ? "Display All Students" : "Display Students with Records";
+		$scope.toggleButtonText = dataOn[dataOn.switch][1];
 	}
+	$scope.getStudents();
 
 	$scope.toggleData = function() {
-		$scope.dataOn = !$scope.dataOn;
+		dataOn.switch = !dataOn.switch;
 		$scope.getStudents();
 	}
-
-	$scope.dataOn = false;
-	$scope.active = false;
-	$scope.getStudents();
+	
 
 	$scope.manageExpansion = function(student) {
 		if ($scope.expandedStudent == student)
@@ -33,16 +37,10 @@ gideonApp.controller('listCtrl', function($scope, $http, $window) {
 			$scope.expandedStudent = student;
 	}
 
-	//Function for selecting a student and going to the chart page
-	$scope.logStudent = function(id, name) {
+	//Function for selecting a student and going to another page
+	$scope.logToPage = function(id, name, page) {
 		$window.localStorage.setItem(0, id);
 		$window.localStorage.setItem(1, name);
-		window.location.href = "LineChart.html";
-	}
-
-	$scope.editStudent = function(id, name) {
-		$window.localStorage.setItem(0, id);
-		$window.localStorage.setItem(1, name);
-		window.location.href = "EditStudent.html";
+		window.location.href = page;
 	}
 });

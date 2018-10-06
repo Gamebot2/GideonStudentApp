@@ -1,13 +1,13 @@
-/*Size specifications for the chart*/
-canvas {
-	height: 400px;
-	width: 8000px;
-}
-
+/*General CSS*/
 body {
 	background: linear-gradient(to bottom, #FFD700, #FFA500 50%, #FFA500 100%) no-repeat bottom;
 	background-size: 100%;
-	/*height: 2000px;*/
+}
+
+.exterior {
+	width: 100%;
+	margin: 0px;
+	padding: 20px;
 }
 
 h1 {
@@ -22,14 +22,15 @@ input[type="number"] {
 	width: 80px;
 }
 
-#lineChart {
-	
+
+/*Chart specifications*/
+canvas {
+	height: 400px;
+	width: 8000px;
 }
 
-.exterior {
-	width: 100%;
-	margin: 0px;
-	padding: 20px;
+#lineChart {
+	
 }
 
 #chartspecs {
@@ -37,6 +38,12 @@ input[type="number"] {
 	margin-right: auto;
 }
 
+.expandedContent {
+	height: 300px;
+}
+
+
+/*Logo-Button CSS, including positioning and hover tint*/
 #logo {
 	max-width: 160px;
 	max-height: 80px;
@@ -51,18 +58,20 @@ input[type="number"] {
 	display: inline-block;
 }
 
-
-#invisibleButton {
-	display: inline-block;
-	color: white;
-	background: none;
-	outline: none;
-	box-shadow: none;
-	padding: 0px 0px;
-	margin: 0px 0px;
+#logoContainer {
+	position: relative;
+	cursor: pointer;
+	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15), 3px 3px 10px rgba(0, 0, 0, 0.1);
 }
-
-
-.expandedContent {
-	height: 300px;
+#logoTint {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: none;
+	transition-duration: .4s;
+}
+#logoTint:hover {
+	background: rgba(0, 0, 0, 0.1);
 }

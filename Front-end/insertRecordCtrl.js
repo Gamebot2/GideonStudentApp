@@ -5,6 +5,7 @@
  * NOTES:
  * - The variable "gideonApp" is defined in gideonApp.js. That file must be included prior to this one in html.
  * - The variable "Verify" is defined in verify.js. That file must be included prior to this one in html.
+ * - Disabled options in selections will end with "#". Anything meant to be selected should not contain "#".
  */
 
 
@@ -14,6 +15,13 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 	Verify.setScope($scope);
 
 	$scope.record = {};
+
+
+	// Preloads selection boxes with a disabled value
+	$scope.names = [{name: "Loading#"}];
+	$scope.categories = ["Loading#"];
+	$scope.subcategories = ["Select a category first#"];
+	$scope.titles = ["Select a subcategory first#"];
 
 	// Returns a list of all students for easy name selection	
 	$http.get(`${URL}students`)
@@ -26,7 +34,6 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 		});
 	});
 
-	//Returns all books
 	$http.get(`${URL}categories`)
 	.then(function(response) {
 		$scope.categories = response.data;

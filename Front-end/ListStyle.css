@@ -26,15 +26,12 @@ body {
 	background-color: black;
 }
 #tableContainer {
+	cursor: pointer;
 	animation-duration: 0s;
 }
 #tableContainer:hover{
 	background-color: #FFA500;
 }
-
-/*.columnContainer, .column {
-	pointer-events: none;
-}*/
 
 .expandedContent {
 	height: 180px;

@@ -38,7 +38,7 @@
 				<label for = "client">Filter By Name: </label>
 					<input black id = "textFilter" name = "textFilter" type = "text" ng-model="clientFilter">
 					<div class="inputWrapperBig">
-						<select white big id="clientSelect" name = "client" ng-model = "client" ng-options = "v as v.name for v in names | filter: {name: clientFilter}" ng-change = "setId()" required></select>
+						<select white big id="clientSelect" name = "client" ng-model = "client" ng-options = "v as v.name disable when v.disabled for v in names | filter: {name: clientFilter}" ng-change = "setId()" required></select>
 						<div class="invalidContainer" ng-class="{'invalid':form.client.$touched && form.client.$invalid}"></div>
 					</div>
 					<span class="errorText" ng-show="form.client.$touched && form.client.$invalid">Name is required.</span>
@@ -47,7 +47,7 @@
 	  			<!--Displays all possible book categories-->
 				<label for = "category">Book Category</label><br>
 					<div class="inputWrapperBig">
-						<select white big id = "category" name = "category" ng-model = "record.category" ng-options = "x for x in categories" ng-change = "getSubcategories()" required>
+						<select white big id = "category" name = "category" ng-model = "record.category" ng-options = "x.replace('#','') disable when x.endsWith('#') for x in categories" ng-change = "getSubcategories()" required>
 							<option value = "" selected disabled hidden>Choose category</option>
 						</select>
 						<div class="invalidContainer" ng-class="{'invalid':form.category.$touched && form.category.$invalid}"></div>
@@ -58,7 +58,7 @@
 				<!--Displays all subcategories for a selected category-->
 				<label for = "subCategory">Book Sub-Category</label><br>
 					<div class="inputWrapperBig">
-						<select white big id = "subCategory" name = "subcategory" ng-model = "record.subcategory" ng-options = "y for y in subcategories" ng-change = "getTitles()" required>
+						<select white big id = "subCategory" name = "subcategory" ng-model = "record.subcategory" ng-options = "y.replace('#','') disable when y.endsWith('#') for y in subcategories" ng-change = "getTitles()" required>
 							<option value = "">Choose subcategory</option>
 						</select>
 						<div class="invalidContainer" ng-class="{'invalid':form.subcategory.$touched && form.subcategory.$invalid}"></div>
@@ -69,7 +69,7 @@
 				<!--Displays all book titles for a given subcategory-->
 				<label for = "title">Book Title</label><br>
 					<div class="inputWrapperBig">
-						<select white big id = "title" name = "title" ng-model = "record.title" ng-options = "z for z in titles" required>
+						<select white big id = "title" name = "title" ng-model = "record.title" ng-options = "z.replace('#','') disable when z.endsWith('#') for z in titles" required>
 							<option value = "">Choose title</option>
 						</select>
 						<div class="invalidContainer" ng-class="{'invalid':form.title.$touched && form.title.$invalid}"></div>
