@@ -7,7 +7,6 @@
  * - The variable "Dates" is defined in momentbymonth.js. That file must be included prior to this one in html.
  * - The variable "Verify" is defined in verify.js. That file must be included prior to this one in html.
  * - The application expects there to be the id and name of a student in the local storage of the window. Make sure these exist before opening LineChart.html.
- * - Disabled options in selections will end with "#". Anything meant to be selected should not contain "#".
  */
 
 
@@ -24,6 +23,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 	$scope.studentName = $window.localStorage.getItem(1);
 
 	// Pre-generation chart management
+	var allBooks = [];
 	var regen = false;
 	$scope.expanded = true;
 	$scope.logoDisplay = false;
@@ -37,16 +37,14 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 	//Retrieves the student's grade level and does time calculations
 	$http.get(`${URL}gradeOfStudent?Id=${$scope.studentId}`)
 	.then(function(response) {
-		$scope.currentGrade = response.data;
-		Dates.setZeroDate($scope.currentGrade);
+		Dates.setZeroDate(response.data); // we only need the student's current grade to make this one calculation, so it is never stored anywhere.
 	});
 
 	//Retrieves all categories the selected student is working in
-	$scope.categoriesOfStudent = ["Loading#"];
 	$http.get(`${URL}categoriesByStudent?Id=${$scope.studentId}`)
 	.then(function(response) {
 		if (response.data.length == 0)
-			$scope.categoriesOfStudent = ["No data#"];
+			$scope.categoriesOfStudent = ["No data found"];
 		else
 			$scope.categoriesOfStudent = response.data;
 	});
@@ -61,13 +59,13 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 		// Retrives all books in the selected category for use later in y-axis labeling
 		$http.get(`${URL}booksInCategory?Category=${$scope.selectedCategory}`)
 		.then(function(response) {
-			$scope.allBooks = response.data;
+			allBooks = response.data;
 		});
 
 		// Fetch international data for the selected category for use later in line plotting
 		$http.get(`${URL}internationalData?Category=${$scope.selectedCategory}`)
 		.then(function(response) {
-			$scope.iglRaw = response.data;
+			iglRaw = response.data;
 		});
 	}
 
@@ -77,194 +75,289 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 	//// GIANT CHART GENERATION METHOD ////
 	// "response" is intended to be a list of records drawn from an http call
 	let gen = function(response) {
-		$scope.records = response.data;
+		// try-catch block ensures that any major errors that may arise from the complex and probably buggy logic of the function gets properly written out in html
+		try {
+			var records = response.data;
+				
+			var lowestDate   = Dates.monthsAgoToMonthIndex($scope.months), // x-axis bounds
+				highestDate  = Dates.monthsAgoToMonthIndex($scope.until),
+			    greatestBook = 0, // y-axis bounds
+				leastBook    = 999;
 			
-		var lowestDate   = Dates.monthsAgoToMonthIndex($scope.months), // x-axis bounds
-			highestDate  = Dates.monthsAgoToMonthIndex($scope.until),
-		    greatestBook = 0, // y-axis bounds
-			leastBook    = 999;
-		
-		var xAxisLabels 	= [], // main container of x axis labels, labels are objects containing properties "month", "year", and "grade" (also date, but that's irrelevant here)
-			dataPoints 		= [], 		// data points: x is date, y is large sequence number, main graph plot
-			bestFitPoints 	= [], 		// best fit line: will contain two points outside the horizontal range of the graph
-			iglPoints 		= [], 		// will contain the international goal line, or IGL
-			nowPoints 		= [];		// vertical NOW line: will contain two points with nearly the same x value denoting the current date
+			var xAxisLabels = []; // main container of x axis labels, labels are objects containing properties "month", "year", and "grade" (also date, but that's irrelevant here)
 
-		//// DATA POINTS: Creates a point mapping each record to its respective spot on the x and y axis ////
-		var a = 0; // Helps display error message if there is no data, couldn't find a better solution for some reason: this value will increase for every record strictly in the time range
-		$scope.records.forEach(function(record) {
-			if(record.startDate != null) {
-				var currPoint = {
-					x: Dates.dateToMonthIndex(Dates.stringToDateObject(record.startDate)),
-					y: record.sequenceLarge,
-				};
+			var data    = [], 		// data line: x is date, y is large sequence number, main graph plot
+				bestFit = [], 		// best fit line: will contain two points outside the horizontal range of the graph
+				igl     = [],		// igl line: an arbitrary goal line that denotes an international standard in some categories
+				now     = [];		// now line: a vertical line that displays the current date for graphs that go past the current date
 
-				if (currPoint.x >= lowestDate && currPoint.x <= highestDate)
-					a++;
+			//// DATA POINTS: Creates a point mapping each record to its respective spot on the x and y axis ////
+			var a = 0; // Helps display error message if there is no data. This value will increase for every record strictly in the time range
+			records.forEach(function(record) {
+				if(record.startDate != null) {
+					var currPoint = {
+						x: Dates.dateToMonthIndex(Dates.stringToDateObject(record.startDate)),
+						y: record.sequenceLarge,
+					};
 
-				dataPoints.push(currPoint);
+					if (currPoint.x >= lowestDate && currPoint.x <= highestDate)
+						a++;
 
-				greatestBook = Math.max(record.sequenceLarge, greatestBook); // adjust y-axis bounds
-				leastBook = Math.min(record.sequenceLarge, leastBook);
-			}
-		});
-		// no data check
-		if (Verify.errorIf(a == 0, "No data"))
-			return;
+					data.push(currPoint);
 
-		//// Maps the internal linear scale of the x axis (lowestDate, ... highestDate) with labels containing dates and grades ////
-		for(j = lowestDate; j < highestDate; j++) {
-			var theLabel = Dates.dateAdd(Dates.zeroDate, j);
-			theLabel.grade = Math.truncN(j / 12);
-
-			xAxisLabels.push(theLabel);
-		}
-
-
-		//// BEST FIT LINE: least squares method ////
-		var metrics = {
-			init() {
-				this.xmean = dataPoints.map(p => p.x).reduce((a, b) => a + b) / dataPoints.length; // average x
-				this.ymean = dataPoints.map(p => p.y).reduce((a, b) => a + b) / dataPoints.length; // average y
-
-				this.getDiff = p => (p.x - this.xmean) * (p.y - this.ymean);      // numerator of formula, per term
-				this.getSquares = p => (p.x - this.xmean) * (p.x - this.xmean);   // denominator of formula, per term
-
-				this.diffSum = dataPoints.map(p => this.getDiff(p)).reduce((a, b) => a + b);            // numerator of formula, summation
-				this.squaresSum = dataPoints.map(p => this.getSquares(p)).reduce((a, b) => a + b);      // denominator of formula, summation
-
-				this.slope = this.diffSum / this.squaresSum;					// complete formula
-				if (Number.isNaN(this.slope))								// undefined check: happens when squaresSum is 0
-					this.slope = 0;
-
-				this.getY = x => this.slope * (x - this.xmean) + this.ymean;	// point-slope form linear equation
-				this.getPoint = function(x) {
-					var y = this.getY(x);
-					return {x: x, y: y};
+					greatestBook = Math.max(record.sequenceLarge, greatestBook); // adjust y-axis bounds
+					leastBook = Math.min(record.sequenceLarge, leastBook);
 				}
-
-				delete this.init; // remove this function from the object, to avoid clutter
-				return this;
-			}
-		}.init();
-
-		// add two points beyond the edges of the graph
-		bestFitPoints.push(metrics.getPoint(lowestDate - 1), metrics.getPoint(highestDate + 1));
-
-		// move greatestBook upward (if possible) if the best fit line goes above the data line
-		greatestBook = Math.clamp(greatestBook, Math.trunc(metrics.getY(highestDate)), $scope.allBooks.length);
-		
-
-		//// FINALIZE Y-AXIS BOUNDS ///
-		var s = $scope.allBooks[leastBook-1];
-		leastBook = s.sequenceLarge - (s.sequence - 1); // set bottom bound to the start of a sequence
-
-		s = $scope.allBooks[greatestBook-1];
-		greatestBook = s.sequenceLarge + (s.sequenceLength - s.sequence) + 1; // set top bound to the start of a sequence
-
-
-		//// IGL LINE: an arbitrary goal line which is fixed for each category ////
-		$scope.iglRaw.forEach(function(data) {
-			iglPoints.push({
-				x: parseInt(data.grade.split(/\D+/).join("")) * 12,  // extracts number from grade string and multiplies by 12 to create a month index
-				y: data.sequenceLarge,
 			});
-		});
-		
+			// no data check
+			if (Verify.errorIf(a == 0, "No data"))
+				return;
 
-		//// NOW LINE: a vertical black line to indicate the current date ////
-		var nowIndex = Dates.dateToMonthIndex(Dates.now);
-		nowPoints.push({
-			x: nowIndex - 0.001,
-			y: leastBook - 1,
-		}, {
-			x: nowIndex + 0.001,
-			y: greatestBook + 1,
-		});
+			//// Maps the internal linear scale of the x axis (lowestDate, ... highestDate) with labels containing dates and grades ////
+			for(j = lowestDate; j < highestDate; j++) {
+				var theLabel = Dates.dateAdd(Dates.zeroDate, j);
+				theLabel.grade = Math.truncN(j / 12);
+
+				xAxisLabels.push(theLabel);
+			}
 
 
-		//// CHART DEFAULTS ////
-		Chart.defaults.global.defaultFontSize = 16;
-		Chart.defaults.global.defaultFontColor = '#000';
+			//// BEST FIT LINE: least squares method ////
+			var metrics = {
+				init() {
+					this.xmean = data.map(p => p.x).reduce((a, b) => a + b) / data.length; // average x
+					this.ymean = data.map(p => p.y).reduce((a, b) => a + b) / data.length; // average y
 
-		//// CALLBACKS ////
-		let callbacks = {
-			// callback for the x axis: displaying month numbers
-			monthXAxis(label) {
-				var s = xAxisLabels[label - lowestDate];
-				if (s != null && s != undefined)
-					return s.month + 1;
-			},
-			// callback for the x axis: displaying year numbers
-			yearXAxis(label) {
-				var s = xAxisLabels[label - lowestDate];
-				if (s != null && s != undefined) {
-					if(s.month == 6)
-						return s.year;
-					else if (s.month == 0)
-						return "|";
+					this.getDiff = p => (p.x - this.xmean) * (p.y - this.ymean);      // numerator of formula, per term
+					this.getSquares = p => (p.x - this.xmean) * (p.x - this.xmean);   // denominator of formula, per term
+
+					this.diffSum    = data.map(p => this.getDiff(p)).reduce((a, b) => a + b);            // numerator of formula, summation
+					this.squaresSum = data.map(p => this.getSquares(p)).reduce((a, b) => a + b);      // denominator of formula, summation
+
+					this.slope = this.diffSum / this.squaresSum;					// complete formula
+					if (Number.isNaN(this.slope))								// undefined check: happens when squaresSum is 0
+						this.slope = 0;
+
+					this.getY = x => this.slope * (x - this.xmean) + this.ymean;	// point-slope form linear equation
+					this.getPoint = function(x) {
+						var y = this.getY(x);
+						return {x: x, y: y};
+					}
+
+					delete this.init; // remove this function from the object, to avoid clutter
+					return this;
 				}
-			},
-			// callback for the x axis: displaying grade values
-			gradeXAxis(label) {
-				var s = xAxisLabels[label - lowestDate];
-				if (s != null && s != undefined) {
-					if(s.month == 1) {
-						if(s.grade == 0)
-							return "Kindergarten";
-						else if(s.grade == 1)
-							return "1st Grade";
-						else if(s.grade == 2)
-							return "2nd Grade";
-						else if(s.grade == 3)
-							return "3rd Grade";
-						else if(s.grade <= -1)
-							return "Pre-K";
+			}.init();
+
+			// add two points beyond the edges of the graph
+			bestFit.push(metrics.getPoint(lowestDate - 1), metrics.getPoint(highestDate + 1));
+
+			// move greatestBook upward (if possible) if the best fit line goes above the data line
+			greatestBook = Math.clamp(greatestBook, Math.trunc(metrics.getY(highestDate)), allBooks.length);
+			
+
+			//// FINALIZE Y-AXIS BOUNDS ///
+			var s = allBooks[leastBook-1];
+			leastBook = s.sequenceLarge - (s.sequence - 1); // set bottom bound to the start of a sequence
+
+			s = allBooks[greatestBook-1];
+			greatestBook = s.sequenceLarge + (s.sequenceLength - s.sequence) + 1; // set top bound to the start of a sequence
+
+
+			//// IGL LINE: an arbitrary goal line which is fixed for each category ////
+			iglRaw.forEach(function(data) {
+				igl.push({
+					x: parseInt(data.grade.split(/\D+/).join("")) * 12,  // extracts number from grade string and multiplies by 12 to create a month index
+					y: data.sequenceLarge,
+				});
+			});
+			
+
+			//// NOW LINE: a vertical black line to indicate the current date ////
+			var nowIndex = Dates.dateToMonthIndex(Dates.now);
+			if (Math.clamp(nowIndex, lowestDate, highestDate) == nowIndex)
+				now.push({
+					x: nowIndex - 0.001,
+					y: leastBook - 1,
+				}, {
+					x: nowIndex + 0.001,
+					y: greatestBook + 1,
+				});
+
+
+			//// CHART DEFAULTS ////
+			Chart.defaults.global.defaultFontSize = 16;
+			Chart.defaults.global.defaultFontColor = '#000';
+
+			//// CALLBACKS ////
+			let callbacks = {
+				// callback for the x axis: displaying month numbers
+				monthXAxis(label) {
+					var s = xAxisLabels[label - lowestDate];
+					if (s != null && s != undefined)
+						return s.month + 1;
+				},
+				// callback for the x axis: displaying year numbers
+				yearXAxis(label) {
+					var s = xAxisLabels[label - lowestDate];
+					if (s != null && s != undefined) {
+						if(s.month == 6)
+							return s.year;
+						else if (s.month == 0)
+							return "|";
+					}
+				},
+				// callback for the x axis: displaying grade values
+				gradeXAxis(label) {
+					var s = xAxisLabels[label - lowestDate];
+					if (s != null && s != undefined) {
+						if(s.month == 1) {
+							if(s.grade == 0)
+								return "Kindergarten";
+							else if(s.grade == 1)
+								return "1st Grade";
+							else if(s.grade == 2)
+								return "2nd Grade";
+							else if(s.grade == 3)
+								return "3rd Grade";
+							else if(s.grade <= -1)
+								return "Pre-K";
+							else
+								return `${s.grade}th Grade`;
+						} else if (s.month == 7) {
+							return "|";
+						}
+					}
+				},
+				// callback for the y axis: displaying book sequences
+				bookYAxis(label) {
+					var s = allBooks[label-1];
+					if (s != null && s != undefined && s.sequenceLength > 1) { // if the sequence length is 1, there's no good display for the y-axis, so just ignore that sequence
+						if (s.sequence == 1)
+							return "-----";
+						else {
+							var middle = Math.trunc(s.sequenceLength / 2) + 1;
+							if (s.sequence == Math.max(middle, 2)) // max function ensures that the sequence number in the middle is at least 2 (and thus not 1, which would be the edge)
+								return s.sequenceName
+
+							return " ";
+						}
+					}
+				},
+				// callback for the tooltip: displaying book titles
+				titleTooltip(tooltipItem, data) {
+					var s = allBooks[tooltipItem[0].yLabel-1];
+					if (s != null && s != undefined) {
+						if ($scope.selectedCategory == "Comprehension" || $scope.selectedCategory == "Calculation")
+							return `${s.subcategory} - ${s.title}`;
 						else
-							return `${s.grade}th Grade`;
-					} else if (s.month == 7) {
-						return "|";
+							return s.title;
 					}
-				}
-			},
-			// callback for the y axis: displaying book sequences
-			bookYAxis(label) {
-				var s = $scope.allBooks[label-1];
-				if (s != null && s != undefined && s.sequenceLength > 1) { // if the sequence length is 1, there's no good display for the y-axis, so just ignore that sequence
-					if (s.sequence == 1)
-						return "-----";
-					else {
-						var middle = Math.trunc(s.sequenceLength / 2) + 1;
-						if (s.sequence == Math.max(middle, 2)) // max function ensures that the sequence number in the middle is at least 2 (and thus not 1, which would be the edge)
-							return s.sequenceName
+				},
+				// callback for the tooltip: displaying exact dates
+				descTooltip(tooltipItem, data) {
+					var theDate = Dates.indexToDateObject(tooltipItem.xLabel);
+					return `started on ${theDate.month + 1}/${theDate.date}/${theDate.year}`;
+				},
+			}
 
-						return " ";
-					}
-				}
-			},
-			// callback for the tooltip: displaying book titles
-			titleTooltip(tooltipItem, data) {
-				var s = $scope.allBooks[tooltipItem[0].yLabel-1];
-				if (s != null && s != undefined) {
-					if ($scope.selectedCategory == "Comprehension" || $scope.selectedCategory == "Calculation")
-						return `${s.subcategory} - ${s.title}`;
-					else
-						return s.title;
-				}
-			},
-			// callback for the tooltip: displaying exact dates
-			descTooltip(tooltipItem, data) {
-				var theDate = Dates.indexToDateObject(tooltipItem.xLabel);
-				return `started on ${theDate.month + 1}/${theDate.date}/${theDate.year}`;
-			},
-		}
+			//// CHART SPECIFICATIONS ////
+			let chartSpecs = {
+				datasets: [], // datasets defined below
+				tooltipCallbacks: {
+					title: callbacks.titleTooltip,
+					label: callbacks.descTooltip,
+				},
+				xAxes: [
+					{
+						id:"xAxis1",
+						type: 'linear',
+						scaleLabel: {
+							display: false,
+							padding: -5,
+						},
+						ticks: {
+							dislay: false,
+							stepSize: 1,
+							autoSkip: true,
+							min: lowestDate,
+							max: highestDate,
+							maxRotation: 0,
+							callback: callbacks.monthXAxis,
+						},
+					}, {
+						id: "xAxis2",
+						type: 'linear',
+						gridLines: {
+							display: false,
+							drawBorder: true,
+						},
+						scaleLabel: {
+							display: false,
+							padding: 0,
+						},
+						ticks: {
+							stepSize: 1,
+							autoSkip: false,
+							min: lowestDate,
+							max: highestDate,
+							maxRotation: 0,
+							padding: 0,
+							callback: callbacks.yearXAxis,
+						},
 
-		//// CHART SPECIFICATIONS ////
-		let chartSpecs = {
-			datasets: [
+					}, {
+						id: "xAxis3",
+						type: 'linear',
+						gridLines: {
+							display: false,
+							drawBorder: true,
+							drawOnChartArea: false,
+						},
+						scaleLabel: {
+							display: false,
+						},
+						ticks: {
+							stepSize: 1,
+							autoSkip: false,
+							min: lowestDate,
+							max: highestDate,
+							maxRotation: 0,
+							callback: callbacks.gradeXAxis,
+						},
+					},
+				],
+				yAxes: [
+					{
+						id: "yAxis1",
+						type: 'linear',
+						position: 'left',
+						display: true,
+						gridLines: {
+
+						},
+						scaleLabel: {
+							display: true,
+							labelString: $scope.selectedCategory,
+						},
+						ticks: {
+							stepSize: 1,
+							autoSkip: true,
+							autoSkipPadding: 50,
+							min: leastBook,
+							max: greatestBook,
+							lineHeight: 1,
+							callback: callbacks.bookYAxis,
+						}
+					},
+				],
+			}
+
+			//// DATASET SPECS ////
+			var tempDatasets = [
 				{
 					label: $scope.studentName,
-					data: dataPoints,
+					data: data,
 					backgroundColor: "rgba(255, 0, 0, 0.4)",
 					borderColor: "rgba(255, 0, 0, 0.4)",
 					fill: false,
@@ -272,7 +365,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 					hitRadius: 30,
 				}, {
 					label: "Best Fit Line",
-					data: bestFitPoints,
+					data: bestFit,
 					backgroundColor: "rgba(0, 0, 255, 0.4)",
 					borderColor: "rgba(0, 0, 255, 0.4)",
 					fill: false,
@@ -281,7 +374,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 					pointRadius: 0,
 				}, {
 					label: "IGL",
-					data: iglPoints,
+					data: igl,
 					backgroundColor: "rgba(0, 255, 255, 0.4)",
 					borderColor: "rgba(0, 255, 255, 0.4)",
 					fill: false,
@@ -289,142 +382,64 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 					pointRadius: 0,
 				}, {
 					label: "Now",
-					data: nowPoints,
+					data: now,
 					backgroundColor: "rgba(0, 0, 0, 0.2)",
 					borderColor: "rgba(0, 0, 0, 0.2)",
 					fill: false,
 					lineTension: 0,
 					pointRadius: 0,
 				},
-			],
-			tooltipCallbacks: {
-				title: callbacks.titleTooltip,
-				label: callbacks.descTooltip,
-			},
-			xAxes: [
-				{
-					id:"xAxis1",
-					type: 'linear',
-					scaleLabel: {
-						display: false,
-						padding: -5,
-					},
-					ticks: {
-						dislay: false,
-						stepSize: 1,
-						autoSkip: true,
-						min: lowestDate,
-						max: highestDate,
-						maxRotation: 0,
-						callback: callbacks.monthXAxis,
-					},
-				}, {
-					id: "xAxis2",
-					type: 'linear',
-					gridLines: {
-						display: false,
-						drawBorder: true,
-					},
-					scaleLabel: {
-						display: false,
-						padding: 0,
-					},
-					ticks: {
-						stepSize: 1,
-						autoSkip: false,
-						min: lowestDate,
-						max: highestDate,
-						maxRotation: 0,
-						padding: 0,
-						callback: callbacks.yearXAxis,
-					},
+			];
+			// load datasets into the chart if they actually contain data
+			tempDatasets.forEach(function(dataset) {
+				if (dataset.data.length > 0)
+					chartSpecs.datasets.push(dataset);
+			});
 
-				}, {
-					id: "xAxis3",
-					type: 'linear',
-					gridLines: {
-						display: false,
-						drawBorder: true,
-						drawOnChartArea: false,
+
+
+			//// BUILD CHART ////
+			if (regen)
+				exampleChart.destroy();
+			exampleChart = new Chart(myChart, {
+				type: 'line',
+				data: {
+					datasets: chartSpecs.datasets,
+				},
+				options: {
+					responsive: true,
+					title: {
+						display: false
 					},
-					scaleLabel: {
-						display: false,
+					legend: {
+						position: 'top'
 					},
-					ticks: {
-						stepSize: 1,
-						autoSkip: false,
-						min: lowestDate,
-						max: highestDate,
-						maxRotation: 0,
-						callback: callbacks.gradeXAxis,
+					tooltips: {
+						enabled: true,
+						callbacks: chartSpecs.tooltipCallbacks
+					},
+					layout: {
+						padding: {
+							top: 10,
+							bottom: 10
+						}
+					},
+					scales: {
+						xAxes: chartSpecs.xAxes,
+						yAxes: chartSpecs.yAxes
 					},
 				},
-			],
-			yAxes: [
-				{
-					id: "yAxis1",
-					type: 'linear',
-					position: 'left',
-					display: true,
-					gridLines: {
+			});
 
-					},
-					scaleLabel: {
-						display: true,
-						labelString: $scope.selectedCategory,
-					},
-					ticks: {
-						stepSize: 1,
-						autoSkip: true,
-						autoSkipPadding: 50,
-						min: leastBook,
-						max: greatestBook,
-						lineHeight: 1,
-						callback: callbacks.bookYAxis,
-					}
-				},
-			],
+			regen = true;
+			$scope.logoDisplay = true;
+			$scope.expanded = false;
 
+			Verify.remove();
 		}
-
-		//// BUILD CHART ////
-		if (regen)
-			exampleChart.destroy();
-		exampleChart = new Chart(myChart, {
-			type: 'line',
-			data:{
-				datasets: chartSpecs.datasets,
-			},
-			options: {
-				responsive: true,
-				title: {
-					display: false
-				},
-				legend: {
-					position: 'top'
-				},
-				tooltips: {
-					enabled: true,
-					callbacks: chartSpecs.tooltipCallbacks
-				},
-				layout: {
-					padding: {
-						top: 10,
-						bottom: 10
-					}
-				},
-				scales: {
-					xAxes: chartSpecs.xAxes,
-					yAxes: chartSpecs.yAxes
-				},
-			},
-		});
-
-		regen = true;
-		$scope.logoDisplay = true;
-		$scope.expanded = false;
-
-		Verify.remove();
+		catch(err) {
+			Verify.error(err);
+		}
 	}
 
 
@@ -434,7 +449,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 		if (!Verify.check())
 			return;
 
-		// try-catch block ensures that any major errors that may arise from the complex and probably buggy logic of the gen() function gets written out in html
+		// try-catch block ensures that any errors that arise outside of the gen() method (perhaps in java or something) get caught and properly written out in html
 		try {
 			if ($scope.months2 == 0 && Number.isInteger($scope.monthsF))
 				$scope.until = -Math.max($scope.monthsF, 0)

@@ -15,6 +15,13 @@ gideonApp.controller('listCtrl', function($scope, $http, $window) {
 		switch: false,
 	};
 
+	//Preload $scope.students with an initial "loading" value and the toggle button text with its initial state
+	$scope.students = [{
+		client: "Loading",
+		email: "",
+	}];
+	$scope.toggleButtonText = dataOn[dataOn.switch][1];
+
 	$scope.getStudents = function() {
 		$http.get(`${URL}${dataOn[dataOn.switch][0]}`)
 		.then(function(response) {
@@ -30,11 +37,11 @@ gideonApp.controller('listCtrl', function($scope, $http, $window) {
 	}
 	
 
-	$scope.manageExpansion = function(student) {
-		if ($scope.expandedStudent == student)
-			$scope.expandedStudent = null;
+	$scope.manageExpansion = function(studentId) {
+		if ($scope.expandedStudentId == studentId)
+			$scope.expandedStudentId = -1;
 		else
-			$scope.expandedStudent = student;
+			$scope.expandedStudentId = studentId;
 	}
 
 	//Function for selecting a student and going to another page

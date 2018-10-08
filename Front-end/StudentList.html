@@ -69,13 +69,18 @@
 			</div>
 			<!--Main content of table-->
 			<div id="tableContent" ng-repeat="student in students | filter: {client: clientFilter, email: emailFilter}">	
-				<div class="columnContainer" id="tableContainer" ng-click="manageExpansion(student)">
+				<!--Meant to display the "Loading" block while the html properly updates-->
+				<div class="columnContainer" id="tableContainer" ng-show="student.client=='Loading'">
+					<div class="column" style="width:100%">{{student.client}}</div>
+				</div>
+				<!--Primary information for a student in the list, done in columns-->
+				<div class="columnContainer" id="tableContainer" ng-hide="student.client=='Loading'" ng-click="manageExpansion(student.studentId)">
 					<div class="column" style="width:30%">{{student.client}}&nbsp;</div>
 					<div class="column" style="width:57.5%">{{student.email}}&nbsp;</div>
 					<div class="column" style="width:12.5%">{{student.grade.split(" ")[0]}}&nbsp;</div>
 				</div>
 				<!--Additional information and buttons hidden in an accordion-->
-				<div id="expandableContainer" ng-class="{'collapsedContent':student!=expandedStudent, 'expandedContent':student==expandedStudent}">
+				<div id="expandableContainer" ng-class="{'collapsedContent':student.studentId!=expandedStudentId, 'expandedContent':student.studentId==expandedStudentId}">
 					Gender: {{student.gender}}<br>
 					Address: {{student.address}}<br>
 					Phone: {{student.phone}}<br>

@@ -14,10 +14,6 @@ gideonApp.controller('updateRecordCtrl', function($scope, $http, $window){
 	Verify.setScope($scope);
 
 
-	//Preload selections with disabled "Loading" options
-	$scope.names = ["Loading#"];
-	$scope.displayRecords = [{display: "Loading", disabled: true}];
-
 	//Returns all student names for easy selection
 	$http.get(`${URL}students`)
 	.then(function(response) {
