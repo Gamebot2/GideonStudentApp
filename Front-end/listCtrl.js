@@ -20,20 +20,21 @@ gideonApp.controller('listCtrl', function($scope, $http, $window) {
 		client: "Loading",
 		email: "",
 	}];
+	$scope.expandedStudentId = -1;
 	$scope.toggleButtonText = dataOn[dataOn.switch][1];
 
-	$scope.getStudents = function() {
+	var getStudents = function() {
 		$http.get(`${URL}${dataOn[dataOn.switch][0]}`)
 		.then(function(response) {
 			$scope.students = response.data;
 		});
 		$scope.toggleButtonText = dataOn[dataOn.switch][1];
 	}
-	$scope.getStudents();
+	getStudents();
 
 	$scope.toggleData = function() {
 		dataOn.switch = !dataOn.switch;
-		$scope.getStudents();
+		getStudents();
 	}
 	
 

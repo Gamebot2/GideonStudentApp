@@ -37,13 +37,11 @@ var Verify = {
 		this.scope = $scope;
 
 		this.check = function() {
-			if (this.scope.form.$invalid) {
+			if (this.scope.form.$invalid)
 				this.scope.formStatus = this.genericInvalid;
-				return false;
-			} else {
+			else
 				this.scope.formStatus = this.genericProcessing;
-				return true;
-			}
+			return !this.scope.form.$invalid;
 		}
 
 		this.error = function(err) {
@@ -52,12 +50,11 @@ var Verify = {
 		}
 
 		this.errorIf = function(condition, customText) {
-			if (condition) {
+			if (condition)
 				this.scope.formStatus = {
 					id: 0,
 					text: `Error: ${customText}`,
 				}
-			}
 			return condition;
 		}
 
@@ -69,17 +66,16 @@ var Verify = {
 		}
 
 		this.successIf = function(condition, customText) {
-			if (condition) {
+			if (condition)
 				this.scope.formStatus = {
 					id: 1,
 					text: customText,
 				}
-			} else {
+			else
 				this.scope.formStatus = {
 					id: 0,
 					text: "Error"
 				}
-			}
 			return condition;
 		}
 

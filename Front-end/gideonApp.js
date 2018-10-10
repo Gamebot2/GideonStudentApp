@@ -7,6 +7,6 @@
  */
 
 
-var gideonApp = angular.module('gideonApp', ['ngAnimate']);
+var gideonApp = angular.module('gideonApp', ['ngMaterial']);
 
 const URL = "http://localhost:8081/";

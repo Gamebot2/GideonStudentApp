@@ -24,9 +24,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 
 	// Pre-generation chart management
 	var allBooks = [];
-	var regen = false;
 	$scope.expanded = true;
-	$scope.logoDisplay = false;
 
 	var exampleChart;
 	let myChart = document.getElementById('lineChart').getContext('2d');
@@ -70,19 +68,20 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 	}
 
 
+	//// CHART DEFAULTS ////
+	Chart.defaults.global.defaultFontSize = 16;
+	Chart.defaults.global.defaultFontColor = '#000';
 
 
 	//// GIANT CHART GENERATION METHOD ////
-	// "response" is intended to be a list of records drawn from an http call
-	let gen = function(response) {
+	// "records" is intended to be a list of records drawn from an http call (response.data)
+	let gen = function(records) {
 		// try-catch block ensures that any major errors that may arise from the complex and probably buggy logic of the function gets properly written out in html
 		try {
-			var records = response.data;
-				
-			var lowestDate   = Dates.monthsAgoToMonthIndex($scope.months), // x-axis bounds
+			var lowestDate   = Dates.monthsAgoToMonthIndex($scope.months), 	// x-axis bounds
 				highestDate  = Dates.monthsAgoToMonthIndex($scope.until),
-			    greatestBook = 0, // y-axis bounds
-				leastBook    = 999;
+			    greatestBook = 0, 											// y-axis bounds
+				leastBook    = allBooks.length - 1;
 			
 			var xAxisLabels = []; // main container of x axis labels, labels are objects containing properties "month", "year", and "grade" (also date, but that's irrelevant here)
 
@@ -92,26 +91,15 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 				now     = [];		// now line: a vertical line that displays the current date for graphs that go past the current date
 
 			//// DATA POINTS: Creates a point mapping each record to its respective spot on the x and y axis ////
-			var a = 0; // Helps display error message if there is no data. This value will increase for every record strictly in the time range
-			records.forEach(function(record) {
-				if(record.startDate != null) {
-					var currPoint = {
-						x: Dates.dateToMonthIndex(Dates.stringToDateObject(record.startDate)),
-						y: record.sequenceLarge,
-					};
+			records.forEach(record => {
+				data.push({
+					x: Dates.dateToMonthIndex(Dates.stringToDateObject(record.startDate)),
+					y: record.sequenceLarge,
+				});
 
-					if (currPoint.x >= lowestDate && currPoint.x <= highestDate)
-						a++;
-
-					data.push(currPoint);
-
-					greatestBook = Math.max(record.sequenceLarge, greatestBook); // adjust y-axis bounds
-					leastBook = Math.min(record.sequenceLarge, leastBook);
-				}
+				greatestBook = Math.max(record.sequenceLarge, greatestBook); // adjust y-axis bounds
+				leastBook = Math.min(record.sequenceLarge, leastBook);
 			});
-			// no data check
-			if (Verify.errorIf(a == 0, "No data"))
-				return;
 
 			//// Maps the internal linear scale of the x axis (lowestDate, ... highestDate) with labels containing dates and grades ////
 			for(j = lowestDate; j < highestDate; j++) {
@@ -123,38 +111,36 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 
 
 			//// BEST FIT LINE: least squares method ////
-			var metrics = {
-				init() {
-					this.xmean = data.map(p => p.x).reduce((a, b) => a + b) / data.length; // average x
-					this.ymean = data.map(p => p.y).reduce((a, b) => a + b) / data.length; // average y
+			if (data.length > 1) {
+				var metrics = {
+					init() {
+						this.xmean = data.map(p => p.x).reduce((a, b) => a + b) / data.length; // average x
+						this.ymean = data.map(p => p.y).reduce((a, b) => a + b) / data.length; // average y
 
-					this.getDiff = p => (p.x - this.xmean) * (p.y - this.ymean);      // numerator of formula, per term
-					this.getSquares = p => (p.x - this.xmean) * (p.x - this.xmean);   // denominator of formula, per term
+						this.getDiff    = p => (p.x - this.xmean) * (p.y - this.ymean);   // numerator of formula, per term
+						this.getSquares = p => (p.x - this.xmean) * (p.x - this.xmean);   // denominator of formula, per term
 
-					this.diffSum    = data.map(p => this.getDiff(p)).reduce((a, b) => a + b);            // numerator of formula, summation
-					this.squaresSum = data.map(p => this.getSquares(p)).reduce((a, b) => a + b);      // denominator of formula, summation
+						this.diffSum    = data.map(p => this.getDiff(p)).reduce((a, b) => a + b);         // numerator of formula, summation
+						this.squaresSum = data.map(p => this.getSquares(p)).reduce((a, b) => a + b);      // denominator of formula, summation
 
-					this.slope = this.diffSum / this.squaresSum;					// complete formula
-					if (Number.isNaN(this.slope))								// undefined check: happens when squaresSum is 0
-						this.slope = 0;
+						this.slope = this.diffSum / this.squaresSum || 0;			// complete formula (with NaN check)
 
-					this.getY = x => this.slope * (x - this.xmean) + this.ymean;	// point-slope form linear equation
-					this.getPoint = function(x) {
-						var y = this.getY(x);
-						return {x: x, y: y};
+						this.getY = x => this.slope * (x - this.xmean) + this.ymean;	// point-slope form linear equation
+						this.getPoint = x => {
+							return {x: x, y: this.getY(x)};
+						}
+
+						delete this.init; // remove this function from the object, to avoid clutter
+						return this;
 					}
+				}.init();
 
-					delete this.init; // remove this function from the object, to avoid clutter
-					return this;
-				}
-			}.init();
+				// add two points beyond the edges of the graph
+				bestFit.push(metrics.getPoint(lowestDate - 1), metrics.getPoint(highestDate + 1));
 
-			// add two points beyond the edges of the graph
-			bestFit.push(metrics.getPoint(lowestDate - 1), metrics.getPoint(highestDate + 1));
-
-			// move greatestBook upward (if possible) if the best fit line goes above the data line
-			greatestBook = Math.clamp(greatestBook, Math.trunc(metrics.getY(highestDate)), allBooks.length);
-			
+				// move greatestBook upward (if possible) if the best fit line goes above the data line
+				greatestBook = Math.clamp(greatestBook, Math.trunc(metrics.getY(highestDate)), allBooks.length);
+			}
 
 			//// FINALIZE Y-AXIS BOUNDS ///
 			var s = allBooks[leastBook-1];
@@ -165,11 +151,11 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 
 
 			//// IGL LINE: an arbitrary goal line which is fixed for each category ////
-			iglRaw.forEach(function(data) {
-				igl.push({
+			igl = iglRaw.map(data => {
+				return {
 					x: parseInt(data.grade.split(/\D+/).join("")) * 12,  // extracts number from grade string and multiplies by 12 to create a month index
 					y: data.sequenceLarge,
-				});
+				}
 			});
 			
 
@@ -185,22 +171,19 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 				});
 
 
-			//// CHART DEFAULTS ////
-			Chart.defaults.global.defaultFontSize = 16;
-			Chart.defaults.global.defaultFontColor = '#000';
 
 			//// CALLBACKS ////
 			let callbacks = {
 				// callback for the x axis: displaying month numbers
 				monthXAxis(label) {
 					var s = xAxisLabels[label - lowestDate];
-					if (s != null && s != undefined)
+					if (s)
 						return s.month + 1;
 				},
 				// callback for the x axis: displaying year numbers
 				yearXAxis(label) {
 					var s = xAxisLabels[label - lowestDate];
-					if (s != null && s != undefined) {
+					if (s) {
 						if(s.month == 6)
 							return s.year;
 						else if (s.month == 0)
@@ -210,7 +193,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 				// callback for the x axis: displaying grade values
 				gradeXAxis(label) {
 					var s = xAxisLabels[label - lowestDate];
-					if (s != null && s != undefined) {
+					if (s) {
 						if(s.month == 1) {
 							if(s.grade == 0)
 								return "Kindergarten";
@@ -232,7 +215,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 				// callback for the y axis: displaying book sequences
 				bookYAxis(label) {
 					var s = allBooks[label-1];
-					if (s != null && s != undefined && s.sequenceLength > 1) { // if the sequence length is 1, there's no good display for the y-axis, so just ignore that sequence
+					if (s && s.sequenceLength > 1) { // if the sequence length is 1, there's no good display for the y-axis, so just ignore that sequence
 						if (s.sequence == 1)
 							return "-----";
 						else {
@@ -247,7 +230,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 				// callback for the tooltip: displaying book titles
 				titleTooltip(tooltipItem, data) {
 					var s = allBooks[tooltipItem[0].yLabel-1];
-					if (s != null && s != undefined) {
+					if (s) {
 						if ($scope.selectedCategory == "Comprehension" || $scope.selectedCategory == "Calculation")
 							return `${s.subcategory} - ${s.title}`;
 						else
@@ -333,9 +316,6 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 						type: 'linear',
 						position: 'left',
 						display: true,
-						gridLines: {
-
-						},
 						scaleLabel: {
 							display: true,
 							labelString: $scope.selectedCategory,
@@ -348,7 +328,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 							max: greatestBook,
 							lineHeight: 1,
 							callback: callbacks.bookYAxis,
-						}
+						},
 					},
 				],
 			}
@@ -391,15 +371,11 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 				},
 			];
 			// load datasets into the chart if they actually contain data
-			tempDatasets.forEach(function(dataset) {
-				if (dataset.data.length > 0)
-					chartSpecs.datasets.push(dataset);
-			});
-
+			chartSpecs.datasets = tempDatasets.filter(d => d.data.length > 0);
 
 
 			//// BUILD CHART ////
-			if (regen)
+			if (exampleChart)
 				exampleChart.destroy();
 			exampleChart = new Chart(myChart, {
 				type: 'line',
@@ -409,29 +385,28 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 				options: {
 					responsive: true,
 					title: {
-						display: false
+						display: false,
 					},
 					legend: {
-						position: 'top'
+						position: 'top',
 					},
 					tooltips: {
 						enabled: true,
-						callbacks: chartSpecs.tooltipCallbacks
+						callbacks: chartSpecs.tooltipCallbacks,
 					},
 					layout: {
 						padding: {
 							top: 10,
-							bottom: 10
+							bottom: 10,
 						}
 					},
 					scales: {
 						xAxes: chartSpecs.xAxes,
-						yAxes: chartSpecs.yAxes
+						yAxes: chartSpecs.yAxes,
 					},
 				},
 			});
 
-			regen = true;
 			$scope.logoDisplay = true;
 			$scope.expanded = false;
 
@@ -457,7 +432,12 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 				$scope.until = $scope.months2;
 
 			$http.get(`${URL}recordsForChart?StudentId=${$scope.studentId}&Category=${$scope.selectedCategory}&Months=${$scope.months}&Until=${$scope.until}&Reps=${$scope.selectedRep}`)
-			.then(gen)
+			.then(function(response) {
+				var records = response.data.filter(r => r.startDate != null);
+				if (Verify.errorIf(records.length == 0, "No data")) // no plottable data check
+					return;
+				gen(records);
+			})
 			.catch(Verify.error);
 		}
 		catch (err) {

@@ -23,7 +23,7 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 	// Returns a list of all students for easy name selection	
 	$http.get(`${URL}students`)
 	.then(function(response) {
-		$scope.names = response.data.map(function(student) { 
+		$scope.names = response.data.map(student => { 
 			return {
 				name: student.client, // names contain ids to make sure every name is distinct - the name will be displayed but the id will be used
 				id: student.studentId,
@@ -41,7 +41,6 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 		$http.get(`${URL}subcategories?Category=${$scope.record.category}`)
 		.then(function(response) {
 			$scope.subcategories = response.data;
-			console.log($scope.subcategories);
 		});
 	}
 

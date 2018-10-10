@@ -29,8 +29,11 @@ body {
 	cursor: pointer;
 	animation-duration: 0s;
 }
-#tableContainer:hover{
+#tableContainer:hover {
 	background-color: #FFA500;
+}
+#tableContainer:focus {
+	outline: none;
 }
 
 .expandedContent {

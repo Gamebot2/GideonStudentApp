@@ -26,25 +26,17 @@ gideonApp.controller('updateRecordCtrl', function($scope, $http, $window){
 		$scope.records = response.data;
 		var displayRecords = [];
 
-		$scope.records.forEach(function(record) {
+		$scope.displayRecords = $scope.records.map(record => {
 			var splitDate = record.startDate.split('-').map(d => parseInt(d));
-
 			var year = splitDate[0], month = splitDate[1], day = splitDate[2];
 
-			var startDate = new Date(year, month-1, day).toISOString();		// the date representation that the application uses
-			var formattedDate = `${month}/${day}/${year}`;					// the date representation that is readable for humans
-
-			var displayRecord = `${record.name} started book ${record.bookTitle} on ${formattedDate} | RecordId: ${record.recordId}`;
-
-			displayRecords.push({
+			return { // "display" for the shown selections, everything else is actual data
 				name: record.name,
 				id: record.recordId,
-				date: startDate,
-				display: displayRecord, // "display" for the shown selections, everything else is actual data
-			}); 
+				date: new Date(year, month-1, day).toISOString(),
+				display: `${record.name} started book ${record.bookTitle} on ${month}/${day}/${year} | RecordId: ${record.recordId}`,
+			};
 		});
-
-		$scope.displayRecords = displayRecords;
 	});
 
 	// Form submission

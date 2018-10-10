@@ -75,3 +75,7 @@ canvas {
 #logoTint:hover {
 	background: rgba(0, 0, 0, 0.1);
 }
+
+#logoContainer:focus {
+	outline: none;
+}
