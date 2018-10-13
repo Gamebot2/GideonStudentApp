@@ -22,7 +22,7 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 
 	// Returns a list of all students for easy name selection	
 	$http.get(`${URL}students`)
-	.then(function(response) {
+	.then(response => {
 		$scope.names = response.data.map(student => { 
 			return {
 				name: student.client, // names contain ids to make sure every name is distinct - the name will be displayed but the id will be used
@@ -32,14 +32,14 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 	});
 
 	$http.get(`${URL}categories`)
-	.then(function(response) {
+	.then(response => {
 		$scope.categories = response.data;
 	});
 
 	//Returns a list of subcategories based on the selected category
 	$scope.getSubcategories = function() {
 		$http.get(`${URL}subcategories?Category=${$scope.record.category}`)
-		.then(function(response) {
+		.then(response => {
 			$scope.subcategories = response.data;
 		});
 	}
@@ -47,7 +47,7 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 	//Returns a list of titles based on the selected subCategory
 	$scope.getTitles = function() {
 		$http.get(`${URL}titles?Subcategory=${$scope.record.subcategory}`)
-		.then(function(response) {
+		.then(response => {
 			$scope.titles = response.data;
 		});
 	}
@@ -73,7 +73,7 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 				},
 				data: JSON.stringify($scope.record),
 			})
-			.then(function(response) {
+			.then(response => {
 				Verify.successIf(response.data == 0, `Successfully added record for ${$scope.client.name}`);
 			})
 			.catch(Verify.error);

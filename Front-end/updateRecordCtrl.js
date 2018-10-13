@@ -16,17 +16,14 @@ gideonApp.controller('updateRecordCtrl', function($scope, $http, $window){
 
 	//Returns all student names for easy selection
 	$http.get(`${URL}students`)
-	.then(function(response) {
+	.then(response => {
 		$scope.names = response.data.map(student => student.client);
 	});
 
 	//Retrieves incomplete records for instructors to choose from
 	$http.get(`${URL}incompleteRecords`)
-	.then(function(response) {
-		$scope.records = response.data;
-		var displayRecords = [];
-
-		$scope.displayRecords = $scope.records.map(record => {
+	.then(response => {
+		$scope.displayRecords = response.data.map(record => {
 			var splitDate = record.startDate.split('-').map(d => parseInt(d));
 			var year = splitDate[0], month = splitDate[1], day = splitDate[2];
 
@@ -46,7 +43,7 @@ gideonApp.controller('updateRecordCtrl', function($scope, $http, $window){
 
 		// Updates an incomplete record based on instructor data
 		$http.get(`${URL}updateRecord?RecordId=${$scope.selectedRecord.id}&EndDate=${$scope.endDate}&TestTime=${$scope.testTime}&Mistakes=${$scope.mistakes}`)
-		.then(function(response) {
+		.then(response => {
 			Verify.successIf(response.data == 0, `Successfully updated record for ${$scope.selectedRecord.name}`);
 		})
 		.catch(Verify.error);

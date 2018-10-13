@@ -39,7 +39,7 @@ var Dates = {
 
 	// function that returns a date object a certain number of months prior to another one of those objects (note: object loses floating point day)
 	dateSubtract(originalDate, subtraction) {
-		return this.dateAdd(originalDate, -1 * subtraction);
+		return this.dateAdd(originalDate, -subtraction);
 	},
 
 	// function that returns the month difference between two date objects

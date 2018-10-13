@@ -16,7 +16,7 @@ gideonApp.controller('editStudentCtrl', function($scope, $http, $window) {
 
 	// Gather all information about the student
 	$http.get(`${URL}student?Id=${$window.localStorage.getItem(0)}`) // getItem(0) should return the student's id
-	.then(function(response) {
+	.then(response => {
 		$scope.student = response.data;
 	});
 
@@ -36,7 +36,7 @@ gideonApp.controller('editStudentCtrl', function($scope, $http, $window) {
 				},
 				data: JSON.stringify($scope.student),
 			})
-			.then(function(response) {
+			.then(response => {
 				if (Verify.successIf(response.data == 0, ""))
 					window.location.href = "StudentList.html"; // return back to the list if the update was successful
 			})

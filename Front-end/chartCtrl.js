@@ -144,16 +144,16 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 
 			//// FINALIZE Y-AXIS BOUNDS ///
 			var s = allBooks[leastBook-1];
-			leastBook = s.sequenceLarge - (s.sequence - 1); // set bottom bound to the start of a sequence
+			leastBook = s.sequenceLarge - s.sequence + 1; // set bottom bound to the start of the lowest sequence
 
 			s = allBooks[greatestBook-1];
-			greatestBook = s.sequenceLarge + (s.sequenceLength - s.sequence) + 1; // set top bound to the start of a sequence
+			greatestBook = s.sequenceLarge - s.sequence + 1 + s.sequenceLength; // set top bound to the start of the next sequence
 
 
 			//// IGL LINE: an arbitrary goal line which is fixed for each category ////
 			igl = iglRaw.map(data => {
 				return {
-					x: parseInt(data.grade.split(/\D+/).join("")) * 12,  // extracts number from grade string and multiplies by 12 to create a month index
+					x: parseInt(data.grade.replace(/\D+/g,"")) * 12,  // extracts number from grade string and multiplies by 12 to create a month index
 					y: data.sequenceLarge,
 				}
 			});
@@ -223,7 +223,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 							if (s.sequence == Math.max(middle, 2)) // max function ensures that the sequence number in the middle is at least 2 (and thus not 1, which would be the edge)
 								return s.sequenceName
 
-							return " ";
+							return " "; // space is returned for everything else to spawn grid lines
 						}
 					}
 				},
@@ -246,7 +246,42 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 
 			//// CHART SPECIFICATIONS ////
 			let chartSpecs = {
-				datasets: [], // datasets defined below
+				datasets: [
+						{
+							label: $scope.studentName,
+							data: data,
+							backgroundColor: "rgba(255, 0, 0, 0.4)",
+							borderColor: "rgba(255, 0, 0, 0.4)",
+							fill: false,
+							cubicInterpolationMode: 'monotone',
+							hitRadius: 30,
+						}, {
+							label: "Best Fit Line",
+							data: bestFit,
+							backgroundColor: "rgba(0, 0, 255, 0.4)",
+							borderColor: "rgba(0, 0, 255, 0.4)",
+							fill: false,
+							borderDash: [5],
+							lineTension: 0,
+							pointRadius: 0,
+						}, {
+							label: "IGL",
+							data: igl,
+							backgroundColor: "rgba(0, 255, 255, 0.4)",
+							borderColor: "rgba(0, 255, 255, 0.4)",
+							fill: false,
+							cubicInterpolationMode: 'monotone',
+							pointRadius: 0,
+						}, {
+							label: "Now",
+							data: now,
+							backgroundColor: "rgba(0, 0, 0, 0.2)",
+							borderColor: "rgba(0, 0, 0, 0.2)",
+							fill: false,
+							lineTension: 0,
+							pointRadius: 0,
+						},
+					].filter(d => d.data.length > 0),	// load datasets into the chart if they actually contain data
 				tooltipCallbacks: {
 					title: callbacks.titleTooltip,
 					label: callbacks.descTooltip,
@@ -333,46 +368,6 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 				],
 			}
 
-			//// DATASET SPECS ////
-			var tempDatasets = [
-				{
-					label: $scope.studentName,
-					data: data,
-					backgroundColor: "rgba(255, 0, 0, 0.4)",
-					borderColor: "rgba(255, 0, 0, 0.4)",
-					fill: false,
-					cubicInterpolationMode: 'monotone',
-					hitRadius: 30,
-				}, {
-					label: "Best Fit Line",
-					data: bestFit,
-					backgroundColor: "rgba(0, 0, 255, 0.4)",
-					borderColor: "rgba(0, 0, 255, 0.4)",
-					fill: false,
-					borderDash: [5],
-					lineTension: 0,
-					pointRadius: 0,
-				}, {
-					label: "IGL",
-					data: igl,
-					backgroundColor: "rgba(0, 255, 255, 0.4)",
-					borderColor: "rgba(0, 255, 255, 0.4)",
-					fill: false,
-					cubicInterpolationMode: 'monotone',
-					pointRadius: 0,
-				}, {
-					label: "Now",
-					data: now,
-					backgroundColor: "rgba(0, 0, 0, 0.2)",
-					borderColor: "rgba(0, 0, 0, 0.2)",
-					fill: false,
-					lineTension: 0,
-					pointRadius: 0,
-				},
-			];
-			// load datasets into the chart if they actually contain data
-			chartSpecs.datasets = tempDatasets.filter(d => d.data.length > 0);
-
 
 			//// BUILD CHART ////
 			if (exampleChart)
@@ -432,7 +427,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 				$scope.until = $scope.months2;
 
 			$http.get(`${URL}recordsForChart?StudentId=${$scope.studentId}&Category=${$scope.selectedCategory}&Months=${$scope.months}&Until=${$scope.until}&Reps=${$scope.selectedRep}`)
-			.then(function(response) {
+			.then(response => {
 				var records = response.data.filter(r => r.startDate != null);
 				if (Verify.errorIf(records.length == 0, "No data")) // no plottable data check
 					return;

@@ -25,7 +25,7 @@ gideonApp.controller('listCtrl', function($scope, $http, $window) {
 
 	var getStudents = function() {
 		$http.get(`${URL}${dataOn[dataOn.switch][0]}`)
-		.then(function(response) {
+		.then(response => {
 			$scope.students = response.data;
 		});
 		$scope.toggleButtonText = dataOn[dataOn.switch][1];
