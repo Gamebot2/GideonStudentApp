@@ -1,5 +1,7 @@
 package com.ansh.maven.HelloWorld;
 
+import java.util.*;
+
 public class Student {
 	
 	private int StudentId;
@@ -15,13 +17,14 @@ public class Student {
 	private String Grade;
 	private String Gender;
 	private int ClientId;
+	private Date LastUsed;
 	
 	public Student() {
 		super();
 	}
 
 	public Student(int studentId, String client, String email, String phone, String address, String currentPasses, String primaryStaffMember,
-			String firstName, String middleName, String lastName, String grade, String gender, int clientId) {
+			String firstName, String middleName, String lastName, String grade, String gender, int clientId, Date lastUsed) {
 		super();
 		StudentId = studentId;
 		Client = client;
@@ -36,6 +39,7 @@ public class Student {
 		Grade = grade;
 		Gender = gender;
 		ClientId = clientId;
+		LastUsed = lastUsed;
 	}
 
 	public int getStudentId() {
@@ -140,6 +144,14 @@ public class Student {
 
 	public void setClientId(int clientId) {
 		ClientId = clientId;
+	}
+	
+	public Date getLastUsed() {
+		return LastUsed;
+	}
+
+	public void setLastUsed(Date lastUsed) {
+		LastUsed = lastUsed;
 	}
 
 	@Override

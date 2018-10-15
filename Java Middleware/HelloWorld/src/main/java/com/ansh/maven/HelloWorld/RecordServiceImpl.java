@@ -14,6 +14,9 @@ public class RecordServiceImpl implements RecordService{
 	@Autowired
 	BookDao bookDao;
 	
+	@Autowired
+	StudentDao studentDao;
+	
 	//Returns all records
 	@Override
 	public List<Record> getAllRecords() {
@@ -23,6 +26,7 @@ public class RecordServiceImpl implements RecordService{
 	// Returns records for a student within a certain range, plus or minus one record, with a specific category and rep count
 	@Override
 	public List<Record> getRecordsForChart(int StudentId, String category, int months, int until, String whichReps) {
+		studentDao.updateLastUsed(StudentId, false);
 		return recordDao.getRecordsForChart(StudentId, category, months, until, whichReps);
 	}
 	
@@ -40,15 +44,15 @@ public class RecordServiceImpl implements RecordService{
 
 	// Adds a record to the database
 	@Override
-	public int addRecord(int id, String category, String subcategory, String title, Date startDate, int rep) {
+	public int addRecord(int studentId, String category, String subcategory, String title, Date startDate, int rep) {
 		Book book = bookDao.getBookByName(category, subcategory, title);
-		return recordDao.addRecord(id, book, startDate, rep);
+		return recordDao.addRecord(studentId, book, startDate, rep) + studentDao.updateLastUsed(studentId, false);
 	}
 
 	// Updates a record in the database with an end date
 	@Override
 	public int updateRecord(int recordId, Date endDate, int testTime, int minutes) {
-		return recordDao.updateRecord(recordId, endDate, testTime, minutes);
+		return recordDao.updateRecord(recordId, endDate, testTime, minutes) + studentDao.updateLastUsed(recordId, true);
 	}
 	
 	

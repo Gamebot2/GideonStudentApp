@@ -22,10 +22,26 @@ SELECT * FROM students;
 SELECT * FROM internationaldata;
 
 -- put whatever here
-SELECT * FROM internationaldata i JOIN books b ON b.BookId = i.BookId ORDER BY i.Category, i.Month;
-INSERT INTO internationaldata (Category, Month, BookId) VALUES ("Comprehension", 8*12, 423);
+ALTER TABLE students MODIFY COLUMN LastUsed DATETIME DEFAULT '2000-01-01';
+UPDATE students s
+SET LastUsed = CASE
+	WHEN (
+		SELECT r.StartDate
+		FROM records r
+		WHERE r.StudentId = s.StudentId
+		ORDER BY r.StartDate DESC
+		LIMIT 1
+	) IS NULL THEN '2000-01-01'
+    ELSE (
+		SELECT r.StartDate
+		FROM records r
+		WHERE r.StudentId = s.StudentId
+		ORDER BY r.StartDate DESC
+		LIMIT 1
+	) END
+WHERE StudentId >= 0;
 
-SELECT DISTINCT Subcategory FROM books WHERE Category = "Comprehension";
+SELECT Grade FROM students WHERE StudentId = 3 LIMIT 1;
 
 
 
@@ -35,7 +51,7 @@ SELECT DISTINCT Subcategory FROM books WHERE Category = "Comprehension";
 
 
 -- delete a student while maintaining referential integrity in records
-DELETE FROM records WHERE RecordId > 0 AND StudentID IN (SELECT StudentId FROM students WHERE StudentId = 69);
+DELETE FROM records WHERE RecordId > 0 AND StudentId = 69;
 DELETE FROM students WHERE StudentId = 69;
 
 -- selecting records with way more detail (customize the WHERE clause to filter)

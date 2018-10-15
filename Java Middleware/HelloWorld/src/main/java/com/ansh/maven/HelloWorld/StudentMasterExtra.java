@@ -15,10 +15,10 @@ public class StudentMasterExtra extends StudentMaster {
 	public StudentMasterExtra(int id, String client, String email, String phone, String address, String grade, String gender, String currentPasses) {
 		super(client, grade, gender);
 		this.studentId = id;
-		this.email = email;
-		this.phone = phone;
-		this.address = address;
-		this.currentPasses = currentPasses;
+		this.email = email != null ? email : "";
+		this.phone = phone != null ? phone : "";
+		this.address = address != null ? address : "";
+		this.currentPasses = currentPasses != null ? currentPasses : "";
 	}
 
 	public int getStudentId() {

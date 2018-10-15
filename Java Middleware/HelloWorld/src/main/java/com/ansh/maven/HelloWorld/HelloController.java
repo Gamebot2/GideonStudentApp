@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
 	
-	public final String webOrigin = "http://localhost:8082";
+	public final String webOrigin = "http://localhost:8081";
 	
 	@Autowired
 	BookService bookService;

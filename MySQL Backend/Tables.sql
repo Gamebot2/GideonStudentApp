@@ -64,6 +64,7 @@ CREATE TABLE `students` (
 	`Grade` VARCHAR(12) DEFAULT NULL,
 	`Gender` VARCHAR(12) DEFAULT NULL,
 	`ClientId` INT(11) NOT NULL DEFAULT 0,
+	`LastUsed` DATETIME NOT NULL DEFAULT '0000-00-00',
 	PRIMARY KEY (`StudentId`),
 	KEY `Tenure_index` (`Tenure`),
 	KEY `ClientId_index` (`ClientId`)

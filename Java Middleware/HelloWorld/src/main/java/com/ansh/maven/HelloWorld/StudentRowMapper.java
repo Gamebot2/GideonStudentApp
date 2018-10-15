@@ -9,7 +9,6 @@ public class StudentRowMapper implements RowMapper<Student>{
 
 	@Override
 	public Student mapRow(ResultSet row, int rowNum) throws SQLException {
-		// TODO Auto-generated method stub
 		Student student = new Student();
 		student.setClient(row.getString("Client"));
 		student.setClientId(row.getInt("ClientId"));
@@ -24,6 +23,7 @@ public class StudentRowMapper implements RowMapper<Student>{
 		student.setMiddleName(row.getString("MiddleName"));
 		student.setPrimaryStaffMember(row.getString("PrimaryStaffMember"));
 		student.setStudentId(row.getInt("StudentId"));
+		student.setLastUsed(row.getDate("LastUsed"));
 		return student;
 	}
 
