@@ -17,7 +17,7 @@ public class StudentDaoImpl implements StudentDao {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	// Returns all students in the database
 	@Override
