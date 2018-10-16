@@ -16,7 +16,7 @@ Math.modN = (x, n) => (x % n + n) % n;
 Math.truncN = (x) => Number.isInteger(x) ? x : Math.trunc(x) - (x < 0 ? 1 : 0);
 
 
-gideonApp.controller('chartCtrl', function($scope, $http, $window) {
+gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 
 	// Fetch relevant information from the window
 	$scope.studentId = $window.localStorage.getItem(0);
@@ -34,13 +34,13 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 
 	//Retrieves the student's grade level and does time calculations
 	$http.get(`${URL}gradeOfStudent?Id=${$scope.studentId}`)
-	.then(function(response) {
+	.then(response => {
 		Dates.setZeroDate(response.data); // we only need the student's current grade to make this one calculation, so it is never stored anywhere.
 	});
 
 	//Retrieves all categories the selected student is working in
 	$http.get(`${URL}categoriesByStudent?Id=${$scope.studentId}`)
-	.then(function(response) {
+	.then(response => {
 		if (response.data.length == 0)
 			$scope.categoriesOfStudent = ["No data found"];
 		else
@@ -48,7 +48,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 	});
 
 	//Updates information for the selected category
-	$scope.didUpdateCategory = function() {
+	$scope.didUpdateCategory = () => {
 		// Update repetition count for the form
 		$scope.repOptions = ["1","2"];
 		if ($scope.selectedCategory == "Calculation")
@@ -56,13 +56,13 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 
 		// Retrives all books in the selected category for use later in y-axis labeling
 		$http.get(`${URL}booksInCategory?Category=${$scope.selectedCategory}`)
-		.then(function(response) {
+		.then(response => {
 			allBooks = response.data;
 		});
 
 		// Fetch international data for the selected category for use later in line plotting
 		$http.get(`${URL}internationalData?Category=${$scope.selectedCategory}`)
-		.then(function(response) {
+		.then(response => {
 			iglRaw = response.data;
 		});
 	}
@@ -75,7 +75,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 
 	//// GIANT CHART GENERATION METHOD ////
 	// "records" is intended to be a list of records drawn from an http call (response.data)
-	let gen = function(records) {
+	let gen = records => {
 		// try-catch block ensures that any major errors that may arise from the complex and probably buggy logic of the function gets properly written out in html
 		try {
 			var lowestDate   = Dates.monthsAgoToMonthIndex($scope.months), 	// x-axis bounds
@@ -126,9 +126,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 						this.slope = this.diffSum / this.squaresSum || 0;			// complete formula (with NaN check)
 
 						this.getY = x => this.slope * (x - this.xmean) + this.ymean;	// point-slope form linear equation
-						this.getPoint = x => {
-							return {x: x, y: this.getY(x)};
-						}
+						this.getPoint = x => ({x: x, y: this.getY(x)});
 
 						delete this.init; // remove this function from the object, to avoid clutter
 						return this;
@@ -151,12 +149,10 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 
 
 			//// IGL LINE: an arbitrary goal line which is fixed for each category ////
-			igl = iglRaw.map(data => {
-				return {
-					x: parseInt(data.grade.replace(/\D+/g,"")) * 12,  // extracts number from grade string and multiplies by 12 to create a month index
-					y: data.sequenceLarge,
-				}
-			});
+			igl = iglRaw.map(data => ({
+				x: parseInt(data.grade.replace(/\D+/g,"")) * 12,  // extracts number from grade string and multiplies by 12 to create a month index
+				y: data.sequenceLarge,
+			}));
 			
 
 			//// NOW LINE: a vertical black line to indicate the current date ////
@@ -414,7 +410,7 @@ gideonApp.controller('chartCtrl', function($scope, $http, $window) {
 
 
 	// Form submission: generates the line chart based on user specifications
-	$scope.generateChart = function() {
+	$scope.generateChart = () => {
 		// Ensures form is valid before generation
 		if (!Verify.check())
 			return;

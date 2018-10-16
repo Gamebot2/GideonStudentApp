@@ -7,7 +7,7 @@
  */
 
 
-gideonApp.controller('listCtrl', function($scope, $http, $window) {
+gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 
 	var dataOn = {
 		true: ["dataStudents", "Display All Students"],
@@ -23,7 +23,7 @@ gideonApp.controller('listCtrl', function($scope, $http, $window) {
 	$scope.expandedStudentId = -1;
 	$scope.toggleButtonText = dataOn[dataOn.switch][1];
 
-	var getStudents = function() {
+	var getStudents = () => {
 		$http.get(`${URL}${dataOn[dataOn.switch][0]}`)
 		.then(response => {
 			$scope.students = response.data;
@@ -32,13 +32,13 @@ gideonApp.controller('listCtrl', function($scope, $http, $window) {
 	}
 	getStudents();
 
-	$scope.toggleData = function() {
+	$scope.toggleData = () => {
 		dataOn.switch = !dataOn.switch;
 		getStudents();
 	}
 	
 
-	$scope.manageExpansion = function(studentId) {
+	$scope.manageExpansion = studentId => {
 		if ($scope.expandedStudentId == studentId)
 			$scope.expandedStudentId = -1;
 		else
@@ -46,7 +46,7 @@ gideonApp.controller('listCtrl', function($scope, $http, $window) {
 	}
 
 	//Function for selecting a student and going to another page
-	$scope.logToPage = function(id, name, page) {
+	$scope.logToPage = (id, name, page) => {
 		$window.localStorage.setItem(0, id);
 		$window.localStorage.setItem(1, name);
 		window.location.href = page;

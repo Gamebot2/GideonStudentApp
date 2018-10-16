@@ -8,7 +8,7 @@
  */
 
 
-gideonApp.controller('updateRecordCtrl', function($scope, $http, $window){
+gideonApp.controller('updateRecordCtrl', ($scope, $http, $window) => {
 
 	// initialize Verify
 	Verify.setScope($scope);
@@ -37,7 +37,7 @@ gideonApp.controller('updateRecordCtrl', function($scope, $http, $window){
 	});
 
 	// Form submission
-	$scope.updateRecord = function() {
+	$scope.updateRecord = () => {
 		if (!Verify.check())
 			return;
 

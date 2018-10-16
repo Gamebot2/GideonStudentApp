@@ -8,14 +8,14 @@
  */
 
 
-gideonApp.controller('insertStudentCtrl', function($scope, $http) {
+gideonApp.controller('insertStudentCtrl', ($scope, $http) => {
 
 	// initialize Verify
 	Verify.setScope($scope);
 
 	// Form submission
-	$scope.createStudent = function() {
-		if (!Verify.check($scope))
+	$scope.createStudent = () => {
+		if (!Verify.check())
 			return;
 
 		// Inserts the student with an HTTP post call
@@ -30,7 +30,7 @@ gideonApp.controller('insertStudentCtrl', function($scope, $http) {
 				data: JSON.stringify($scope.student),
 			})
 			.then(response => {
-				Verify.successIf(response.data == 0, `Successfully added ${$scope.student.client}`, $scope);
+				Verify.successIf(response.data == 0, `Successfully added ${$scope.student.client}`);
 			})
 			.catch(Verify.error);
 		}

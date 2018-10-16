@@ -36,7 +36,7 @@ var Verify = {
 	setScope($scope) {
 		this.scope = $scope;
 
-		this.check = function() {
+		this.check = () => {
 			if (this.scope.form.$invalid)
 				this.scope.formStatus = this.genericInvalid;
 			else
@@ -44,12 +44,12 @@ var Verify = {
 			return !this.scope.form.$invalid;
 		}
 
-		this.error = function(err) {
+		this.error = err => {
 			console.error(err);
 			this.scope.formStatus = this.genericError;
 		}
 
-		this.errorIf = function(condition, customText) {
+		this.errorIf = (condition, customText) => {
 			if (condition)
 				this.scope.formStatus = {
 					id: 0,
@@ -58,14 +58,14 @@ var Verify = {
 			return condition;
 		}
 
-		this.success = function(customTexte) {
+		this.success = customText => {
 			this.scope.formStatus = {
 				id: 1,
 				text: customText,
 			};
 		}
 
-		this.successIf = function(condition, customText) {
+		this.successIf = (condition, customText) => {
 			if (condition)
 				this.scope.formStatus = {
 					id: 1,
@@ -79,7 +79,7 @@ var Verify = {
 			return condition;
 		}
 
-		this.remove = function() {
+		this.remove = () => {
 			this.scope.formStatus = this.genericEmpty;
 		}
 	},

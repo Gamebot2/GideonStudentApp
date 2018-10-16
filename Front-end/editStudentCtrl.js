@@ -9,7 +9,7 @@
  */
 
 
-gideonApp.controller('editStudentCtrl', function($scope, $http, $window) {
+gideonApp.controller('editStudentCtrl', ($scope, $http, $window) => {
 	
 	// initialize Verify
 	Verify.setScope($scope);
@@ -21,7 +21,7 @@ gideonApp.controller('editStudentCtrl', function($scope, $http, $window) {
 	});
 
 	// Form submission
-	$scope.updateStudent = function() {
+	$scope.updateStudent = () => {
 		if (!Verify.check())
 			return;
 

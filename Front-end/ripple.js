@@ -9,12 +9,12 @@
 
 var buttons = document.getElementsByTagName('button');
 
-setTimeout(function() {	// for some reason, getElementsByTagName takes absolutely forever to load, so this is a manual timeout to wait for all the buttons to come in
+setTimeout(() => {	// for some reason, getElementsByTagName takes absolutely forever to load, so this is a manual timeout to wait for all the buttons to come in
 	console.log("Number of buttons detected: " + buttons.length);
 
-	Array.prototype.forEach.call(buttons, function(b) {
+	Array.prototype.forEach.call(buttons, b => {
 		// ripple event
-		b.onmousedown = function(e) {
+		b.onmousedown = e => {
 			var button = e.srcElement;								
 																			// CREATES
 			var rippleContainer = document.createElement('div');			// <div id = "rippleContainer">
@@ -26,9 +26,7 @@ setTimeout(function() {	// for some reason, getElementsByTagName takes absolutel
 			button.appendChild(rippleContainer);
 
 			// remove container after a set period
-			setTimeout(function() {
-				button.removeChild(rippleContainer);
-			}, 1000);
+			setTimeout(() => button.removeChild(rippleContainer), 1000);
 		}
 	});
 }, 1000);

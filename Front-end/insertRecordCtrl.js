@@ -8,7 +8,7 @@
  */
 
 
-gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
+gideonApp.controller('insertRecordCtrl', ($scope, $http, $window) => {
 
 	// initialize Verify
 	Verify.setScope($scope);
@@ -23,12 +23,10 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 	// Returns a list of all students for easy name selection	
 	$http.get(`${URL}students`)
 	.then(response => {
-		$scope.names = response.data.map(student => { 
-			return {
-				name: student.client, // names contain ids to make sure every name is distinct - the name will be displayed but the id will be used
-				id: student.studentId,
-			}
-		});
+		$scope.names = response.data.map(student => ({ 
+			name: student.client, // names contain ids to make sure every name is distinct - the name will be displayed but the id will be used
+			id: student.studentId,
+		}));
 	});
 
 	$http.get(`${URL}categories`)
@@ -37,7 +35,7 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 	});
 
 	//Returns a list of subcategories based on the selected category
-	$scope.getSubcategories = function() {
+	$scope.getSubcategories = () => {
 		$http.get(`${URL}subcategories?Category=${$scope.record.category}`)
 		.then(response => {
 			$scope.subcategories = response.data;
@@ -45,7 +43,7 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 	}
 
 	//Returns a list of titles based on the selected subCategory
-	$scope.getTitles = function() {
+	$scope.getTitles = () => {
 		$http.get(`${URL}titles?Subcategory=${$scope.record.subcategory}`)
 		.then(response => {
 			$scope.titles = response.data;
@@ -53,12 +51,12 @@ gideonApp.controller('insertRecordCtrl', function($scope, $http, $window){
 	}
 
 	// Facilitates the JSON packaging by setting the id property
-	$scope.setId = function() {
+	$scope.setId = () => {
 		$scope.record.id = $scope.client.id;
 	}
 
 	// Form submission
-	$scope.createRecord = function() {
+	$scope.createRecord = () => {
 		if (!Verify.check())
 			return;
 		
