@@ -48,7 +48,7 @@ public class RecordDaoImpl implements RecordDao{
 	// Logic has been returned back to Java, because the SQL logic had significant problems with repetition
 	@Override
 	public List<Record> getRecordsForChart(int StudentId, String category, int months, int until, String whichReps) {
-		String sql = "SELECT * FROM records r JOIN books b ON r.BookId = b.BookId JOIN students s ON r.StudentId = s.StudentId WHERE r.StudentId = ? AND b.Category = ? # ORDER BY r.StartDate";
+		String sql = "SELECT * FROM records r JOIN books b ON r.BookId = b.BookId JOIN students s ON r.StudentId = s.StudentId WHERE r.StudentId = ? AND b.Category = ? # AND r.StartDate IS NOT NULL ORDER BY r.StartDate";
 		RowMapper<Record> rowMapper = new RecordRowMapper();
 		List<Record> allRecords,
 					 returnRecords = new ArrayList<Record>();
@@ -84,12 +84,10 @@ public class RecordDaoImpl implements RecordDao{
 	//Adds a new record to the record database with all of the following information, formats the appropriate SQL string
 	@Override
 	public int addRecord(int studentId, Book book, Date startDate, int rep) {
-		String sql = "INSERT INTO records (StudentId, BookId, StartDate, EndDate, Rep, Test, TestTime, Mistakes) VALUES (?, ?, ?, null, ?, #, null, null)";
+		String sql = "INSERT INTO records (StudentId, BookId, StartDate, EndDate, Rep, Test, TestTime, Mistakes) VALUES (?, ?, ?, null, ?, 0, null, null)";
 		
 		if (book.getTest() > 0)				// Content of query depends on whether the book contains a test
-			sql = sql.replace("#", "1");
-		else
-			sql = sql.replace("#", "0");
+			sql = sql.replace("0", "1");
 		
 		String formatted = dateFormat.format(startDate);
 		this.jdbcTemplate.update(sql, studentId, book.getBookId(), formatted, rep);

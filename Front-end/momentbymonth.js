@@ -16,7 +16,7 @@ Math.modN = (x, n) => (x % n + n) % n;
 Math.truncN = (x) => Number.isInteger(x) ? x : Math.trunc(x) - (x < 0 ? 1 : 0);
 
 
-var Dates = {
+Dates = {
 	// INIT FUNCTION: creates the object
 	init() {
 		// function that figures out when this "Augest of Kindergarten" month is

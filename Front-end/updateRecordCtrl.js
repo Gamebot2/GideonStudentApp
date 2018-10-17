@@ -24,8 +24,8 @@ gideonApp.controller('updateRecordCtrl', ($scope, $http, $window) => {
 	$http.get(`${URL}incompleteRecords`)
 	.then(response => {
 		$scope.displayRecords = response.data.map(record => {
-			var splitDate = record.startDate.split('-').map(d => parseInt(d));
-			var year = splitDate[0], month = splitDate[1], day = splitDate[2];
+			let splitDate = record.startDate.split('-').map(d => parseInt(d));
+			let year = splitDate[0], month = splitDate[1], day = splitDate[2];
 
 			return { // "display" for the shown selections, everything else is actual data
 				name: record.name,

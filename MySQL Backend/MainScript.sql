@@ -22,24 +22,7 @@ SELECT * FROM students;
 SELECT * FROM internationaldata;
 
 -- put whatever here
-ALTER TABLE students MODIFY COLUMN LastUsed DATETIME DEFAULT '2000-01-01';
-UPDATE students s
-SET LastUsed = CASE
-	WHEN (
-		SELECT r.StartDate
-		FROM records r
-		WHERE r.StudentId = s.StudentId
-		ORDER BY r.StartDate DESC
-		LIMIT 1
-	) IS NULL THEN '2000-01-01'
-    ELSE (
-		SELECT r.StartDate
-		FROM records r
-		WHERE r.StudentId = s.StudentId
-		ORDER BY r.StartDate DESC
-		LIMIT 1
-	) END
-WHERE StudentId >= 0;
+ALTER TABLE students ADD COLUMN LastUsed DATETIME DEFAULT '2000-01-01';
 
 SELECT Grade FROM students WHERE StudentId = 3 LIMIT 1;
 
@@ -164,6 +147,25 @@ INNER JOIN books
 	ON records.BookId = books.BookId
 WHERE
     students.StudentId = 77;
+    
+-- reset the LastUsed column
+UPDATE students s
+SET LastUsed = CASE
+	WHEN (
+		SELECT r.StartDate
+		FROM records r
+		WHERE r.StudentId = s.StudentId
+		ORDER BY r.StartDate DESC
+		LIMIT 1
+	) IS NULL THEN '2000-01-01'
+    ELSE (
+		SELECT r.StartDate
+		FROM records r
+		WHERE r.StudentId = s.StudentId
+		ORDER BY r.StartDate DESC
+		LIMIT 1
+	) END
+WHERE StudentId >= 0;
     
 -- select international data with relevant book data attached
 SELECT

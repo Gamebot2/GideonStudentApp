@@ -77,11 +77,9 @@ public class StudentDaoImpl implements StudentDao {
 	// Sets the last used date of the student with either a studentId or a recordId
 	@Override
 	public int updateLastUsed(int id, boolean isRecordId) {
-		String sql;
+		String sql = "UPDATE students SET LastUsed = ? WHERE StudentId = ?;";
 		if (isRecordId)
-			sql = "UPDATE students SET LastUsed = ? WHERE StudentId = (SELECT StudentId FROM records WHERE RecordId = ?)";
-		else
-			sql = "UPDATE students SET LastUsed = ? WHERE StudentId = ?";
+			sql = sql.replace("?;", "(SELECT StudentId FROM records WHERE RecordId = ?)");
 		
 		this.jdbcTemplate.update(sql, dateFormat.format(new Date()), id);
 		return 0;

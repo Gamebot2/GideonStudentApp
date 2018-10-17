@@ -27,7 +27,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 	$scope.expanded = true;
 
 	var exampleChart;
-	let myChart = document.getElementById('lineChart').getContext('2d');
+	var myChart = document.getElementById('lineChart').getContext('2d');
 
 	// initialize Verify
 	Verify.setScope($scope);
@@ -75,17 +75,17 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 
 	//// GIANT CHART GENERATION METHOD ////
 	// "records" is intended to be a list of records drawn from an http call (response.data)
-	let gen = records => {
+	gen = records => {
 		// try-catch block ensures that any major errors that may arise from the complex and probably buggy logic of the function gets properly written out in html
 		try {
-			var lowestDate   = Dates.monthsAgoToMonthIndex($scope.months), 	// x-axis bounds
+			let lowestDate   = Dates.monthsAgoToMonthIndex($scope.months), 	// x-axis bounds
 				highestDate  = Dates.monthsAgoToMonthIndex($scope.until),
 			    greatestBook = 0, 											// y-axis bounds
 				leastBook    = allBooks.length - 1;
 			
-			var xAxisLabels = []; // main container of x axis labels, labels are objects containing properties "month", "year", and "grade" (also date, but that's irrelevant here)
+			let xAxisLabels = []; // main container of x axis labels, labels are objects containing properties "month", "year", and "grade" (also date, but that's irrelevant here)
 
-			var data    = [], 		// data line: x is date, y is large sequence number, main graph plot
+			let data    = [], 		// data line: x is date, y is large sequence number, main graph plot
 				bestFit = [], 		// best fit line: will contain two points outside the horizontal range of the graph
 				igl     = [],		// igl line: an arbitrary goal line that denotes an international standard in some categories
 				now     = [];		// now line: a vertical line that displays the current date for graphs that go past the current date
@@ -103,7 +103,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 
 			//// Maps the internal linear scale of the x axis (lowestDate, ... highestDate) with labels containing dates and grades ////
 			for(j = lowestDate; j < highestDate; j++) {
-				var theLabel = Dates.dateAdd(Dates.zeroDate, j);
+				let theLabel = Dates.dateAdd(Dates.zeroDate, j);
 				theLabel.grade = Math.truncN(j / 12);
 
 				xAxisLabels.push(theLabel);
@@ -112,7 +112,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 
 			//// BEST FIT LINE: least squares method ////
 			if (data.length > 1) {
-				var metrics = {
+				let metrics = {
 					init() {
 						this.xmean = data.map(p => p.x).reduce((a, b) => a + b) / data.length; // average x
 						this.ymean = data.map(p => p.y).reduce((a, b) => a + b) / data.length; // average y
@@ -141,7 +141,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 			}
 
 			//// FINALIZE Y-AXIS BOUNDS ///
-			var s = allBooks[leastBook-1];
+			let s = allBooks[leastBook-1];
 			leastBook = s.sequenceLarge - s.sequence + 1; // set bottom bound to the start of the lowest sequence
 
 			s = allBooks[greatestBook-1];
@@ -156,7 +156,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 			
 
 			//// NOW LINE: a vertical black line to indicate the current date ////
-			var nowIndex = Dates.dateToMonthIndex(Dates.now);
+			let nowIndex = Dates.dateToMonthIndex(Dates.now);
 			if (Math.clamp(nowIndex, lowestDate, highestDate) == nowIndex)
 				now.push({
 					x: nowIndex - 0.001,
@@ -172,13 +172,13 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 			let callbacks = {
 				// callback for the x axis: displaying month numbers
 				monthXAxis(label) {
-					var s = xAxisLabels[label - lowestDate];
+					let s = xAxisLabels[label - lowestDate];
 					if (s)
 						return s.month + 1;
 				},
 				// callback for the x axis: displaying year numbers
 				yearXAxis(label) {
-					var s = xAxisLabels[label - lowestDate];
+					let s = xAxisLabels[label - lowestDate];
 					if (s) {
 						if(s.month == 6)
 							return s.year;
@@ -188,7 +188,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 				},
 				// callback for the x axis: displaying grade values
 				gradeXAxis(label) {
-					var s = xAxisLabels[label - lowestDate];
+					let s = xAxisLabels[label - lowestDate];
 					if (s) {
 						if(s.month == 1) {
 							if(s.grade == 0)
@@ -210,12 +210,12 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 				},
 				// callback for the y axis: displaying book sequences
 				bookYAxis(label) {
-					var s = allBooks[label-1];
+					let s = allBooks[label-1];
 					if (s && s.sequenceLength > 1) { // if the sequence length is 1, there's no good display for the y-axis, so just ignore that sequence
 						if (s.sequence == 1)
 							return "-----";
 						else {
-							var middle = Math.trunc(s.sequenceLength / 2) + 1;
+							let middle = Math.trunc(s.sequenceLength / 2) + 1;
 							if (s.sequence == Math.max(middle, 2)) // max function ensures that the sequence number in the middle is at least 2 (and thus not 1, which would be the edge)
 								return s.sequenceName
 
@@ -225,7 +225,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 				},
 				// callback for the tooltip: displaying book titles
 				titleTooltip(tooltipItem, data) {
-					var s = allBooks[tooltipItem[0].yLabel-1];
+					let s = allBooks[tooltipItem[0].yLabel-1];
 					if (s) {
 						if ($scope.selectedCategory == "Comprehension" || $scope.selectedCategory == "Calculation")
 							return `${s.subcategory} - ${s.title}`;
@@ -235,7 +235,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 				},
 				// callback for the tooltip: displaying exact dates
 				descTooltip(tooltipItem, data) {
-					var theDate = Dates.indexToDateObject(tooltipItem.xLabel);
+					let theDate = Dates.indexToDateObject(tooltipItem.xLabel);
 					return `started on ${theDate.month + 1}/${theDate.date}/${theDate.year}`;
 				},
 			}
@@ -424,7 +424,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 
 			$http.get(`${URL}recordsForChart?StudentId=${$scope.studentId}&Category=${$scope.selectedCategory}&Months=${$scope.months}&Until=${$scope.until}&Reps=${$scope.selectedRep}`)
 			.then(response => {
-				var records = response.data.filter(r => r.startDate != null);
+				let records = response.data.filter(r => r.startDate != null);
 				if (Verify.errorIf(records.length == 0, "No data")) // no plottable data check
 					return;
 				gen(records);
