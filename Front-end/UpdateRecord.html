@@ -31,6 +31,8 @@
 	</head>
 	<body>		
 		<div class = "exterior" ng-app = "gideonApp" ng-controller = "updateRecordCtrl">
+			<button class="hoverable" id="backButton" onclick="location.href='StudentList.html'">Back to Student List</button>
+
 			<h1>Update Record</h1>
 			<!--Form for updating records for students who already are in the system-->
 			<form name = "form">
@@ -54,38 +56,36 @@
 				<!--Allows user to enter the ending date-->
 				<label for = "dateSelect">End Date</label><br>
 					<div class="inputWrapperBig">
-						<input white big type = "date" name = "endDate" id = "dateSelect" min = "{{selectedRecord.date}}" ng-model = "endDate" required>
+						<input white big type = "date" name = "endDate" id = "dateSelect" min = "{{selectedRecord.startDate}}" ng-model = "endDate" required>
 						<div class="invalidContainer" ng-class="{'invalid':form.endDate.$touched && form.endDate.$invalid}"></div>
 					</div>
 					<span class="errorText" ng-show="form.endDate.$touched && form.endDate.$invalid">
-						<span ng-show="form.endDate.$error.required">This date is invalid.</span>
+						<span ng-show="form.endDate.$error.required">End date is required.</span>
+						<span ng-show="form.endDate.$error.date">This date is invalid.</span>
 						<span ng-show="form.endDate.$error.min">The end date must come after the start date.</span>
 					</span>
 				<br><br>
 
 				<!--Simple number picker for instructors to enter the test time-->
-				<div id = "testTime">
+				<div id = "testTime" ng-show = "selectedRecord.test > 0">
 					<label for = "testTime">Test Time</label>
 					<div class="inputWrapper">
-						<input white type = "number" name = "testTime" min = "0" max = "1000" ng-model = "testTime" required>
+						<input white type = "number" name = "testTime" min = "0" max = "1000" ng-model = "testTime">
 						<div class="invalidContainer" ng-class="{'invalid':form.testTime.$touched && form.testTime.$invalid}"></div>
 					</div>
 					<span class="errorText" ng-show="form.testTime.$touched && form.testTime.$invalid">
-						<span ng-show="form.testTime.$error.required">Test time is required.</span>
-						<span ng-show="form.testTime.$error.date">This date is invalid.</span>
 						<span ng-show="form.testTime.$error.min || form.testTime.$error.max">Test time must be between 0 and 1000.</span>
 					</span>
 				</div>
 
 				<!--Simple number picker for instructors to enter the number of mistakes-->	
-				<div id = "mistakes">
+				<div id = "mistakes" ng-show = "selectedRecord.test > 0 && selectedRecord.category == 'Calculation'">
 					<label for = "mistakes">Mistakes</label>
 					<div class="inputWrapper">
-						<input white type = "number" name = "mistakes" min = "0" max = "1000" ng-model = "mistakes" required>
+						<input white type = "number" name = "mistakes" min = "0" max = "1000" ng-model = "mistakes">
 						<div class="invalidContainer" ng-class="{'invalid':form.mistakes.$touched && form.mistakes.$invalid}"></div>
 					</div>
 					<span class="errorText" ng-show="form.mistakes.$touched && form.mistakes.$invalid">
-						<span ng-show="form.mistakes.$error.required">Mistake count is required.</span>
 						<span ng-show="form.mistakes.$error.min || form.mistakes.$error.max">Mistake count must be between 0 and 1000.</span>
 					</span>
 				</div>

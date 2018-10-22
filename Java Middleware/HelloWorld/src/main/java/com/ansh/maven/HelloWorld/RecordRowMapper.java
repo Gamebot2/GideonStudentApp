@@ -23,6 +23,7 @@ public class RecordRowMapper implements RowMapper<Record>{
 		record.setName(row.getString("Client"));
 		record.setBookTitle(row.getString("Title"));
 		record.setSubcategory(row.getString("Subcategory"));
+		record.setCategory(row.getString("Category"));
 		return record;
 	}
 	

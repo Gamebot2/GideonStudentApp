@@ -18,6 +18,8 @@ gideonApp.controller('updateRecordCtrl', ($scope, $http, $window) => {
 	$http.get(`${URL}students`)
 	.then(response => {
 		$scope.names = response.data.map(student => student.client);
+		$scope.names.unshift("");
+		$scope.selectedStudent = "";
 	});
 
 	//Retrieves incomplete records for instructors to choose from
@@ -27,12 +29,8 @@ gideonApp.controller('updateRecordCtrl', ($scope, $http, $window) => {
 			let splitDate = record.startDate.split('-').map(d => parseInt(d));
 			let year = splitDate[0], month = splitDate[1], day = splitDate[2];
 
-			return { // "display" for the shown selections, everything else is actual data
-				name: record.name,
-				id: record.recordId,
-				date: new Date(year, month-1, day).toISOString(),
-				display: `${record.name} started book ${record.bookTitle} on ${month}/${day}/${year} | RecordId: ${record.recordId}`,
-			};
+			record.display = `${record.name} started book ${record.bookTitle} on ${month}/${day}/${year} | RecordId: ${record.recordId}`;
+			return record;
 		});
 	});
 
@@ -42,7 +40,7 @@ gideonApp.controller('updateRecordCtrl', ($scope, $http, $window) => {
 			return;
 
 		// Updates an incomplete record based on instructor data
-		$http.get(`${URL}updateRecord?RecordId=${$scope.selectedRecord.id}&EndDate=${$scope.endDate}&TestTime=${$scope.testTime}&Mistakes=${$scope.mistakes}`)
+		$http.get(`${URL}updateRecord?RecordId=${$scope.selectedRecord.recordId}&EndDate=${$scope.endDate}&TestTime=${$scope.testTime}&Mistakes=${$scope.mistakes}`)
 		.then(response => {
 			Verify.successIf(response.data == 0, `Successfully updated record for ${$scope.selectedRecord.name}`);
 		})
