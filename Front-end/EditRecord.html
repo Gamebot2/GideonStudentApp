@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Edit Record</title>
+
+		<meta name="msapplication-TileColor" content="#da532c">
+		<meta name="theme-color" content="#ffffff">
+
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+  		<script src="verify.js"></script>
+  		<script src="gideonApp.js"></script>
+  		<script src="editRecordCtrl.js"></script>
+  		<script src="ripple.js"></script>
+
+		<link rel="manifest" href="/site.webmanifest">
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+		<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+		<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+		<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
+		<link rel="stylesheet" type="text/css" href="SiteStyle.css">
+		<link rel="stylesheet" type="text/css" href="RecordStyle.css">
+	</head>
+	<body>		
+		<div class = "exterior" ng-app = "gideonApp" ng-controller = "editRecordCtrl">
+			<h1>Edit Record</h1>
+			<!--Form for updating records that are already in the system-->
+			<form name = "form">
+				<div class="columnContainer" id="editSingleRow">
+					<div class="column" style="width:100%">
+					<!--Displays list of all current students upon selection, with a custom filter-->
+						<label for = "client">Filter By Name: </label>
+						<input black id = "textFilter" name = "textFilter" type = "text" ng-model="clientFilter">
+						<div class="inputWrapperBig">
+							<select white big id="clientSelect" name = "client" ng-model = "client" ng-options = "v as v.name for v in names | filter: {name: clientFilter}" ng-change = "setId()" required></select>
+							<div class="invalidContainer" ng-class="{'invalid':form.client.$touched && form.client.$invalid}"></div>
+						</div>
+						<span class="errorText" ng-show="form.client.$touched && form.client.$invalid">Name is required.</span>
+					</div>
+				</div>
+	          	<br><br>
+
+	          	<div class="columnContainer" id="editRow">
+		  			<!--Displays all possible book categories-->
+		  			<div class="threeColumn">
+						<label for = "category">Book Category</label><br>
+						<div class="inputWrapperBig">
+							<select white big id = "category" name = "category" ng-model = "record.category" ng-options = "x for x in categories" ng-change = "getSubcategories()" required>
+							</select>
+							<div class="invalidContainer" ng-class="{'invalid':form.category.$touched && form.category.$invalid}"></div>
+						</div>
+						<span class="errorText" ng-show="form.category.$touched && form.category.$invalid">Category is required.</span>
+					</div>
+
+					<!--Displays all subcategories for a selected category-->
+					<div class="threeColumn">
+						<label for = "subCategory">Book Sub-Category</label><br>
+						<div class="inputWrapperBig">
+							<select white big id = "subCategory" name = "subcategory" ng-model = "record.subcategory" ng-options = "y disable when y.startsWith('Select') for y in subcategories" ng-change = "getTitles()" required>
+							</select>
+							<div class="invalidContainer" ng-class="{'invalid':form.subcategory.$touched && form.subcategory.$invalid}"></div>
+						</div>
+						<span class="errorText" ng-show="form.subcategory.$touched && form.subcategory.$invalid">Subcategory is required.</span>
+					</div>
+
+					<!--Displays all book titles for a given subcategory-->
+					<div class="threeColumn">
+						<label for = "title">Book Title</label><br>
+						<div class="inputWrapperBig">
+							<select white big id = "title" name = "title" ng-model = "record.bookTitle" ng-options = "z disable when z.startsWith('Select') for z in titles" required>
+							</select>
+							<div class="invalidContainer" ng-class="{'invalid':form.title.$touched && form.title.$invalid}"></div>
+						</div>
+						<span class="errorText" ng-show="form.title.$touched && form.title.$invalid">Book title is required.</span>
+					</div>
+				</div>
+				<br><br>
+
+				<div class="columnContainer" id="editRow">
+					<!--Simple datePicker for instructors to enter the startDate-->
+					<div class="twoColumn">
+						<label for = "dateSelect">Start Date</label><br>
+						<div class="inputWrapperBig">
+							<input white big type = "date" name = "startDate" id ="dateSelect" ng-model = "record.startDate" required>
+							<div class="invalidContainer" ng-class="{'invalid':form.startDate.$touched && form.startDate.$invalid}"></div>
+						</div>
+						<span class="errorText" ng-show="form.startDate.$touched && form.startDate.$invalid">
+							<span ng-show="form.startDate.$error.required">Start date is required.</span>
+							<span ng-show="form.startDate.$error.date">This date is invalid.</span>
+						</span>
+					</div>
+
+					<!--Allows user to enter the ending date-->
+					<div class="twoColumn">
+						<label for = "dateSelect">End Date</label><br>
+						<div class="inputWrapperBig">
+							<input white big type = "date" name = "endDate" id = "dateSelect" min = "{{record.startDate}}" ng-model = "record.endDate">
+							<div class="invalidContainer" ng-class="{'invalid':form.endDate.$touched && form.endDate.$invalid}"></div>
+						</div>
+						<span class="errorText" ng-show="form.endDate.$touched && form.endDate.$invalid">
+							<span ng-show="form.endDate.$error.min">The end date must come after the start date.</span>
+						</span>
+					</div>
+				</div>
+				<br><br>
+
+				<div class="columnContainer" id="editSingleRow">
+					<!--Simple number picker for instructors to enter the repetition number-->
+					<div id = "rep">
+						<label for = "reps">Repetition</label>
+						<div class="inputWrapper">
+							<input white type = "number" name = "reps" min = "1" max = "5" ng-model = "record.rep" required>
+							<div class="invalidContainer" ng-class="{'invalid':form.reps.$touched && form.reps.$invalid}"></div>
+						</div>
+						<span class="errorText" ng-show="form.reps.$touched && form.reps.$invalid">
+							<span ng-show="form.reps.$error.required">Repetition number is required.</span>
+							<span ng-show="form.reps.$error.min || form.reps.$error.max">Repetition number must be between 1 and 5.</span>
+						</span>
+					</div>
+
+					<!--Simple number picker for instructors to enter the test time-->
+					<div id = "testTime">
+						<label for = "testTime">Test Time</label>
+						<div class="inputWrapper">
+							<input white type = "number" name = "testTime" min = "0" max = "1000" ng-model = "record.testTime">
+							<div class="invalidContainer" ng-class="{'invalid':form.testTime.$touched && form.testTime.$invalid}"></div>
+						</div>
+						<span class="errorText" ng-show="form.testTime.$touched && form.testTime.$invalid">
+							<span ng-show="form.testTime.$error.date">This date is invalid.</span>
+							<span ng-show="form.testTime.$error.min || form.testTime.$error.max">Test time must be between 0 and 1000.</span>
+						</span>
+					</div>
+
+					<!--Simple number picker for instructors to enter the number of mistakes-->	
+					<div id = "mistakes">
+						<label for = "mistakes">Mistakes</label>
+						<div class="inputWrapper">
+							<input white type = "number" name = "mistakes" min = "0" max = "1000" ng-model = "record.mistakes">
+							<div class="invalidContainer" ng-class="{'invalid':form.mistakes.$touched && form.mistakes.$invalid}"></div>
+						</div>
+						<span class="errorText" ng-show="form.mistakes.$touched && form.mistakes.$invalid">
+							<span ng-show="form.mistakes.$error.min || form.mistakes.$error.max">Mistake count must be between 0 and 1000.</span>
+						</span>
+					</div>
+				</div>
+				<br><br><br>
+
+				<!--Submits form data-->
+				<button big ng-click = "updateRecord()">Submit</button>
+			</form>
+			<br><br>
+			<span ng-class="{'errorText':formStatus.id == 0, 'successText':formStatus.id == 1}">{{formStatus.text}}</span>
+		</div>
+	</body>
+</html>

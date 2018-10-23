@@ -9,6 +9,6 @@ public interface RecordDao {
 	List<Record> getAllRecordsById(int StudentId);
 	List<Record> getIncompleteRecords();
 	int addRecord(int id, Book book, Date startDate, int rep);
-	int updateRecord(int recordId, Date endDate, int testTime, int minutes);
+	int updateRecord(Record record);
 	List<Data> getInternationalData(String category);
 }

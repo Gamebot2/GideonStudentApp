@@ -42,13 +42,13 @@ body {
 
 
 /*BUTTON CSS*/
-#insertBtn, #updateBtn, #studentBtn {
+#insertBtn, #listBtn {
 	width: 200px;
 }
-#insertBtn, #updateBtn {
+#insertBtn {
 	float: right;
 }
-#studentBtn {
+#listBtn {
 	float: left;
 }
 #dataToggleBtn {

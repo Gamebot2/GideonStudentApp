@@ -123,7 +123,7 @@ public class HelloController {
 	//Edits student data in the students database
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/updateStudent")
-	public int updateStudent(@RequestBody(required=false) StudentMasterExtra student) {
+	public int updateStudent(@RequestBody(required=false) Student student) {
 		System.out.println("Method updateStudent() called");
 		int a;
 		try {
@@ -187,11 +187,11 @@ public class HelloController {
 	//Updates an existing record in the database
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/updateRecord")
-	public int updateRecord(@RequestParam("RecordId") int recordId, @RequestParam("EndDate") Date endDate, @RequestParam("TestTime") int testTime, @RequestParam("Mistakes") int mistakes) {
+	public int updateRecord(@RequestBody(required=false) Record record) {
 		System.out.println("Method updateRecord() called");
 		int a; 
 		try {
-			a = recordService.updateRecord(recordId, endDate, testTime, mistakes);
+			a = recordService.updateRecord(record);
 		} catch (java.lang.RuntimeException e) {
 			System.out.println("Method updateRecord() failed:");
 			e.printStackTrace();

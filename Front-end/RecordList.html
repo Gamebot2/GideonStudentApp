@@ -30,6 +30,7 @@
 	<body>
 		<!--Selection buttons in the header to move to insert and update pages-->
 		<div id = "header">
+			<button type = "button" class = "hoverable" id = "listBtn"   onclick = "location.href='StudentList.html'">Student List</button>
 			<button type = "button" class = "hoverable" id = "insertBtn" onclick = "location.href='InsertRecord.html'">Insert Record</button>
 		</div>
 		<br/>
@@ -42,15 +43,15 @@
 			<div class = "columnContainer" id = "filterContainer">
 				<div class="column" style="width:25%">
 					<label>Student</label>
-					<select white big ng-model="studentFilter" ng-options="s for s in students" ng-change="didFilter()"></select>
+					<select black big ng-model="studentFilter" ng-options="s for s in students" ng-change="didFilter()"></select>
 				</div>
 				<div class="column" style="width:25%">
 					<label>Category</label>
-					<select white big ng-model="categoryFilter" ng-options="c for c in categories" ng-change="didFilter()"></select>
+					<select black big ng-model="categoryFilter" ng-options="c for c in categories" ng-change="didFilter()"></select>
 				</div>
 				<div class="column" style="width:25%">
 					<label>Rep</label>
-					<select white big ng-model="repFilter" ng-options="r for r in ['All', 1, 2, 3, 4, 5]" ng-change="didFilter()"></select>
+					<select black big ng-model="repFilter" ng-options="r for r in [wildcard, 1, 2, 3, 4, 5]" ng-change="didFilter()"></select>
 				</div>
 			</div>
 			<br><br>
@@ -89,7 +90,7 @@
 							End Date: {{record.endDateDisplay}}<br>
 							Test Time: {{record.testTime}}<br>
 							Mistakes: {{record.mistakes}}<br><br>
-							<button type = "button" class = "hoverable" id = "accordionButton" ng-show = "record.endDate == null" onclick = "location.href='UpdateRecord.html'">Update Record</button>
+							<button type = "button" class = "hoverable" id = "accordionButton" ng-click = "editRecordButton(record)">Edit Record</button>
 							<br><br><br>
 						</div>
 					</div>

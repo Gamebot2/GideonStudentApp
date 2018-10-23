@@ -9,6 +9,6 @@ public interface StudentDao {
 	String getGrade(int StudentId);
 	List<String> getCategories(int StudentId);
 	int addStudent(StudentMaster student);
-	int updateStudent(StudentMasterExtra s);
-	int updateLastUsed(int id, boolean isRecord);
+	int updateStudent(Student s);
+	int updateLastUsed(int id);
 }

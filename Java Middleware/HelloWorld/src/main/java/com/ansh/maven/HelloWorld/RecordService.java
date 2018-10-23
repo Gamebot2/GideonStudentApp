@@ -10,6 +10,6 @@ public interface RecordService {
 	List<Record> getIncompleteRecords();
 	List<Record> getAllRecordsById(int StudentId);
 	int addRecord(int studentId, String category, String subcategory, String title, Date startDate, int rep);
-	int updateRecord(int recordId, Date endDate, int testTime, int minutes);
+	int updateRecord(Record record);
 	List<Data> getInternationalData(String category);
 }
