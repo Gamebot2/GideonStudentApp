@@ -24,14 +24,13 @@ gideonApp.controller('updateRecordCtrl', ($scope, $http, $window) => {
 	$http.get(`${URL}incompleteRecords`)
 	.then(response => {
 		$scope.displayRecords = response.data.map(record => {
-			let splitDate = record.startDate.split('-').map(d => parseInt(d));
-			let year = splitDate[0], month = splitDate[1], day = splitDate[2];
-
+			let d = new Date(record.startDate.replace(/-/g,"/"));
+			
 			return { // "display" for the shown selections, everything else is actual data
 				name: record.name,
 				id: record.recordId,
-				date: new Date(year, month-1, day).toISOString(),
-				display: `${record.name} started book ${record.bookTitle} on ${month}/${day}/${year} | RecordId: ${record.recordId}`,
+				date: record.startDate,
+				display: `${record.name} started book ${record.bookTitle} on ${d.toLocaleDateString()} | RecordId: ${record.recordId}`,
 			};
 		});
 	});

@@ -46,9 +46,9 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 	}
 
 	//Function for selecting a student and going to another page
-	$scope.logToPage = (id, name, page) => {
-		$window.localStorage.setItem(0, id);
-		$window.localStorage.setItem(1, name);
+	$scope.logToPage = (student, page) => {
+		$window.localStorage.setItem(0, student.studentId);
+		$window.localStorage.setItem(1, student.client);
 		window.location.href = page;
 	}
 });

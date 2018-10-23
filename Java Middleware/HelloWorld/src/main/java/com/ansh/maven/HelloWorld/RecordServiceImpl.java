@@ -32,8 +32,8 @@ public class RecordServiceImpl implements RecordService{
 	
 	// Gets records to include in a progress chart for a given student
 	@Override
-	public List<Record> getAllRecordsById(int StudentId, String category) {
-		return recordDao.getAllRecordsById(StudentId, category);
+	public List<Record> getAllRecordsById(int StudentId) {
+		return recordDao.getAllRecordsById(StudentId);
 	}
 	
 	// Returns records without an end date

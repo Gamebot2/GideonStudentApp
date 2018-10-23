@@ -162,10 +162,10 @@ public class HelloController {
 	
 	//Returns all records for a given student and a given category
 	@CrossOrigin(origins = webOrigin)
-	@RequestMapping("/allRecordById")
-	public List<Record> getAllRecordsById(@RequestParam("StudentId") int StudentId, @RequestParam("Category") String category) {
-		System.out.println("Method getRecordsById() called for Student ID " + StudentId + " and category " + category);
-		return recordService.getAllRecordsById(StudentId, category);
+	@RequestMapping("/recordsById")
+	public List<Record> getAllRecordsById(@RequestParam("StudentId") int StudentId) {
+		System.out.println("Method getRecordsById() called for Student ID " + StudentId);
+		return recordService.getAllRecordsById(StudentId);
 	}
 	
 	//Adds a new record to the database

@@ -17,6 +17,7 @@ public class Record {
 	private int sequenceLarge;
 	private String bookTitle;
 	private String subcategory;
+	private String category;
 	
 	
 	public Record() {
@@ -35,6 +36,14 @@ public class Record {
 		Test = test;
 		TestTime = testTime;
 		Mistakes = mistakes;
+	}
+	
+	public String getCategory() {
+		return category;
+	}
+	
+	public void setCategory(String category) {
+		this.category = category;
 	}
 	
 	public String getSubcategory() {
