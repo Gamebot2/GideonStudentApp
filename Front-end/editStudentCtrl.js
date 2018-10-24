@@ -5,7 +5,7 @@
  * NOTES:
  * - The variable "gideonApp" is defined in gideonApp.js. That file must be included prior to this one in html.
  * - The variable "Verify" is defined in verify.js. That file must be included prior to this one in html.
- * - The application expects there to be the id and name of a student in the local storage of the window. Make sure these exist before opening LineChart.html.
+ * - The application expects there to be a student JSON string in storage slot 0. Make sure this exists before opening EditStudent.html.
  */
 
 
@@ -14,11 +14,8 @@ gideonApp.controller('editStudentCtrl', ($scope, $http, $window) => {
 	// initialize Verify
 	Verify.setScope($scope);
 
-	// Gather all information about the student
-	$http.get(`${URL}student?Id=${$window.localStorage.getItem(0)}`) // getItem(0) should return the student's id
-	.then(response => {
-		$scope.student = response.data;
-	});
+	$scope.student = JSON.parse($window.localStorage.getItem(0));
+
 
 	// Form submission
 	$scope.updateStudent = () => {

@@ -19,11 +19,12 @@ public class RecordDaoImpl implements RecordDao{
 	private JdbcTemplate jdbcTemplate;
 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private String recordSelect = "SELECT * FROM records r INNER JOIN students s ON r.StudentId = s.StudentId INNER JOIN books b on r.BookId = b.BookId # ORDER BY r.StartDate DESC";
 	
 	//Retrieves all records from every student in the database
 	@Override
 	public List<Record> getAllRecords() {
-		String sql = "SELECT * FROM records INNER JOIN books ON records.BookId = books.BookId INNER JOIN students ON records.StudentId = students.StudentId";
+		String sql = recordSelect.replace("# ", "");
 		RowMapper<Record> rowMapper = new RecordRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
@@ -31,24 +32,24 @@ public class RecordDaoImpl implements RecordDao{
 	//Returns all records that have start dates, but do not have end dates
 	@Override
 	public List<Record> getIncompleteRecords() {
-		String sql = "SELECT * FROM records INNER JOIN books ON records.BookId = books.BookId INNER JOIN students ON records.StudentId = students.StudentId WHERE records.EndDate IS NULL";
+		String sql = recordSelect.replace("#", "WHERE r.EndDate IS NULL");
 		RowMapper<Record> rowMapper = new RecordRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
 
 	//Returns all records for a certain student and a certain category
 	@Override
-	public List<Record> getAllRecordsById(int StudentId, String category) {
-		String sql = "SELECT * FROM records INNER JOIN students ON records.StudentId = students.StudentId INNER JOIN books ON records.BookId = books.BookId WHERE students.StudentId = ? AND books.Category = ? AND records.rep = 1;";
+	public List<Record> getAllRecordsById(int StudentId) {
+		String sql = recordSelect.replace("#", "WHERE s.StudentId = ?");
 		RowMapper<Record> rowMapper = new RecordRowMapper();
-		return this.jdbcTemplate.query(sql, rowMapper, StudentId, category);
+		return this.jdbcTemplate.query(sql, rowMapper, StudentId);
 	}
 	
 	// Returns records for a student within a certain range, plus or minus one record, with a specific category and rep count
 	// Logic has been returned back to Java, because the SQL logic had significant problems with repetition
 	@Override
 	public List<Record> getRecordsForChart(int StudentId, String category, int months, int until, String whichReps) {
-		String sql = "SELECT * FROM records r JOIN books b ON r.BookId = b.BookId JOIN students s ON r.StudentId = s.StudentId WHERE r.StudentId = ? AND b.Category = ? # AND r.StartDate IS NOT NULL ORDER BY r.StartDate";
+		String sql = recordSelect.replace("#", "WHERE r.StudentId = ? AND b.Category = ? # AND r.StartDate IS NOT NULL").replace("DESC", "ASC");
 		RowMapper<Record> rowMapper = new RecordRowMapper();
 		List<Record> allRecords,
 					 returnRecords = new ArrayList<Record>();
@@ -96,17 +97,17 @@ public class RecordDaoImpl implements RecordDao{
 
 	//Updates an already existing record
 	@Override
-	public int updateRecord(int recordId, Date endDate, int testTime, int mistakes) {	
+	public int updateRecord(Record record) {	
 		String sql = "UPDATE records SET EndDate = ?, TestTime = #, Mistakes = #  WHERE RecordId = ?";
 		
-		String formatted = dateFormat.format(endDate);
+		String formatted = dateFormat.format(record.getEndDate());
 		
-		if(testTime < 0 || mistakes < 0) {		// Content of query depends on whether testTime and mistakes are valid values
+		if(record.getTestTime() < 0 || record.getMistakes() < 0) {		// Content of query depends on whether testTime and mistakes are valid values
 			sql = sql.replaceAll("#", "null");
-			this.jdbcTemplate.update(sql, formatted, recordId);
+			this.jdbcTemplate.update(sql, formatted, record.getRecordId());
 		} else {
 			sql = sql.replace("#", "?");
-			this.jdbcTemplate.update(sql, formatted, testTime, mistakes, recordId);
+			this.jdbcTemplate.update(sql, formatted, record.getTestTime(), record.getMistakes(), record.getRecordId());
 		}
 		return 0;
 	}

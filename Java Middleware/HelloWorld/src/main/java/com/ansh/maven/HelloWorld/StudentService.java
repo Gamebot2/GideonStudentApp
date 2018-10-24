@@ -10,5 +10,5 @@ public interface StudentService {
 	List<Student> getStudentsWithData();
 	List<String> getCategories(int StudentId);
 	int addStudent(StudentMaster student);
-	int updateStudent(StudentMasterExtra student);
+	int updateStudent(Student student);
 }

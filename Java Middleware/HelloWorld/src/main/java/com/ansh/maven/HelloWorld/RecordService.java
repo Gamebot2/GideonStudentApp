@@ -8,8 +8,8 @@ public interface RecordService {
 	List<Record> getAllRecords();
 	List<Record> getRecordsForChart(int StudentId, String category, int months, int until, String whichReps);
 	List<Record> getIncompleteRecords();
-	List<Record> getAllRecordsById(int StudentId, String category);
+	List<Record> getAllRecordsById(int StudentId);
 	int addRecord(int studentId, String category, String subcategory, String title, Date startDate, int rep);
-	int updateRecord(int recordId, Date endDate, int testTime, int minutes);
+	int updateRecord(Record record);
 	List<Data> getInternationalData(String category);
 }

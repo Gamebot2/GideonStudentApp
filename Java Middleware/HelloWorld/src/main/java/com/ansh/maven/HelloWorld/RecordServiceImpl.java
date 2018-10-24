@@ -26,14 +26,14 @@ public class RecordServiceImpl implements RecordService{
 	// Returns records for a student within a certain range, plus or minus one record, with a specific category and rep count
 	@Override
 	public List<Record> getRecordsForChart(int StudentId, String category, int months, int until, String whichReps) {
-		studentDao.updateLastUsed(StudentId, false);
+		studentDao.updateLastUsed(StudentId);
 		return recordDao.getRecordsForChart(StudentId, category, months, until, whichReps);
 	}
 	
 	// Gets records to include in a progress chart for a given student
 	@Override
-	public List<Record> getAllRecordsById(int StudentId, String category) {
-		return recordDao.getAllRecordsById(StudentId, category);
+	public List<Record> getAllRecordsById(int StudentId) {
+		return recordDao.getAllRecordsById(StudentId);
 	}
 	
 	// Returns records without an end date
@@ -46,13 +46,13 @@ public class RecordServiceImpl implements RecordService{
 	@Override
 	public int addRecord(int studentId, String category, String subcategory, String title, Date startDate, int rep) {
 		Book book = bookDao.getBookByName(category, subcategory, title);
-		return recordDao.addRecord(studentId, book, startDate, rep) + studentDao.updateLastUsed(studentId, false);
+		return recordDao.addRecord(studentId, book, startDate, rep) + studentDao.updateLastUsed(studentId);
 	}
 
 	// Updates a record in the database with an end date
 	@Override
-	public int updateRecord(int recordId, Date endDate, int testTime, int minutes) {
-		return recordDao.updateRecord(recordId, endDate, testTime, minutes) + studentDao.updateLastUsed(recordId, true);
+	public int updateRecord(Record record) {
+		return recordDao.updateRecord(record) + studentDao.updateLastUsed(record.getStudentId());
 	}
 	
 	

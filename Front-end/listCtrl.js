@@ -45,10 +45,19 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 			$scope.expandedStudentId = studentId;
 	}
 
-	//Function for selecting a student and going to another page
-	$scope.logToPage = (id, name, page) => {
-		$window.localStorage.setItem(0, id);
-		$window.localStorage.setItem(1, name);
-		window.location.href = page;
+
+	$scope.lineChartButton = student => {
+		$window.localStorage.setItem(0, student.studentId);
+		$window.localStorage.setItem(1, student.client);
+		window.location.href = "LineChart.html";
+	}
+	$scope.editStudentButton = student => {
+		$window.localStorage.setItem(0, JSON.stringify(student));
+		window.location.href = "EditStudent.html";
+	}
+	$scope.preloadRecordsList = student => {
+		$window.localStorage.setItem(3, true);
+		$window.localStorage.setItem(4, student.client);
+		window.location.href = "RecordList.html";
 	}
 });

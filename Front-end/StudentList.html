@@ -30,9 +30,8 @@
 	<body>
 		<!--Selection buttons in the header to move to insert and update pages-->
 		<div id = "header">
-			<button type = "button" class = "hoverable" id = "studentBtn" onclick = "location.href='InsertStudent.html'">Insert Student</button>
-			<button type = "button" class = "hoverable" id = "updateBtn" onclick = "location.href='UpdateRecord.html'">Update Record</button>
-			<button type = "button" class = "hoverable" id = "insertBtn" onclick = "location.href='InsertRecord.html'">Insert Record</button>
+			<button type = "button" class = "hoverable" id = "listBtn"   onclick = "location.href='RecordList.html'">Record List</button>
+			<button type = "button" class = "hoverable" id = "insertBtn" onclick = "location.href='InsertStudent.html'">Insert Student</button>
 		</div>
 		<br/>
 
@@ -81,12 +80,14 @@
 				</div>
 				<!--Additional information and buttons hidden in an accordion-->
 				<div id="expandableContainer" ng-class="{'collapsedContent':student.studentId!=expandedStudentId, 'expandedContent':student.studentId==expandedStudentId}">
+					ID: {{student.studentId}}<br>
 					Gender: {{student.gender}}<br>
 					Address: {{student.address}}<br>
 					Phone: {{student.phone}}<br>
 					Current Passes: {{student.currentPasses}}<br><br>
-					<button type = "button" class = "hoverable" id = "accordionButton" ng-click = "logToPage(student.studentId, student.client, 'LineChart.html')">Progress Chart</button>
-					<button type = "button" class = "hoverable" id = "accordionButton" ng-click = "logToPage(student.studentId, student.client, 'EditStudent.html')">Edit Student</button>
+					<button type = "button" class = "hoverable" id = "accordionButton" ng-click = "lineChartButton(student)">Progress Chart</button>
+					<button type = "button" class = "hoverable" id = "accordionButton" ng-click = "editStudentButton(student)">Edit Student</button>
+					<button type = "button" class = "hoverable" id = "accordionButton" ng-click = "preloadRecordsList(student)">Record List</button>
 				</div>
 			</div>
 		</div>

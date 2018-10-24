@@ -54,8 +54,8 @@ public class StudentServiceImpl implements StudentService{
 	
 	// Updates student information in the database
 	@Override
-	public int updateStudent(StudentMasterExtra student) {
-		return studentDao.updateStudent(student) + studentDao.updateLastUsed(student.getStudentId(), false);
+	public int updateStudent(Student student) {
+		return studentDao.updateStudent(student) + studentDao.updateLastUsed(student.getStudentId());
 	}
 	
 }

@@ -67,7 +67,7 @@ public class StudentDaoImpl implements StudentDao {
 	
 	// Updates student information in the database
 	@Override
-	public int updateStudent(StudentMasterExtra s) {
+	public int updateStudent(Student s) {
 		String sql = "UPDATE students SET Client = ?, Email = ?, Phone = ?, Address = ?, Grade = ?, Gender = ?, CurrentPasses = ? WHERE StudentId = ?";
 		this.jdbcTemplate.update(sql, s.getClient(), s.getEmail(), s.getPhone(), s.getAddress(), s.getGrade(), s.getGender(), s.getCurrentPasses(), s.getStudentId());
 		return 0;
@@ -76,11 +76,8 @@ public class StudentDaoImpl implements StudentDao {
 	
 	// Sets the last used date of the student with either a studentId or a recordId
 	@Override
-	public int updateLastUsed(int id, boolean isRecordId) {
-		String sql = "UPDATE students SET LastUsed = ? WHERE StudentId = ?;";
-		if (isRecordId)
-			sql = sql.replace("?;", "(SELECT StudentId FROM records WHERE RecordId = ?)");
-		
+	public int updateLastUsed(int id) {
+		String sql = "UPDATE students SET LastUsed = ? WHERE StudentId = ?";
 		this.jdbcTemplate.update(sql, dateFormat.format(new Date()), id);
 		return 0;
 	}
