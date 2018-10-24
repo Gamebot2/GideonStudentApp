@@ -19,7 +19,6 @@ public class Record {
 	private String subcategory;
 	private String category;
 	
-	
 	public Record() {
 		super();
 	}

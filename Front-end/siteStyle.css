@@ -126,10 +126,19 @@ button {
 	border-radius: 4px;
 	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15), 3px 3px 10px rgba(0, 0, 0, 0.1);
 }
-
 button:hover {
 	background-color: #ffa801;
 	color: white;
+}
+button[invis] {
+	background: none;
+	margin: 0px;
+	padding: 8px;
+	box-shadow: none;
+}
+button[invis]:hover {
+	background-color: rgba(0, 0, 0, 0.15);
+	color: black;
 }
 
 #rippleContainer {
