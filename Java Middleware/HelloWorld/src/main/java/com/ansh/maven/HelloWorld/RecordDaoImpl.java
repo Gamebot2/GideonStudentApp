@@ -97,18 +97,9 @@ public class RecordDaoImpl implements RecordDao{
 
 	//Updates an already existing record
 	@Override
-	public int updateRecord(Record record) {	
-		String sql = "UPDATE records SET EndDate = ?, TestTime = #, Mistakes = #  WHERE RecordId = ?";
-		
-		String formatted = dateFormat.format(record.getEndDate());
-		
-		if(record.getTestTime() < 0 || record.getMistakes() < 0) {		// Content of query depends on whether testTime and mistakes are valid values
-			sql = sql.replaceAll("#", "null");
-			this.jdbcTemplate.update(sql, formatted, record.getRecordId());
-		} else {
-			sql = sql.replace("#", "?");
-			this.jdbcTemplate.update(sql, formatted, record.getTestTime(), record.getMistakes(), record.getRecordId());
-		}
+	public int updateRecord(Record record, Book book) {	
+		String sql = "UPDATE records SET StudentId = ?, BookId = ?, StartDate = ?, EndDate = ?, Rep = ?, TestTime = ?, Mistakes = ? WHERE RecordId = ?";
+		this.jdbcTemplate.update(sql, record.getStudentId(), book.getBookId(), record.getStartDate(), record.getEndDate(), record.getRep(), record.getTestTime(), record.getMistakes(), record.getRecordId());
 		return 0;
 	}
 	

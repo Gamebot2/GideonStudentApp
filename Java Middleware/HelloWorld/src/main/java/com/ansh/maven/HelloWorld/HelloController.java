@@ -152,7 +152,7 @@ public class HelloController {
 		return recordService.getIncompleteRecords();
 	}
 	
-	//Returns all records for a given student and a given category with time and repetition constraints (NOTE: includes one record before the start time, useful for graphing)
+	//Returns all records for a given student and a given category with time and repetition constraints (NOTE: includes one record before/after the start time, useful for graphing)
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/recordsForChart")
 	public List<Record> getRecordsForChart(@RequestParam("StudentId") int StudentId, @RequestParam("Category") String category, @RequestParam("Months") int months, @RequestParam("Until") int until, @RequestParam("Reps") String whichReps) {

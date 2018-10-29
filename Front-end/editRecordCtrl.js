@@ -74,6 +74,8 @@ gideonApp.controller('editRecordCtrl', ($scope, $http, $window) => {
 		if (!Verify.check())
 			return;
 
+		console.log($scope.record);
+
 		// Updates the record with an HTTP post call
 		try {
 			$http({

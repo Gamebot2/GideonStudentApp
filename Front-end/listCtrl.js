@@ -4,6 +4,7 @@
  *
  * NOTES:
  * - The variable "gideonApp" is defined in gideonApp.js. That file must be included prior to this one in html.
+ * - The page requires slots 2, 3, and 4 in the window storage to track the previously used filters during the session. These slots should be unused in every other page, unless they are being used to pre-initialize filter values for this page.
  */
 
 
@@ -37,7 +38,7 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 		getStudents();
 	}
 	
-
+	// ACCORDION MANAGEMENT
 	$scope.manageExpansion = studentId => {
 		if ($scope.expandedStudentId == studentId)
 			$scope.expandedStudentId = -1;
@@ -45,10 +46,9 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 			$scope.expandedStudentId = studentId;
 	}
 
-
+	// ACCORDION BUTTONS
 	$scope.lineChartButton = student => {
-		$window.localStorage.setItem(0, student.studentId);
-		$window.localStorage.setItem(1, student.client);
+		$window.localStorage.setItem(0, JSON.stringify(student));
 		window.location.href = "LineChart.html";
 	}
 	$scope.editStudentButton = student => {
@@ -56,8 +56,7 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 		window.location.href = "EditStudent.html";
 	}
 	$scope.preloadRecordsList = student => {
-		$window.localStorage.setItem(3, true);
-		$window.localStorage.setItem(4, student.client);
+		$window.localStorage.setItem(5, student.client);
 		window.location.href = "RecordList.html";
 	}
 });

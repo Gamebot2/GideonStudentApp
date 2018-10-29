@@ -6,7 +6,7 @@
  * - The variable "gideonApp" is defined in gideonApp.js. That file must be included prior to this one in html.
  * - The variable "Dates" is defined in momentbymonth.js. That file must be included prior to this one in html.
  * - The variable "Verify" is defined in verify.js. That file must be included prior to this one in html.
- * - The application expects there to be the id and name of a student in the local storage of the window. Make sure these exist before opening LineChart.html.
+ * - The application expects there to be a JSON string representing a student in slot 0 of the window storage. Make sure these exist before opening LineChart.html.
  */
 
 
@@ -18,9 +18,10 @@ Math.truncN = (x) => Number.isInteger(x) ? x : Math.trunc(x) - (x < 0 ? 1 : 0);
 
 gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 
-	// Fetch relevant information from the window
-	$scope.studentId = $window.localStorage.getItem(0);
-	$scope.studentName = $window.localStorage.getItem(1);
+	// Fetch the student from the local storage
+	var stud = JSON.parse($window.localStorage.getItem(0));
+	$scope.studentId = stud.studentId;
+	$scope.studentName = stud.client;
 
 	// Pre-generation chart management
 	var allBooks = [];
@@ -244,7 +245,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 			let chartSpecs = {
 				datasets: [
 						{
-							label: $scope.studentName,
+							label: "Progress",
 							data: data,
 							backgroundColor: "rgba(255, 0, 0, 0.4)",
 							borderColor: "rgba(255, 0, 0, 0.4)",
@@ -376,7 +377,9 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 				options: {
 					responsive: true,
 					title: {
-						display: false,
+						display: true,
+						fontSize: 24,
+						text: $scope.studentName,
 					},
 					legend: {
 						position: 'top',

@@ -43,15 +43,15 @@
 			<div class = "columnContainer" id = "filterContainer">
 				<div class="column" style="width:25%">
 					<label>Student</label>
-					<select black big ng-model="studentFilter" ng-options="s for s in students" ng-change="didFilter()"></select>
+					<select black big ng-model="studentFilter.value" ng-options="s for s in students" ng-change="didFilter()"></select>
 				</div>
 				<div class="column" style="width:25%">
 					<label>Category</label>
-					<select black big ng-model="categoryFilter" ng-options="c for c in categories" ng-change="didFilter()"></select>
+					<select black big ng-model="categoryFilter.value" ng-options="c for c in categories" ng-change="didFilter()"></select>
 				</div>
 				<div class="column" style="width:25%">
 					<label>Rep</label>
-					<select black big ng-model="repFilter" ng-options="r for r in [wildcard, 1, 2, 3, 4, 5]" ng-change="didFilter()"></select>
+					<select black big ng-model="repFilter.value" ng-options="r for r in reps" ng-change="didFilter()"></select>
 				</div>
 			</div>
 			<br><br>

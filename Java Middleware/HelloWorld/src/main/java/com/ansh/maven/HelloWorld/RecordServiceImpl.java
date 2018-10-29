@@ -52,7 +52,8 @@ public class RecordServiceImpl implements RecordService{
 	// Updates a record in the database with an end date
 	@Override
 	public int updateRecord(Record record) {
-		return recordDao.updateRecord(record) + studentDao.updateLastUsed(record.getStudentId());
+		Book book = bookDao.getBookByName(record.getCategory(), record.getSubcategory(), record.getBookTitle());
+		return recordDao.updateRecord(record, book) + studentDao.updateLastUsed(record.getStudentId());
 	}
 	
 	

@@ -33,15 +33,14 @@
 		<link rel="stylesheet" type="text/css" href="LineChart.css">
 	</head>
 	<body>
-		<br>
 		<!--Containing essentially a form for selected chart specifications-->
 		<div class="exterior" ng-app = "gideonApp" ng-controller = "chartCtrl">
-
-			<h1>Progress Chart for {{studentName}}</h1>
-			<br>
-
 			<div id = "expandableContainer" ng-class = "{'collapsedContent':!expanded, 'expandedContent':expanded}">
 			<form name = "form">
+				<button invis class="hoverable" id="backButton" onclick="location.href='StudentList.html'">Back to Student List</button>
+
+				<h1>Progress Chart for {{studentName}}</h1>
+				<br>
 				<div class="columnContainer">
 					<!--Allows user to select specific category to graph based on what student has-->
 					<div class="threeColumn">
