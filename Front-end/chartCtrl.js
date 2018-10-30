@@ -261,6 +261,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 							borderDash: [5],
 							lineTension: 0,
 							pointRadius: 0,
+							hidden: true,
 						}, {
 							label: "IGL",
 							data: igl,
