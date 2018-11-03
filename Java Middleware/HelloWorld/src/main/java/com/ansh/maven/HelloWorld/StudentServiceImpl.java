@@ -24,10 +24,10 @@ public class StudentServiceImpl implements StudentService{
 		return obj;
 	}
 
-	// Returns all students that are associated with a record
+	// Returns students ordered by recently used for the list display, with a specified limit (0 corresponds to no limit)
 	@Override
-	public List<Student> getStudentsWithData() {
-		return studentDao.getStudentsWithData();
+	public List<Student> getStudentsForList(boolean withData, int limit) {
+		return studentDao.getStudentsForList(withData, limit);
 	}
 
 	// Returns all book categories for which a student has records

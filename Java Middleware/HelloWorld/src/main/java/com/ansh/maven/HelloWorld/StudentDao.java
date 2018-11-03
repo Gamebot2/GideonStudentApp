@@ -5,7 +5,7 @@ import java.util.*;
 public interface StudentDao {
 	List<Student> getAllStudents();
 	Student getStudentById(int StudentId);
-	List<Student> getStudentsWithData();
+	List<Student> getStudentsForList(boolean withData, int limit);
 	String getGrade(int StudentId);
 	List<String> getCategories(int StudentId);
 	int addStudent(StudentMaster student);

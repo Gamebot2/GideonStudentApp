@@ -10,11 +10,7 @@
 
 gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 
-	var dataOn = {
-		true: ["dataStudents", "Display All Students"],
-		false: ["students", "Display Students With Records"],
-		switch: false,
-	};
+	var dataSwitch = false;
 
 	//Preload $scope.students with an initial "loading" value and the toggle button text with its initial state
 	$scope.students = [{
@@ -22,19 +18,18 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 		email: "",
 	}];
 	$scope.expandedStudentId = -1;
-	$scope.toggleButtonText = dataOn[dataOn.switch][1];
 
 	var getStudents = () => {
-		$http.get(`${URL}${dataOn[dataOn.switch][0]}`)
+		$http.get(`${URL}listStudents?withData=${dataSwitch}&limit=0`)
 		.then(response => {
 			$scope.students = response.data;
 		});
-		$scope.toggleButtonText = dataOn[dataOn.switch][1];
+		$scope.toggleButtonText = dataSwitch ? "Display All Students" : "Display Students With Records";
 	}
 	getStudents();
 
 	$scope.toggleData = () => {
-		dataOn.switch = !dataOn.switch;
+		dataSwitch = !dataSwitch;
 		getStudents();
 	}
 	

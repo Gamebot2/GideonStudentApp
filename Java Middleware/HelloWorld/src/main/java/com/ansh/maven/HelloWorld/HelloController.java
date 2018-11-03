@@ -80,12 +80,12 @@ public class HelloController {
 		return studentService.getStudentById(StudentId);
 	}
 	
-	//Returns all students who have records in the record database
+	//Returns students ordered by recently used for the list display, with a specified limit (0 corresponds to no limit)
 	@CrossOrigin(origins = webOrigin)
-	@RequestMapping("/dataStudents")
-	public List<Student> getStudentsWithData() {
-		System.out.println("Method getStudentsWithData() called");
-		return studentService.getStudentsWithData();
+	@RequestMapping("/listStudents")
+	public List<Student> getStudentsForList(@RequestParam("withData") boolean withData, @RequestParam("limit") int limit) {
+		System.out.println("Method getStudentsForList() called");
+		return studentService.getStudentsForList(withData, limit);
 	}
 	
 	//Returns all categories that a student is working in
@@ -156,7 +156,7 @@ public class HelloController {
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/recordsForChart")
 	public List<Record> getRecordsForChart(@RequestParam("StudentId") int StudentId, @RequestParam("Category") String category, @RequestParam("Months") int months, @RequestParam("Until") int until, @RequestParam("Reps") String whichReps) {
-		System.out.println("Method getRecordsById() called for Student ID " + StudentId + ", category " + category + ", month number " + months + ", and until " + until + ", and rep number " + whichReps);
+		System.out.printf("Method getRecordsById() called for Student ID %s, category %s, month number %d, and until %d, for rep number %d\n", StudentId, category, months, until, whichReps);
 		return recordService.getRecordsForChart(StudentId, category, months, until, whichReps);
 	}
 	

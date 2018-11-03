@@ -108,6 +108,7 @@
 							<div class="invalidContainer" ng-class="{'invalid':form.endDate.$touched && form.endDate.$invalid}"></div>
 						</div>
 						<span class="errorText" ng-show="form.endDate.$touched && form.endDate.$invalid">
+							<span ng-show="form.endDate.$error.date">This date is invalid.</span>
 							<span ng-show="form.endDate.$error.min">The end date must come after the start date.</span>
 						</span>
 					</div>

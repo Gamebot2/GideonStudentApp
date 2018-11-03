@@ -22,7 +22,7 @@ public class StudentDaoImpl implements StudentDao {
 	// Returns all students in the database
 	@Override
 	public List<Student> getAllStudents() {
-		String sql = "SELECT * FROM students ORDER BY LastUsed DESC";
+		String sql = "SELECT * FROM students ORDER BY Client";
 		RowMapper<Student> rowMapper = new StudentRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
@@ -35,12 +35,24 @@ public class StudentDaoImpl implements StudentDao {
 		return jdbcTemplate.queryForObject(sql, rowMapper, StudentId);
 	}
 
-	// Returns the students in the database that have records associated with them
+	// Returns students ordered by recently used for the list display, with a specified limit (0 corresponds to no limit)
 	@Override
-	public List<Student> getStudentsWithData() {
-		String sql = "SELECT * FROM students s WHERE s.StudentId IN (SELECT DISTINCT StudentId FROM records r) ORDER BY LastUsed DESC";
+	public List<Student> getStudentsForList(boolean withData, int limit) {
+		String sql = "SELECT * FROM students s # ORDER BY LastUsed DESC";
 		RowMapper<Student> rowMapper = new StudentRowMapper();
-		return this.jdbcTemplate.query(sql, rowMapper);
+		
+		// withData check
+		if (withData)
+			sql = sql.replace("#", "WHERE s.StudentId IN (SELECT DISTINCT StudentId FROM records r)");
+		else
+			sql = sql.replace("#", "");
+		
+		// limit check
+		if (limit > 0) {
+			sql += " LIMIT ?";
+			return this.jdbcTemplate.query(sql, rowMapper, limit);
+		} else
+			return this.jdbcTemplate.query(sql, rowMapper);
 	}
 	
 	// Returns the grade of a single student

@@ -49,8 +49,7 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 			model: $scope.repFilter,
 			wildcard: "Any",
 			load(item) {
-				var i = parseInt(item);
-				return i ? i : this.wildcard;
+				return parseInt(item) || this.wildcard;
 			},
 			target(record) {
 				return record.rep;

@@ -73,6 +73,7 @@ gideonApp.controller('insertRecordCtrl', ($scope, $http, $window) => {
 			})
 			.then(response => {
 				Verify.successIf(response.data == 0, `Successfully added record for ${$scope.client.name}`);
+				$window.localStorage.setItem(5, $scope.client.name);
 			})
 			.catch(Verify.error);
 		}
