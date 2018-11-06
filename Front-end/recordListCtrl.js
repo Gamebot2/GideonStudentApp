@@ -17,30 +17,23 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 	$scope.records = allRecords;
 
 	// FILTER MANAGEMENT
-	$scope.studentFilter = {};
+	// The non-optional student filter is the id number. If there is nothing in the window, it should default to a value of 0.
+	$scope.studentFilter = parseInt($window.localStorage.getItem(5)) || 0;
+
+	// Optional filters are objects with a "value" property: this is so that each fitler stores a *pointer* to these values for modification
 	$scope.categoryFilter = {};
 	$scope.repFilter = {};
 
+	// Big Filters dictionary stores information about how filters should be processed.
 	var Filters = {
-		"student": {
-			id: 5,
-			model: $scope.studentFilter,
-			wildcard: "Any",
-			load(item) {
-				return item;
-			},
-			target(record) {
-				return record.name;
-			},
-		},
 		"category": {
-			id: 6,
-			model: $scope.categoryFilter,
-			wildcard: "Any",
-			load(item) {
+			id: 6,								// "id" is the filter's spot in local storage
+			model: $scope.categoryFilter,		// "model" is an object pointer where the selected value is being held
+			wildcard: "Any",					// "wildcard" is the value for which filtering should not occur
+			load(item) {						// "load" converts from the raw local storage data to a useable value
 				return item;
 			},
-			target(record) {
+			target(record) {					// "target" identifies the part of a record object which must match the filter
 				return record.category;
 			},
 		},
@@ -49,7 +42,7 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 			model: $scope.repFilter,
 			wildcard: "Any",
 			load(item) {
-				return parseInt(item) || this.wildcard;
+				return parseInt(item) || this.wildcard; // If the item is not a number, it has to be the wildcard.
 			},
 			target(record) {
 				return record.rep;
@@ -57,6 +50,7 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 		},
 	};
 
+	// Loads all filters from local storage
 	for (var name in Filters) {
 		var filter = Filters[name];
 
@@ -67,6 +61,28 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 			filter.model.value = filter.wildcard;
 	}
 
+	// Runs when the student is selected
+	var didSelectStudent = $scope.didSelectStudent = () => {
+		// First, update the storage slot for the student
+		$window.localStorage.setItem(5, $scope.studentFilter);
+		console.log($scope.studentFilter);
+
+		// Then, load all records for that student
+		$http.get(`${URL}recordsById?StudentId=${$scope.studentFilter}`)
+		.then(response => {
+			allRecords = response.data.map(record => {
+				// Note that we're replacing - with / in the dates because of some weird JS date parsing stuff where using - will cause the date to be one day off
+				record.startDateDisplay = record.startDate ? new Date(record.startDate.replace(/-/g,"/")).toLocaleDateString() : "";
+				record.endDateDisplay = record.endDate ? new Date(record.endDate.replace(/-/g,"/")).toLocaleDateString() : "In Progress";
+
+				return record;
+			});
+			// Apply the filters to the student's records
+			didFilter();
+		});
+	}
+
+	// Runs when any optional filter is selected
 	var didFilter = $scope.didFilter = () => {
 		var filtered = allRecords;
 		for (var name in Filters) {
@@ -79,16 +95,16 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 			if (filter.model.value != filter.wildcard)
 				filtered = filtered.filter(r => filter.target(r) == filter.model.value);
 		};
-		
-		
 		$scope.records = filtered;
 	}
 
 	// FETCH DATA
 	$http.get(`${URL}students`)
 	.then(response => {
-		$scope.students = response.data.map(o => o.client);
-		$scope.students.unshift(Filters["student"].wildcard);
+		$scope.students = response.data.map(o => ({name: o.client, id: o.studentId}));
+		if ($scope.studentFilter == 0)
+			$scope.studentFilter = $scope.students[0].id;
+		didSelectStudent();
 	});
 
 	$http.get(`${URL}categories`)
@@ -99,18 +115,6 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 
 	$scope.reps = [Filters["rep"].wildcard, 1, 2, 3, 4, 5];
 
-	$http.get(`${URL}records`)
-	.then(response => {
-		allRecords = response.data.map(record => {
-			// Note that we're replacing - with / in the dates because of some weird JS date parsing stuff where using - will cause the date to be one day off
-			record.startDateDisplay = record.startDate ? new Date(record.startDate.replace(/-/g,"/")).toLocaleDateString() : "";
-			record.endDateDisplay = record.endDate ? new Date(record.endDate.replace(/-/g,"/")).toLocaleDateString() : "In Progress";
-
-			return record;
-		});
-		didFilter();
-	});
-
 
 	// ACCORDION MANAGEMENT
 	$scope.expandedRecordId = -1;
@@ -119,6 +123,14 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 			$scope.expandedRecordId = -1;
 		else
 			$scope.expandedRecordId = recordId;
+	}
+
+	$scope.progressChartButton = record => {
+		$http.get(`${URL}student?Id=${record.studentId}`)
+		.then(response => {
+			$window.localStorage.setItem(0, JSON.stringify(response.data));
+			window.location.href = "LineChart.html";
+		});
 	}
 
 	$scope.editRecordButton = record => {

@@ -156,7 +156,7 @@ public class HelloController {
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/recordsForChart")
 	public List<Record> getRecordsForChart(@RequestParam("StudentId") int StudentId, @RequestParam("Category") String category, @RequestParam("Months") int months, @RequestParam("Until") int until, @RequestParam("Reps") String whichReps) {
-		System.out.printf("Method getRecordsById() called for Student ID %s, category %s, month number %d, and until %d, for rep number %d\n", StudentId, category, months, until, whichReps);
+		System.out.printf("Method getRecordsById() called for Student ID %d, category %s, month number %d, and until %d, for rep number %s\n", StudentId, category, months, until, whichReps);
 		return recordService.getRecordsForChart(StudentId, category, months, until, whichReps);
 	}
 	

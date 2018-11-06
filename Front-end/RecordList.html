@@ -41,15 +41,17 @@
 
 			<!--Filter select blocks-->
 			<div class = "columnContainer" id = "filterContainer">
-				<div class="column" style="width:25%">
+				<div class="column" style="width:100%">
 					<label>Student</label>
-					<select black big ng-model="studentFilter.value" ng-options="s for s in students" ng-change="didFilter()"></select>
+					<select black big ng-model="studentFilter" ng-options="s.id as s.name for s in students" ng-change="didSelectStudent()"></select>
 				</div>
-				<div class="column" style="width:25%">
+			</div><br>
+			<div class = "columnContainer" id = "filterContainer">
+				<div class="column" style="width:50%">
 					<label>Category</label>
 					<select black big ng-model="categoryFilter.value" ng-options="c for c in categories" ng-change="didFilter()"></select>
 				</div>
-				<div class="column" style="width:25%">
+				<div class="column" style="width:50%">
 					<label>Rep</label>
 					<select black big ng-model="repFilter.value" ng-options="r for r in reps" ng-change="didFilter()"></select>
 				</div>
@@ -84,7 +86,9 @@
 							ID: {{record.recordId}}<br>
 							Category: {{record.category}}<br>
 							Subcategory: {{record.subcategory}}<br>
-							Rep: {{record.rep}}<br>
+							Rep: {{record.rep}}<br><br>
+							<button type = "button" class = "hoverable" id = "accordionButton" ng-click = "progressChartButton(record)">Progress Chart</button>
+							<br><br><br>
 						</div>
 						<div class="column" style="width:50%">
 							End Date: {{record.endDateDisplay}}<br>

@@ -51,7 +51,7 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 		window.location.href = "EditStudent.html";
 	}
 	$scope.preloadRecordsList = student => {
-		$window.localStorage.setItem(5, student.client);
+		$window.localStorage.setItem(5, student.studentId);
 		window.location.href = "RecordList.html";
 	}
 });
