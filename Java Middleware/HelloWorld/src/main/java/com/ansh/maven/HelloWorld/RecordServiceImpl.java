@@ -44,9 +44,9 @@ public class RecordServiceImpl implements RecordService{
 
 	// Adds a record to the database
 	@Override
-	public int addRecord(int studentId, String category, String subcategory, String title, Date startDate, int rep) {
-		Book book = bookDao.getBookByName(category, subcategory, title);
-		return recordDao.addRecord(studentId, book, startDate, rep) + studentDao.updateLastUsed(studentId);
+	public int addRecord(Master master) {
+		Book book = bookDao.getBookByName(master.getCategory(), master.getSubcategory(), master.getTitle());
+		return recordDao.addRecord(master, book) + studentDao.updateLastUsed(master.getId());
 	}
 
 	// Updates a record in the database with an end date

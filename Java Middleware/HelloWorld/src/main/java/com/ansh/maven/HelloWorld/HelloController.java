@@ -175,7 +175,7 @@ public class HelloController {
 		System.out.println("Method addRecord() called");
 		int a;
 		try {
-			a = recordService.addRecord(master.getId(), master.getCategory(), master.getSubcategory(), master.getTitle(), master.getStartDate(), master.getRep());
+			a = recordService.addRecord(master);
 		} catch (java.lang.RuntimeException e) {
 			System.out.println("Method addRecord() failed:");
 			e.printStackTrace();

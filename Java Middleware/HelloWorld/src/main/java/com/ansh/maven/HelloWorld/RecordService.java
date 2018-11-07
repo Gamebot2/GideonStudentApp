@@ -9,7 +9,7 @@ public interface RecordService {
 	List<Record> getRecordsForChart(int StudentId, String category, int months, int until, String whichReps);
 	List<Record> getIncompleteRecords();
 	List<Record> getAllRecordsById(int StudentId);
-	int addRecord(int studentId, String category, String subcategory, String title, Date startDate, int rep);
+	int addRecord(Master master);
 	int updateRecord(Record record);
 	List<Data> getInternationalData(String category);
 }

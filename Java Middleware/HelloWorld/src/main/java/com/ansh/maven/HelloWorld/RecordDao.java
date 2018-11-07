@@ -8,7 +8,7 @@ public interface RecordDao {
 	List<Record> getRecordsForChart(int StudentId, String category, int months, int until, String whichReps);
 	List<Record> getAllRecordsById(int StudentId);
 	List<Record> getIncompleteRecords();
-	int addRecord(int id, Book book, Date startDate, int rep);
+	int addRecord(Master master, Book book);
 	int updateRecord(Record record, Book book);
 	List<Data> getInternationalData(String category);
 }
