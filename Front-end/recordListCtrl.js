@@ -23,6 +23,7 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 	// Optional filters are objects with a "value" property: this is so that each fitler stores a *pointer* to these values for modification
 	$scope.categoryFilter = {};
 	$scope.repFilter = {};
+	$scope.endDateFilter = {};
 
 	// Big Filters dictionary stores information about how filters should be processed.
 	var Filters = {
@@ -48,6 +49,17 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 				return record.rep;
 			},
 		},
+		"status": {
+			id: 8,
+			model: $scope.endDateFilter,
+			wildcard: "All",
+			load(item) {
+				return item;
+			},
+			target(record) {
+				return record.endDateDisplay;
+			},
+		}
 	};
 
 	// Loads all filters from local storage
@@ -84,18 +96,17 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 
 	// Runs when any optional filter is selected
 	var didFilter = $scope.didFilter = () => {
-		var filtered = allRecords;
-		for (var name in Filters) {
-			var filter = Filters[name];
+		for (let name in Filters)
+			$window.localStorage.setItem(Filters[name].id, Filters[name].model.value);
 
-			// First, update the storage slots
-			$window.localStorage.setItem(filter.id, filter.model.value);
-
-			// Then, do the actual filtering
-			if (filter.model.value != filter.wildcard)
-				filtered = filtered.filter(r => filter.target(r) == filter.model.value);
-		};
-		$scope.records = filtered;
+		$scope.records = allRecords.filter(r => {
+			for (let name in Filters) {
+				let filter = Filters[name];
+				if (filter.model.value != filter.wildcard && filter.target(r) != filter.model.value)
+					return false;
+			}
+			return true;
+		});
 	}
 
 	// FETCH DATA
@@ -114,6 +125,7 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 	});
 
 	$scope.reps = [Filters["rep"].wildcard, 1, 2, 3, 4, 5];
+	$scope.statuses = [Filters["status"].wildcard, "In Progress"];
 
 
 	// ACCORDION MANAGEMENT
@@ -129,6 +141,7 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 		$http.get(`${URL}student?Id=${record.studentId}`)
 		.then(response => {
 			$window.localStorage.setItem(0, JSON.stringify(response.data));
+			$window.localStorage.setItem(1, record.category);
 			window.location.href = "LineChart.html";
 		});
 	}

@@ -7,6 +7,7 @@
  * - The variable "Dates" is defined in momentbymonth.js. That file must be included prior to this one in html.
  * - The variable "Verify" is defined in verify.js. That file must be included prior to this one in html.
  * - The application expects there to be a JSON string representing a student in slot 0 of the window storage. Make sure these exist before opening LineChart.html.
+ * - Slot 1 of window storage can be used to preload a category. Make sure that if this value exists, it is valid.
  */
 
 
@@ -44,8 +45,16 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 	.then(response => {
 		if (response.data.length == 0)
 			$scope.categoriesOfStudent = ["No data found"];
-		else
+		else {
 			$scope.categoriesOfStudent = response.data;
+
+			// Checks for a pre-loaded category name in slot 1 of window storage
+			var cat = $window.localStorage.getItem(1);
+			if (cat && $scope.categoriesOfStudent.includes(cat)) {
+				$scope.selectedCategory = cat;
+				$window.localStorage.setItem(1, "");
+			}
+		}
 	});
 
 	//Updates information for the selected category

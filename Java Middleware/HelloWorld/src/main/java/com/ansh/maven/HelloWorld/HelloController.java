@@ -32,6 +32,14 @@ public class HelloController {
 		return bookService.getAllBooks();
 	}
 	
+	//Returns a specific book by name
+	@CrossOrigin(origins = webOrigin)
+	@RequestMapping("/book")
+	public Book getBookByName(@RequestParam("Category") String category, @RequestParam("Subcategory") String subcategory, @RequestParam("Title") String title) {
+		System.out.printf("Method getBookByName() called for category %s, subcategory %s, and title %s\n", category, subcategory, title);
+		return bookService.getBookByName(category, subcategory, title);
+	}
+	
 	//Returns all categories of books
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/categories")

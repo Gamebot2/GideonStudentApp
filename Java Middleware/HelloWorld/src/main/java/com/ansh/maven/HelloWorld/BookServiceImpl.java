@@ -19,9 +19,14 @@ public class BookServiceImpl implements BookService {
 
 	//Gets specific book by ID
 	@Override
-	public Book getBookById(int book_id) {
-		Book obj = bookDao.getBookById(book_id);
-		return obj;
+	public Book getBookById(int bookId) {
+		return bookDao.getBookById(bookId);
+	}
+	
+	//Gets specific book by name
+	@Override
+	public Book getBookByName(String category, String subcategory, String title) {
+		return bookDao.getBookByName(category, subcategory, title);
 	}
 	
 	//Gets all categories in the database

@@ -4,9 +4,9 @@ import java.util.*;
 
 
 public interface BookService {
-
 	List<Book> getAllBooks();
-	Book getBookById(int book_id);
+	Book getBookById(int bookId);
+	Book getBookByName(String category, String subcategory, String title);
 	List<String> getCategories();
 	List<String> getSubcategories(String category);
 	List<String> getTitles(String subcategory);

@@ -47,13 +47,17 @@
 				</div>
 			</div><br>
 			<div class = "columnContainer" id = "filterContainer">
-				<div class="column" style="width:50%">
+				<div class="column" style="width:33%">
 					<label>Category</label>
 					<select black big ng-model="categoryFilter.value" ng-options="c for c in categories" ng-change="didFilter()"></select>
 				</div>
-				<div class="column" style="width:50%">
+				<div class="column" style="width:34%">
 					<label>Rep</label>
 					<select black big ng-model="repFilter.value" ng-options="r for r in reps" ng-change="didFilter()"></select>
+				</div>
+				<div class="column" style="width:33%">
+					<label>Status</label>
+					<select black big ng-model="endDateFilter.value" ng-options="s for s in statuses" ng-change="didFilter()"></select>
 				</div>
 			</div>
 			<br><br>

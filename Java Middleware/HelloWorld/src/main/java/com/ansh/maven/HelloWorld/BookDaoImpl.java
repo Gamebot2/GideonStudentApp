@@ -28,10 +28,10 @@ public class BookDaoImpl implements BookDao {
 	
 	//Retrieves a single book from the database given a specific ID number
 	@Override
-	public Book getBookById(int book_id) {
+	public Book getBookById(int bookId) {
 		String sql = "SELECT * FROM books WHERE BookId = ?";
 		RowMapper<Book> rowMapper = new BeanPropertyRowMapper<Book>(Book.class);
-		return jdbcTemplate.queryForObject(sql, rowMapper, book_id);
+		return jdbcTemplate.queryForObject(sql, rowMapper, bookId);
 	}
 	
 	//Retrieves a single book from the database given information about its name

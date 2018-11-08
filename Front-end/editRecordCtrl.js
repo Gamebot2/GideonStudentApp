@@ -64,6 +64,18 @@ gideonApp.controller('editRecordCtrl', ($scope, $http, $window) => {
 	}
 	$scope.getTitles();
 
+	//Gathers book information (specifically, the test) for a newly selected title
+	$scope.didSetBook = () => {
+		if ($scope.record.bookTitle) {
+			$http.get(`${URL}book?Category=${$scope.record.category}&Subcategory=${$scope.record.subcategory}&Title=${$scope.record.bookTitle}`)
+			.then(response => {
+				$scope.record.bookId = response.data.bookId;
+				$scope.record.test = response.data.test;
+				$scope.record.sequenceLarge = response.data.sequenceLarge;
+			});
+		}
+	}
+
 	// Facilitates the JSON packaging by setting the id property
 	$scope.setId = () => {
 		$scope.record.studentId = $scope.client.id;
