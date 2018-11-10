@@ -42,21 +42,21 @@
 			<!--Filter select blocks-->
 			<div class = "columnContainer" id = "filterContainer">
 				<div class="column" style="width:100%">
-					<label>Student</label>
+					<label id = "filterText">Student</label>
 					<select black big ng-model="studentFilter" ng-options="s.id as s.name for s in students" ng-change="didSelectStudent()"></select>
 				</div>
 			</div><br>
 			<div class = "columnContainer" id = "filterContainer">
 				<div class="column" style="width:33%">
-					<label>Category</label>
+					<label id = "filterText">Category</label>
 					<select black big ng-model="categoryFilter.value" ng-options="c for c in categories" ng-change="didFilter()"></select>
 				</div>
 				<div class="column" style="width:34%">
-					<label>Rep</label>
+					<label id = "filterText">Rep</label>
 					<select black big ng-model="repFilter.value" ng-options="r for r in reps" ng-change="didFilter()"></select>
 				</div>
 				<div class="column" style="width:33%">
-					<label>Status</label>
+					<label id = "filterText">Status</label>
 					<select black big ng-model="endDateFilter.value" ng-options="s for s in statuses" ng-change="didFilter()"></select>
 				</div>
 			</div>
