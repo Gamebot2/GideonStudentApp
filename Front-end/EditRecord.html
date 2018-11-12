@@ -66,7 +66,7 @@
 					<div class="threeColumn">
 						<label for = "subCategory">Book Sub-Category</label><br>
 						<div class="inputWrapperBig">
-							<select white big id = "subCategory" name = "subcategory" ng-model = "record.subcategory" ng-options = "y disable when y.startsWith('Select') for y in subcategories" ng-change = "getTitles()" required>
+							<select white big id = "subCategory" name = "subcategory" ng-model = "record.subcategory" ng-options = "y for y in subcategories" ng-change = "getTitles()" required>
 							</select>
 							<div class="invalidContainer" ng-class="{'invalid':form.subcategory.$touched && form.subcategory.$invalid}"></div>
 						</div>
@@ -77,7 +77,7 @@
 					<div class="threeColumn">
 						<label for = "title">Book Title</label><br>
 						<div class="inputWrapperBig">
-							<select white big id = "title" name = "title" ng-model = "record.bookTitle" ng-options = "z disable when z.startsWith('Select') for z in titles" ng-change = "didSetBook()" required>
+							<select white big id = "title" name = "title" ng-model = "record.bookTitle" ng-options = "z.title as z.display for z in titles" ng-change = "didSetBook()" required>
 							</select>
 							<div class="invalidContainer" ng-class="{'invalid':form.title.$touched && form.title.$invalid}"></div>
 						</div>

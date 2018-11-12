@@ -72,6 +72,13 @@ public class HelloController {
 		return bookService.getBooksInCategory(category);
 	}
 	
+	@CrossOrigin(origins = webOrigin)
+	@RequestMapping("/booksInSubcategory")
+	public List<Book> getBookInSubcategory(@RequestParam("Category") String category, @RequestParam("Subcategory") String subcategory) {
+		System.out.printf("Method getBooksInSubcategotry() called for category %s, subcategory %s\n", category, subcategory);
+		return bookService.getBooksInSubcategory(category, subcategory);
+	}
+	
 	//Returns all students in the student database
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/students")

@@ -71,6 +71,12 @@ public class BookDaoImpl implements BookDao {
 		return jdbcTemplate.query(sql, rowMapper, category);
 	}
 
-	
+	//Returns all books, ordered in sequence, in a subcategory
+	@Override
+	public List<Book> getBooksInSubcategory(String category, String subcategory) {
+		String sql = "SELECT * FROM books WHERE UPPER(Category) = UPPER(?) AND UPPER(Subcategory) = UPPER(?) ORDER BY Sequence";
+		RowMapper<Book> rowMapper = new BookRowMapper();
+		return jdbcTemplate.query(sql, rowMapper, category, subcategory);
+	}
 	
 }

@@ -59,7 +59,10 @@ gideonApp.controller('editRecordCtrl', ($scope, $http, $window) => {
 	$scope.getTitles = () => {
 		$http.get(`${URL}titles?Subcategory=${$scope.record.subcategory}`)
 		.then(response => {
-			$scope.titles = response.data;
+			$scope.titles = response.data.map((o,i) => ({
+				title: o,
+				display: `${i+1}: ${o}`
+			}));
 		});
 	}
 	$scope.getTitles();

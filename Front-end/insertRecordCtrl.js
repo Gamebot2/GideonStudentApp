@@ -18,7 +18,7 @@ gideonApp.controller('insertRecordCtrl', ($scope, $http, $window) => {
 
 	// Preloads selection boxes with a disabled value (these and only these should start with the letters "Select")
 	$scope.subcategories = ["Select a category first"];
-	$scope.titles = ["Select a subcategory first"];
+	$scope.titles = [{title: "Select a subcategory first", display: "Select a subcategory first"}];
 
 	// Returns a list of all students for easy name selection	
 	$http.get(`${URL}students`)
@@ -46,7 +46,10 @@ gideonApp.controller('insertRecordCtrl', ($scope, $http, $window) => {
 	$scope.getTitles = () => {
 		$http.get(`${URL}titles?Subcategory=${$scope.record.subcategory}`)
 		.then(response => {
-			$scope.titles = response.data;
+			$scope.titles = response.data.map((o,i) => ({
+				title: o,
+				display: `${i+1}: ${o}`
+			}));
 		});
 	}
 

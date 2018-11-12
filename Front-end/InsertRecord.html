@@ -71,7 +71,7 @@
 				<!--Displays all book titles for a given subcategory-->
 				<label for = "title">Book Title</label><br>
 					<div class="inputWrapperBig">
-						<select white big id = "title" name = "title" ng-model = "record.title" ng-options = "z disable when z.startsWith('Select') for z in titles" required>
+						<select white big id = "title" name = "title" ng-model = "record.title" ng-options = "z.title as z.display disable when z.title.startsWith('Select') for z in titles" required>
 							<option value = "">Choose title</option>
 						</select>
 						<div class="invalidContainer" ng-class="{'invalid':form.title.$touched && form.title.$invalid}"></div>

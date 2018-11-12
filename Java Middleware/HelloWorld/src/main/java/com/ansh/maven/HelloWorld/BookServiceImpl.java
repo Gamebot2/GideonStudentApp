@@ -53,6 +53,11 @@ public class BookServiceImpl implements BookService {
 		return bookDao.getBooksInCategory(category);
 	}
 	
+	//Gets all books, ordered in sequence, in a subcategory
+	@Override
+	public List<Book> getBooksInSubcategory(String category, String subcategory) {
+		return bookDao.getBooksInSubcategory(category, subcategory);
+	}
 	
 	
 }
