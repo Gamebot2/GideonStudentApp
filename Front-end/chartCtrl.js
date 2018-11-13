@@ -40,23 +40,6 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 		Dates.setZeroDate(response.data); // we only need the student's current grade to make this one calculation, so it is never stored anywhere.
 	});
 
-	//Retrieves all categories the selected student is working in
-	$http.get(`${URL}categoriesByStudent?Id=${$scope.studentId}`)
-	.then(response => {
-		if (response.data.length == 0)
-			$scope.categoriesOfStudent = ["No data found"];
-		else {
-			$scope.categoriesOfStudent = response.data;
-
-			// Checks for a pre-loaded category name in slot 1 of window storage
-			var cat = $window.localStorage.getItem(1);
-			if (cat && $scope.categoriesOfStudent.includes(cat)) {
-				$scope.selectedCategory = cat;
-				$window.localStorage.setItem(1, "");
-			}
-		}
-	});
-
 	//Updates information for the selected category
 	$scope.didUpdateCategory = () => {
 		// Update repetition count for the form
@@ -76,6 +59,24 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 			iglRaw = response.data;
 		});
 	}
+
+	//Retrieves all categories the selected student is working in
+	$http.get(`${URL}categoriesByStudent?Id=${$scope.studentId}`)
+	.then(response => {
+		if (response.data.length == 0)
+			$scope.categoriesOfStudent = ["No data found"];
+		else {
+			$scope.categoriesOfStudent = response.data;
+
+			// Checks for a pre-loaded category name in slot 1 of window storage
+			var cat = $window.localStorage.getItem(1);
+			if (cat && $scope.categoriesOfStudent.includes(cat)) {
+				$scope.selectedCategory = cat;
+				$window.localStorage.setItem(1, "");
+				$scope.didUpdateCategory();
+			}
+		}
+	});
 
 
 	//// CHART DEFAULTS ////

@@ -15,11 +15,14 @@ DESCRIBE records;
 DESCRIBE students;
 DESCRIBE internationaldata;
 
--- table view
+-- table select
 SELECT * FROM books;
 SELECT * FROM records;
 SELECT * FROM students;
 SELECT * FROM internationaldata;
+
+-- view select
+SELECT * FROM records_joined;
 
 -- put whatever here
 ALTER TABLE students ADD COLUMN LastUsed DATETIME DEFAULT '2000-01-01';
@@ -36,14 +39,6 @@ SELECT Grade FROM students WHERE StudentId = 3 LIMIT 1;
 -- delete a student while maintaining referential integrity in records
 DELETE FROM records WHERE RecordId > 0 AND StudentId = 69;
 DELETE FROM students WHERE StudentId = 69;
-
--- selecting records with way more detail (customize the WHERE clause to filter)
-SELECT *
-FROM records
-INNER JOIN books
-	ON records.BookId = books.BookId
-INNER JOIN students
-	ON records.StudentId = students.StudentId;
 
 -- selects students with records
 SELECT DISTINCT

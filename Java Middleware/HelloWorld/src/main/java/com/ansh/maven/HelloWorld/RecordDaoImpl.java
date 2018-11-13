@@ -19,12 +19,11 @@ public class RecordDaoImpl implements RecordDao{
 	private JdbcTemplate jdbcTemplate;
 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	private String recordSelect = "SELECT * FROM records r INNER JOIN students s ON r.StudentId = s.StudentId INNER JOIN books b on r.BookId = b.BookId # ORDER BY r.StartDate DESC";
-	
+
 	//Retrieves all records from every student in the database
 	@Override
 	public List<Record> getAllRecords() {
-		String sql = recordSelect.replace("# ", "");
+		String sql = "SELECT * FROM records_joined";
 		RowMapper<Record> rowMapper = new RecordRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
@@ -32,7 +31,7 @@ public class RecordDaoImpl implements RecordDao{
 	//Returns all records that have start dates, but do not have end dates
 	@Override
 	public List<Record> getIncompleteRecords() {
-		String sql = recordSelect.replace("#", "WHERE r.EndDate IS NULL");
+		String sql = "SELECT * FROM records_joined WHERE EndDate IS NULL";
 		RowMapper<Record> rowMapper = new RecordRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
@@ -40,7 +39,7 @@ public class RecordDaoImpl implements RecordDao{
 	//Returns all records for a certain student and a certain category
 	@Override
 	public List<Record> getAllRecordsById(int StudentId) {
-		String sql = recordSelect.replace("#", "WHERE s.StudentId = ?");
+		String sql = "SELECT * FROM records_joined WHERE StudentId = ?";
 		RowMapper<Record> rowMapper = new RecordRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper, StudentId);
 	}
@@ -49,16 +48,16 @@ public class RecordDaoImpl implements RecordDao{
 	// Logic has been returned back to Java, because the SQL logic had significant problems with repetition
 	@Override
 	public List<Record> getRecordsForChart(int StudentId, String category, int months, int until, String whichReps) {
-		String sql = recordSelect.replace("#", "WHERE r.StudentId = ? AND b.Category = ? # AND r.StartDate IS NOT NULL").replace("DESC", "ASC");
+		String sql = "SELECT * FROM records_joined WHERE StudentId = ? AND Category = ? # AND StartDate IS NOT NULL ORDER BY StartDate ASC";
 		RowMapper<Record> rowMapper = new RecordRowMapper();
 		List<Record> allRecords,
 					 returnRecords = new ArrayList<Record>();
 		
 		if(whichReps.equalsIgnoreCase("All")) {		// Content of query depends on repetition selection
-			sql = sql.replace("#","");
+			sql = sql.replace("#", "");
 			allRecords = this.jdbcTemplate.query(sql, rowMapper, StudentId, category);
 		} else {
-			sql = sql.replace("#", "AND r.Rep = ?");
+			sql = sql.replace("#", "AND Rep = ?");
 			allRecords = this.jdbcTemplate.query(sql, rowMapper, StudentId, category, whichReps);
 		}
 
