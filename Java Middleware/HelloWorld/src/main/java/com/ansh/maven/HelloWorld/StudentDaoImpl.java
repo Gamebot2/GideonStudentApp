@@ -38,14 +38,12 @@ public class StudentDaoImpl implements StudentDao {
 	// Returns students ordered by recently used for the list display, with a specified limit (0 corresponds to no limit)
 	@Override
 	public List<Student> getStudentsForList(boolean withData, int limit) {
-		String sql = "SELECT * FROM students s # ORDER BY LastUsed DESC";
+		String sql = "SELECT * FROM students ORDER BY LastUsed DESC";
 		RowMapper<Student> rowMapper = new StudentRowMapper();
 		
 		// withData check
 		if (withData)
-			sql = sql.replace("#", "WHERE s.StudentId IN (SELECT DISTINCT StudentId FROM records r)");
-		else
-			sql = sql.replace("#", "");
+			sql = sql.replace("students", "students_withdata");
 		
 		// limit check
 		if (limit > 0) {
@@ -65,7 +63,7 @@ public class StudentDaoImpl implements StudentDao {
 	// Returns the categories of books for which a student has records
 	@Override
 	public List<String> getCategories(int StudentId) {
-		String sql = "SELECT DISTINCT books.Category FROM records INNER JOIN students ON records.StudentId = students.StudentId INNER JOIN books ON records.BookId = books.BookId WHERE students.StudentId = ?";
+		String sql = "SELECT DISTINCT Category FROM records_joined WHERE StudentId = ?";
 		return this.jdbcTemplate.queryForList(sql, String.class, StudentId);
 	}
 

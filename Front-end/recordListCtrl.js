@@ -84,8 +84,8 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 		.then(response => {
 			allRecords = response.data.map(record => {
 				// Note that we're replacing - with / in the dates because of some weird JS date parsing stuff where using - will cause the date to be one day off
-				record.startDateDisplay = record.startDate ? new Date(record.startDate.replace(/-/g,"/")).toLocaleDateString() : "";
-				record.endDateDisplay = record.endDate ? new Date(record.endDate.replace(/-/g,"/")).toLocaleDateString() : "In Progress";
+				record.startDateDisplay = record.startDate ? new Date(record.startDate.split("-").join("/")).toLocaleDateString() : "";
+				record.endDateDisplay = record.endDate ? new Date(record.endDate.split("-").join("/")).toLocaleDateString() : "In Progress";
 
 				return record;
 			});
