@@ -18,11 +18,26 @@ CREATE VIEW `records_joined` AS
 	JOIN students s ON r.StudentId = s.StudentId
 	JOIN books b ON r.BookId = b.BookId
 	ORDER BY r.StartDate DESC;
+    
+CREATE VIEW `students_s` AS
+	SELECT
+		s.StudentId,
+        s.Client,
+        s.Email,
+        s.Phone,
+        s.Address,
+        s.CurrentPasses,
+        s.FirstName,
+        s.LastName,
+        s.Grade,
+        s.Gender,
+        s.LastUsed
+	FROM students s;
 
 CREATE VIEW `students_withdata` AS
 	SELECT
 		*
-	FROM students s
+	FROM students_s s
     WHERE s.StudentId IN (
 		SELECT DISTINCT
 			StudentId

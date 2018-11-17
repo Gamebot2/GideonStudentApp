@@ -22,7 +22,7 @@ public class StudentDaoImpl implements StudentDao {
 	// Returns all students in the database
 	@Override
 	public List<Student> getAllStudents() {
-		String sql = "SELECT * FROM students ORDER BY Client";
+		String sql = "SELECT * FROM students_s ORDER BY Client";
 		RowMapper<Student> rowMapper = new StudentRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
@@ -30,7 +30,7 @@ public class StudentDaoImpl implements StudentDao {
 	// Returns a single student with a certain id number
 	@Override
 	public Student getStudentById(int StudentId) {
-		String sql = "SELECT * FROM students WHERE StudentId = ?";
+		String sql = "SELECT * FROM students_s WHERE StudentId = ?";
 		RowMapper<Student> rowMapper = new StudentRowMapper();
 		return jdbcTemplate.queryForObject(sql, rowMapper, StudentId);
 	}
@@ -38,12 +38,12 @@ public class StudentDaoImpl implements StudentDao {
 	// Returns students ordered by recently used for the list display, with a specified limit (0 corresponds to no limit)
 	@Override
 	public List<Student> getStudentsForList(boolean withData, int limit) {
-		String sql = "SELECT * FROM students ORDER BY LastUsed DESC";
+		String sql = "SELECT * FROM students_s ORDER BY LastUsed DESC";
 		RowMapper<Student> rowMapper = new StudentRowMapper();
 		
 		// withData check
 		if (withData)
-			sql = sql.replace("students", "students_withdata");
+			sql = sql.replace("_s", "_withdata");
 		
 		// limit check
 		if (limit > 0) {

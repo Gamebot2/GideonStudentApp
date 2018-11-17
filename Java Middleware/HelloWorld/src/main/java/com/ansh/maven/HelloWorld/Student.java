@@ -10,21 +10,18 @@ public class Student {
 	private String Phone;
 	private String Address;
 	private String CurrentPasses;
-	private String PrimaryStaffMember;
 	private String FirstName;
-	private String MiddleName;
 	private String LastName;
 	private String Grade;
 	private String Gender;
-	private int ClientId;
 	private Date LastUsed;
 	
 	public Student() {
 		super();
 	}
 
-	public Student(int studentId, String client, String email, String phone, String address, String currentPasses, String primaryStaffMember,
-			String firstName, String middleName, String lastName, String grade, String gender, int clientId, Date lastUsed) {
+	public Student(int studentId, String client, String email, String phone, String address, String currentPasses,
+			String firstName, String lastName, String grade, String gender, Date lastUsed) {
 		super();
 		StudentId = studentId;
 		Client = client;
@@ -32,13 +29,10 @@ public class Student {
 		Phone = phone;
 		Address = address;
 		CurrentPasses = currentPasses;
-		PrimaryStaffMember = primaryStaffMember;
 		FirstName = firstName;
-		MiddleName = middleName;
 		LastName = lastName;
 		Grade = grade;
 		Gender = gender;
-		ClientId = clientId;
 		LastUsed = lastUsed;
 	}
 
@@ -90,28 +84,12 @@ public class Student {
 		CurrentPasses = currentPasses;
 	}
 
-	public String getPrimaryStaffMember() {
-		return PrimaryStaffMember;
-	}
-
-	public void setPrimaryStaffMember(String primaryStaffMember) {
-		PrimaryStaffMember = primaryStaffMember;
-	}
-
 	public String getFirstName() {
 		return FirstName;
 	}
 
 	public void setFirstName(String firstName) {
 		FirstName = firstName;
-	}
-
-	public String getMiddleName() {
-		return MiddleName;
-	}
-
-	public void setMiddleName(String middleName) {
-		MiddleName = middleName;
 	}
 
 	public String getLastName() {
@@ -137,14 +115,6 @@ public class Student {
 	public void setGender(String gender) {
 		Gender = gender;
 	}
-
-	public int getClientId() {
-		return ClientId;
-	}
-
-	public void setClientId(int clientId) {
-		ClientId = clientId;
-	}
 	
 	public Date getLastUsed() {
 		return LastUsed;
@@ -157,9 +127,8 @@ public class Student {
 	@Override
 	public String toString() {
 		return "Student [StudentId=" + StudentId + ", Client=" + Client + ", Email=" + Email + ", Phone=" + Phone +
-				", Address=" + Address + ", CurrentPasses=" + CurrentPasses + ", PrimaryStaffMember=" + PrimaryStaffMember +
-				", FirstName=" + FirstName + ", MiddleName=" + MiddleName + ", LastName=" + LastName + ", Grade=" + Grade +
-				", Gender=" + Gender + ", ClientId=" + ClientId + "]";
+				", Address=" + Address + ", CurrentPasses=" + CurrentPasses + ", FirstName=" + FirstName + 
+				", LastName=" + LastName + ", Grade=" + Grade + ", Gender=" + Gender + "]";
 	}
 	
 }
