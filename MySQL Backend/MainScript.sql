@@ -23,14 +23,20 @@ SELECT * FROM internationaldata;
 
 -- view select
 SELECT * FROM books_sequences;
+SELECT * FROM students_s;
 SELECT * FROM students_withdata;
 SELECT * FROM records_joined;
 SELECT * FROM internationaldata_joined;
 
+-- procedure calls
+CALL `grade_increment`();
+CALL `grade_decrement`();
+
+
 -- put whatever here
 ALTER TABLE students ADD COLUMN LastUsed DATETIME DEFAULT '2000-01-01';
 
-SELECT Grade FROM students WHERE StudentId = 3 LIMIT 1;
+SELECT StudentId, Grade FROM students;
 
 
 
@@ -80,7 +86,8 @@ UNION
 	ORDER BY r.StartDate ASC
 	LIMIT 1)
 ;
-    
+
+
 -- all unfinished records
 SELECT *
 FROM records
