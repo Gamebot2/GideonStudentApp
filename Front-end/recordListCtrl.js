@@ -77,7 +77,6 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 	var didSelectStudent = $scope.didSelectStudent = () => {
 		// First, update the storage slot for the student
 		$window.localStorage.setItem(5, $scope.studentFilter);
-		console.log($scope.studentFilter);
 
 		// Then, load all records for that student
 		$http.get(`${URL}recordsById?StudentId=${$scope.studentFilter}`)
@@ -96,17 +95,10 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 
 	// Runs when any optional filter is selected
 	var didFilter = $scope.didFilter = () => {
-		for (let name in Filters)
-			$window.localStorage.setItem(Filters[name].id, Filters[name].model.value);
-
-		$scope.records = allRecords.filter(r => {
-			for (let name in Filters) {
-				let filter = Filters[name];
-				if (filter.model.value != filter.wildcard && filter.target(r) != filter.model.value)
-					return false;
-			}
-			return true;
-		});
+		var allFilters = Object.keys(Filters).map(name => Filters[name]);
+		allFilters.forEach(f => $window.localStorage.setItem(f.id, f.model.value));
+		
+		$scope.records = allRecords.filter(r => allFilters.every(f => [f.wildcard, f.target(r)].includes(f.model.value)));
 	}
 
 	// FETCH DATA

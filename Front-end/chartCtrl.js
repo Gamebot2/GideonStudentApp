@@ -125,14 +125,14 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 			if (data.length > 1) {
 				let metrics = {
 					init() {
-						this.xmean = data.map(p => p.x).reduce((a, b) => a + b) / data.length; // average x
-						this.ymean = data.map(p => p.y).reduce((a, b) => a + b) / data.length; // average y
+						this.xmean = data.reduce((a, p) => a + p.x, 0) / data.length; // average x
+						this.ymean = data.reduce((a, p) => a + p.y, 0) / data.length; // average y
 
 						this.getDiff    = p => (p.x - this.xmean) * (p.y - this.ymean);   // numerator of formula, per term
 						this.getSquares = p => (p.x - this.xmean) * (p.x - this.xmean);   // denominator of formula, per term
 
-						this.diffSum    = data.map(p => this.getDiff(p)).reduce((a, b) => a + b);         // numerator of formula, summation
-						this.squaresSum = data.map(p => this.getSquares(p)).reduce((a, b) => a + b);      // denominator of formula, summation
+						this.diffSum    = data.reduce((a, p) => a + this.getDiff(p), 0);         // numerator of formula, summation
+						this.squaresSum = data.reduce((a, p) => a + this.getSquares(p), 0);      // denominator of formula, summation
 
 						this.slope = this.diffSum / this.squaresSum || 0;			// complete formula (with NaN check)
 
@@ -191,32 +191,27 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 				yearXAxis(label) {
 					let s = xAxisLabels[label - lowestDate];
 					if (s) {
-						if(s.month == 6)
+						if(s.month == 6)	// in the middle of the calendar year, write the year number
 							return s.year;
 						else if (s.month == 0)
-							return "|";
+							return "|";		// at the beginning of a calender year, draw a divider
 					}
 				},
 				// callback for the x axis: displaying grade values
 				gradeXAxis(label) {
 					let s = xAxisLabels[label - lowestDate];
 					if (s) {
-						if(s.month == 1) {
-							if(s.grade == 0)
-								return "Kindergarten";
-							else if(s.grade == 1)
-								return "1st Grade";
-							else if(s.grade == 2)
-								return "2nd Grade";
-							else if(s.grade == 3)
-								return "3rd Grade";
-							else if(s.grade <= -1)
-								return "Pre-K";
-							else
-								return `${s.grade}th Grade`;
-						} else if (s.month == 7) {
+						if(s.month == 1)	// in the middle of the school year, write the grade string from a dictionary
+							return {
+								-1: "Pre-K", 
+								0: "Kindergarten", 
+								1: "1st Grade", 
+								2: "2nd Grade", 
+								3: "3rd Grade", 
+								4: `${s.grade}th Grade`,
+							}[Math.clamp(-1, s.grade, 4) + 1];
+						else if (s.month == 7)		// at the beginning of a school year, draw a divider
 							return "|";
-						}
 					}
 				},
 				// callback for the y axis: displaying book sequences
@@ -225,20 +220,19 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 					if (s && s.sequenceLength > 1) { // if the sequence length is 1, there's no good display for the y-axis, so just ignore that sequence
 						if (s.sequence == 1)
 							return "-----";
-						else {
-							let middle = Math.trunc(s.sequenceLength / 2) + 1;
-							if (s.sequence == Math.max(middle, 2)) // max function ensures that the sequence number in the middle is at least 2 (and thus not 1, which would be the edge)
-								return s.sequenceName
 
+						let middle = Math.trunc(s.sequenceLength / 2) + 1;
+						if (s.sequence == Math.max(middle, 2)) // max function ensures that the sequence number in the middle is at least 2 (and thus not 1, which would be the edge)
+							return s.sequenceName
+						else
 							return " "; // space is returned for everything else to spawn grid lines
-						}
 					}
 				},
 				// callback for the tooltip: displaying book titles
 				titleTooltip(tooltipItem, data) {
 					let s = allBooks[tooltipItem[0].yLabel-1];
 					if (s) {
-						if ($scope.selectedCategory == "Comprehension" || $scope.selectedCategory == "Calculation")
+						if (["Calculation", "Comprehension"].includes($scope.selectedCategory))
 							return `${s.subcategory} - ${s.title}`;
 						else
 							return s.title;
@@ -271,7 +265,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 							borderDash: [5],
 							lineTension: 0,
 							pointRadius: 0,
-							hidden: true,
+							hidden: true,		// hidden because it is not necessary right now
 						}, {
 							label: "IGL",
 							data: igl,
