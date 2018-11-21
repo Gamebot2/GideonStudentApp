@@ -84,13 +84,10 @@ public class RecordDaoImpl implements RecordDao{
 	//Adds a new record to the record database with all of the following information, formats the appropriate SQL string
 	@Override
 	public int addRecord(Master master, Book book) {
-		String sql = "INSERT INTO records (StudentId, BookId, StartDate, EndDate, Rep, Test, TestTime, Mistakes) VALUES (?, ?, ?, null, ?, 0, null, null)";
-		
-		if (book.getTest() > 0)				// Content of query depends on whether the book contains a test
-			sql = sql.replace("0", "1");
-		
+		String sql = "INSERT INTO records (StudentId, BookId, StartDate, EndDate, Rep, Test, TestTime, Mistakes) VALUES (?, ?, ?, null, ?, ?, null, null)";
+
 		String formatted = dateFormat.format(master.getStartDate());
-		this.jdbcTemplate.update(sql, master.getId(), book.getBookId(), formatted, master.getRep());
+		this.jdbcTemplate.update(sql, master.getId(), book.getBookId(), formatted, master.getRep(), book.getTest());
 		return 0;
 	}
 

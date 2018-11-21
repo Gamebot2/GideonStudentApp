@@ -40,7 +40,7 @@ public class StudentServiceImpl implements StudentService{
 	@Override
 	public int getGrade(int StudentId) {
 		String gradeString = studentDao.getGrade(StudentId);
-		if (gradeString == null || gradeString.isEmpty())
+		if (gradeString == null || !gradeString.matches(".*\\d.*"))
 			return -1;
 		else
 			return Integer.parseInt(gradeString.replaceAll("\\D+",""));
