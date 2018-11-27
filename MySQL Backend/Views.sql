@@ -65,3 +65,15 @@ CREATE VIEW `books_sequences` AS
 	FROM books
 	GROUP BY 1
 	ORDER BY BookId;
+
+
+
+
+
+DELIMITER //
+CREATE PROCEDURE `delete_student` (IN Id INT(11))
+BEGIN
+	DELETE FROM records WHERE RecordId > 0 AND StudentId = Id;
+	DELETE FROM students WHERE StudentId = Id;
+END //
+DELIMITER ;

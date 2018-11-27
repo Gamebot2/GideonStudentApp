@@ -31,6 +31,7 @@ SELECT * FROM internationaldata_joined;
 -- procedure calls
 CALL `grade_increment`();
 CALL `grade_decrement`();
+CALL `delete_student` (68);
 
 
 -- put whatever here
@@ -44,10 +45,6 @@ SELECT StudentId, Grade FROM students;
 
 
 
-
--- delete a student while maintaining referential integrity in records
-DELETE FROM records WHERE RecordId > 0 AND StudentId = 69;
-DELETE FROM students WHERE StudentId = 69;
 
 
 -- all books in a category

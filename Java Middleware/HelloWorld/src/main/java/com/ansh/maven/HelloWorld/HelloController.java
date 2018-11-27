@@ -144,7 +144,7 @@ public class HelloController {
 		try {
 			a = studentService.updateStudent(student);
 		} catch (java.lang.RuntimeException e) {
-			System.out.println("Method updateStudent() failed");
+			System.out.println("Method updateStudent() failed:");
 			e.printStackTrace();
 			a = -1;
 		}

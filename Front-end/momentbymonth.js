@@ -11,9 +11,8 @@
  */
 
 
-// Custom extension to the Math class: modN and truncN are the same as mod and trunc but loop around for negative numbers
+// Custom extension to the Math class: modN is the same as % but loops around for negative numbers
 Math.modN = (x, n) => (x % n + n) % n;
-Math.truncN = (x) => Number.isInteger(x) ? x : Math.trunc(x) - (x < 0 ? 1 : 0);
 
 
 Dates = {
@@ -33,7 +32,7 @@ Dates = {
 			var numeral = (originalDate.year * 12 + originalDate.month) + addition;
 			return {
 				month: Math.modN(numeral, 12),
-				year: Math.truncN(numeral / 12),
+				year: Math.floor(numeral / 12),
 				date: 0
 			}
 		};
@@ -56,7 +55,7 @@ Dates = {
 
 		// Converts a month index into a date object
 		this.indexToDateObject = index => {
-			var theDate = this.dateAdd(this.zeroDate, Math.truncN(index));
+			var theDate = this.dateAdd(this.zeroDate, Math.floor(index));
 
 			var daysInMonth = moment(`${theDate.year} ${theDate.month + 1}`, "YYYY MM").daysInMonth();
 			theDate.date = Math.round(Math.modN(index, 1) * daysInMonth) + 1;

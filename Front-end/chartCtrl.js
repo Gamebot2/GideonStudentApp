@@ -11,10 +11,9 @@
  */
 
 
-// Custom extension to the Math class: clamp returns the median of three numbers, modN and truncN are the same but loop around for negative numbers
+// Custom extension to the Math class: clamp returns the median of three numbers, modN is the same as % but with looping around for negative numbers
 Math.clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 Math.modN = (x, n) => (x % n + n) % n;
-Math.truncN = (x) => Number.isInteger(x) ? x : Math.trunc(x) - (x < 0 ? 1 : 0);
 
 
 gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
@@ -44,7 +43,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 	$scope.didUpdateCategory = () => {
 		// Update repetition count for the form
 		$scope.repOptions = ["1","2"];
-		if ($scope.selectedCategory == "Calculation")
+		if (["Calculation","Comprehension"].includes($scope.selectedCategory))
 			$scope.repOptions.push("3","4","5");
 
 		// Retrives all books in the selected category for use later in y-axis labeling
@@ -86,7 +85,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 
 	//// GIANT CHART GENERATION METHOD ////
 	// "records" is intended to be a list of records drawn from an http call (response.data)
-	gen = records => {
+	let gen = records => {
 		// try-catch block ensures that any major errors that may arise from the complex and probably buggy logic of the function gets properly written out in html
 		try {
 			let lowestDate   = Dates.monthsAgoToMonthIndex($scope.months), 	// x-axis bounds
@@ -97,25 +96,25 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 			let xAxisLabels = []; // main container of x axis labels, labels are objects containing properties "month", "year", and "grade" (also date, but that's irrelevant here)
 
 			let data    = [], 		// data line: x is date, y is large sequence number, main graph plot
-				bestFit = [], 		// best fit line: will contain two points outside the horizontal range of the graph
+				bestFit = [], 		// best fit line: will contain two points outside the horizontal range of the graph (although currently not displayed, it is used to adjust y-axis bounds)
 				igl     = [],		// igl line: an arbitrary goal line that denotes an international standard in some categories
 				now     = [];		// now line: a vertical line that displays the current date for graphs that go past the current date
 
 			//// DATA POINTS: Creates a point mapping each record to its respective spot on the x and y axis ////
-			records.forEach(record => {
-				data.push({
-					x: Dates.dateToMonthIndex(Dates.stringToDateObject(record.startDate)),
-					y: record.sequenceLarge,
-				});
-
+			data = records.map(record => {
 				greatestBook = Math.max(record.sequenceLarge, greatestBook); // adjust y-axis bounds
 				leastBook = Math.min(record.sequenceLarge, leastBook);
+
+				return {
+					x: Dates.dateToMonthIndex(Dates.stringToDateObject(record.startDate)),
+					y: record.sequenceLarge,
+				};
 			});
 
 			//// Maps the internal linear scale of the x axis (lowestDate, ... highestDate) with labels containing dates and grades ////
 			for(j = lowestDate; j < highestDate; j++) {
 				let theLabel = Dates.dateAdd(Dates.zeroDate, j);
-				theLabel.grade = Math.truncN(j / 12);
+				theLabel.grade = Math.floor(j / 12);
 
 				xAxisLabels.push(theLabel);
 			}
@@ -145,7 +144,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 				}.init();
 
 				// add two points beyond the edges of the graph
-				bestFit.push(metrics.getPoint(lowestDate - 1), metrics.getPoint(highestDate + 1));
+				bestFit = [metrics.getPoint(lowestDate - 1), metrics.getPoint(highestDate + 1)];
 
 				// move greatestBook upward (if possible) if the best fit line goes above the data line
 				greatestBook = Math.clamp(greatestBook, Math.trunc(metrics.getY(highestDate)), allBooks.length);
@@ -169,13 +168,13 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 			//// NOW LINE: a vertical black line to indicate the current date ////
 			let nowIndex = Dates.dateToMonthIndex(Dates.now);
 			if (Math.clamp(nowIndex, lowestDate, highestDate) == nowIndex)
-				now.push({
-					x: nowIndex - 0.001,
+				now = [{
+					x: nowIndex,
 					y: leastBook - 1,
 				}, {
-					x: nowIndex + 0.001,
+					x: nowIndex,
 					y: greatestBook + 1,
-				});
+				}];
 
 
 
@@ -202,14 +201,14 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 					let s = xAxisLabels[label - lowestDate];
 					if (s) {
 						if(s.month == 1)	// in the middle of the school year, write the grade string from a dictionary
-							return {
-								-1: "Pre-K", 
-								0: "Kindergarten", 
-								1: "1st Grade", 
-								2: "2nd Grade", 
-								3: "3rd Grade", 
-								4: `${s.grade}th Grade`,
-							}[Math.clamp(-1, s.grade, 4) + 1];
+							return ({
+								'-1': "Pre-K", 
+								'0': "Kindergarten", 
+								'1': "1st Grade", 
+								'2': "2nd Grade", 
+								'3': "3rd Grade", 
+								'4': `${s.grade}th Grade`,
+							})[Math.clamp(-1, s.grade, 4) + 1];
 						else if (s.month == 7)		// at the beginning of a school year, draw a divider
 							return "|";
 					}
@@ -222,7 +221,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 							return "-----";
 
 						let middle = Math.trunc(s.sequenceLength / 2) + 1;
-						if (s.sequence == Math.max(middle, 2)) // max function ensures that the sequence number in the middle is at least 2 (and thus not 1, which would be the edge)
+						if (s.sequence == middle)
 							return s.sequenceName
 						else
 							return " "; // space is returned for everything else to spawn grid lines
@@ -425,17 +424,15 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 
 		// try-catch block ensures that any errors that arise outside of the gen() method (perhaps in java or something) get caught and properly written out in html
 		try {
+			$scope.until = $scope.months2;
 			if ($scope.months2 == 0 && Number.isInteger($scope.monthsF))
 				$scope.until = -Math.max($scope.monthsF, 0)
-			else
-				$scope.until = $scope.months2;
 
 			$http.get(`${URL}recordsForChart?StudentId=${$scope.studentId}&Category=${$scope.selectedCategory}&Months=${$scope.months}&Until=${$scope.until}&Reps=${$scope.selectedRep}`)
 			.then(response => {
-				let records = response.data.filter(r => r.startDate != null);
-				if (Verify.errorIf(records.length == 0, "No data")) // no plottable data check
+				if (Verify.errorIf(response.data.length == 0, "No data")) // no plottable data check
 					return;
-				gen(records);
+				gen(response.data);
 			})
 			.catch(Verify.error);
 		}
