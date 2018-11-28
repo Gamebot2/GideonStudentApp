@@ -89,8 +89,6 @@ gideonApp.controller('editRecordCtrl', ($scope, $http, $window) => {
 		if (!Verify.check())
 			return;
 
-		console.log($scope.record);
-
 		// Updates the record with an HTTP post call
 		try {
 			$http({
@@ -103,7 +101,7 @@ gideonApp.controller('editRecordCtrl', ($scope, $http, $window) => {
 				data: JSON.stringify($scope.record),
 			})
 			.then(response => {
-				if (Verify.successIf(response.data == 0, ""))
+				if (Verify.successIf(response.data == 0, "Successfully updated."))
 					window.location.href = "RecordList.html"; // return back to the list if the update was successful
 			})
 			.catch(Verify.error);

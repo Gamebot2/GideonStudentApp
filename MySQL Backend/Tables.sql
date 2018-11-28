@@ -79,4 +79,3 @@ CREATE TABLE `internationaldata` (
     PRIMARY KEY (`DataId`),
     CONSTRAINT FOREIGN KEY (`BookId`) REFERENCES `books`(`BookId`)
 )	ENGINE=INNODB AUTO_INCREMENT=66 DEFAULT CHARSET=UTF8;
-DROP TABLE internationaldata;

@@ -10,6 +10,15 @@ body {
 	padding: 20px;
 }
 
+.expandedContent {
+	height: 400px;
+	margin: 0px;
+}
+
+.collapsedContent {
+	margin: 0px;
+}
+
 h1 {
 	margin-bottom: 0px;
 }
@@ -29,17 +38,9 @@ canvas {
 	width: 8000px;
 }
 
-#lineChart {
-	
-}
-
 #chartspecs {
 	margin-left: auto;
 	margin-right: auto;
-}
-
-.expandedContent {
-	height: 400px;
 }
 
 

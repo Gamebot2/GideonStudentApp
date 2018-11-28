@@ -36,9 +36,8 @@
 		<!--Containing essentially a form for selected chart specifications-->
 		<div class="exterior" ng-app = "gideonApp" ng-controller = "chartCtrl">
 			<div id = "expandableContainer" ng-class = "{'collapsedContent':!expanded, 'expandedContent':expanded}">
-			<form name = "form">
 				<button invis class="hoverable" id="backButton" onclick="location.href='StudentList.html'">Back to Student List</button>
-
+				<form name = "form">
 				<h1>Progress Chart for {{studentName}}</h1>
 				<br>
 				<div class="columnContainer">
@@ -89,25 +88,25 @@
 
 				<!--Button to generate chart and submit all data-->
 				<button big type="submit" ng-click="generateChart()">Generate Chart</button>
-			</form>
+				</form>
 			</div>
 
 			<!--Error message in case no data is retrieved-->
 			<span ng-class="{'errorText':formStatus.id == 0, 'successText':formStatus.id == 1}">{{formStatus.text}}</span>
-			<br><br>
+			<br>			
 
 			
-			<div id = "logoContainer" ng-class="{'logoOff':!logoDisplay, 'logoOn':logoDisplay}" ng-hide="formStatus.id == 0" ng-click="expanded=!expanded">
+			<div id = "logoContainer" ng-class="{'logoOff':!logoDisplay, 'logoOn':logoDisplay}" ng-show="formStatus.id == 1" ng-click="expanded=!expanded">
 				<img id = "logo" src = "img/gideon-logo-white.png" alt = "show/hide form">
 				<div id = "logoTint"></div>
 			</div>
 
 			<!--HTML element for the generated chart-->
-			<div id = "chartspecs">
+			<div id = "chartspecs" ng-show="formStatus.id == 1">
 				<canvas id = "lineChart" ng-hide="errorMessage"></canvas>
 			</div>
 		</div>
 
-		<div id = "footer">&nbsp;</div>
+		<div id = "footer" style = "margin-bottom:250px">&nbsp;</div>
 	</body>
 </html>

@@ -34,7 +34,7 @@ gideonApp.controller('editStudentCtrl', ($scope, $http, $window) => {
 				data: JSON.stringify($scope.student),
 			})
 			.then(response => {
-				if (Verify.successIf(response.data == 0, ""))
+				if (Verify.successIf(response.data == 0, "Successfully updated."))
 					window.location.href = "StudentList.html"; // return back to the list if the update was successful
 			})
 			.catch(Verify.error);

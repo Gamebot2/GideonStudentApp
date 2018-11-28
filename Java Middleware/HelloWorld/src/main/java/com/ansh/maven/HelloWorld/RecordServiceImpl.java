@@ -2,6 +2,7 @@ package com.ansh.maven.HelloWorld;
 
 import java.util.*;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +25,34 @@ public class RecordServiceImpl implements RecordService{
 	}
 	
 	// Returns records for a student within a certain range, plus or minus one record, with a specific category and rep count
+	// Logic has been returned back to Java, because the SQL logic had significant problems with repetition
 	@Override
 	public List<Record> getRecordsForChart(int StudentId, String category, int months, int until, String whichReps) {
 		studentDao.updateLastUsed(StudentId);
-		return recordDao.getRecordsForChart(StudentId, category, months, until, whichReps);
+		List<Record> allRecords = recordDao.getRecordsForChart(StudentId, category, months, until, whichReps);
+		List<Record> returnRecords = new ArrayList<Record>();
+		
+		// Pruning list to include just the time period
+		DateTime dt = new DateTime().withTimeAtStartOfDay().withDayOfMonth(1);
+		Date monthsDate = dt.minusMonths(months   ).toDate(),
+		     untilDate  = dt.minusMonths(until - 1).toDate(); // subtracting 1 from until in order to display the entire most recent month, rather than just the beginning of it
+		
+		for(int r = 0; r < allRecords.size(); r++) {
+			Record currR = allRecords.get(r);
+			
+			if(currR.getStartDate().compareTo(monthsDate) >= 0) {
+				if (returnRecords.isEmpty() && r > 0)
+					returnRecords.add(allRecords.get(r-1)); // adds one record before the timeframe, if possible
+				if (currR.getStartDate().compareTo(untilDate) > 0) {
+					if (!returnRecords.isEmpty())
+						returnRecords.add(currR); // adds one record after the timeframe, if possible
+					break;
+				}
+				returnRecords.add(currR);
+			}
+		}
+		
+		return returnRecords;
 	}
 	
 	// Gets records to include in a progress chart for a given student

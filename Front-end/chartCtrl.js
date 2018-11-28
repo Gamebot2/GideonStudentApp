@@ -216,7 +216,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 				// callback for the y axis: displaying book sequences
 				bookYAxis(label) {
 					let s = allBooks[label-1];
-					if (s && s.sequenceLength > 1) { // if the sequence length is 1, there's no good display for the y-axis, so just ignore that sequence
+					if (s) {
 						if (s.sequence == 1)
 							return "-----";
 
@@ -243,6 +243,8 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 					return `started on ${theDate.month + 1}/${theDate.date}/${theDate.year}`;
 				},
 			}
+
+			console.log(data);
 
 			//// CHART SPECIFICATIONS ////
 			let chartSpecs = {

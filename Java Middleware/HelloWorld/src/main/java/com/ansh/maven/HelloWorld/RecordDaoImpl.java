@@ -5,7 +5,6 @@ import java.util.*;
 
 import javax.transaction.Transactional;
 
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -45,40 +44,18 @@ public class RecordDaoImpl implements RecordDao{
 	}
 	
 	// Returns records for a student within a certain range, plus or minus one record, with a specific category and rep count
-	// Logic has been returned back to Java, because the SQL logic had significant problems with repetition
 	@Override
 	public List<Record> getRecordsForChart(int StudentId, String category, int months, int until, String whichReps) {
 		String sql = "SELECT * FROM records_joined WHERE StudentId = ? AND Category = ? # AND StartDate IS NOT NULL ORDER BY StartDate ASC";
 		RowMapper<Record> rowMapper = new RecordRowMapper();
-		List<Record> allRecords,
-					 returnRecords = new ArrayList<Record>();
 		
 		if(whichReps.equalsIgnoreCase("All")) {		// Content of query depends on repetition selection
 			sql = sql.replace("#", "");
-			allRecords = this.jdbcTemplate.query(sql, rowMapper, StudentId, category);
+			return this.jdbcTemplate.query(sql, rowMapper, StudentId, category);
 		} else {
 			sql = sql.replace("#", "AND Rep = ?");
-			allRecords = this.jdbcTemplate.query(sql, rowMapper, StudentId, category, whichReps);
+			return this.jdbcTemplate.query(sql, rowMapper, StudentId, category, whichReps);
 		}
-
-		// Pruning list to include just the time period
-		DateTime dt = new DateTime().withTimeAtStartOfDay().withDayOfMonth(1);
-		Date monthsDate = dt.minusMonths(months   ).toDate(),
-		     untilDate  = dt.minusMonths(until - 1).toDate(); // subtracting 1 from until in order to display the entire most recent month, rather than just the beginning of it
-		
-		for(int r = 0; r < allRecords.size(); r++) {
-			Record currR = allRecords.get(r);
-			
-			if(currR.getStartDate().compareTo(monthsDate) > 0) {
-				if (returnRecords.isEmpty() && r > 0)
-					returnRecords.add(allRecords.get(r-1)); // adds one record before the timeframe, if possible
-				returnRecords.add(currR);
-				if (currR.getStartDate().compareTo(untilDate) > 0) // adds one record after the timeframe, if possible
-					break;
-			}
-		}
-		
-		return returnRecords;
 	}
 
 	//Adds a new record to the record database with all of the following information, formats the appropriate SQL string
