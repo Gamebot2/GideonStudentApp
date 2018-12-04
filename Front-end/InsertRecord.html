@@ -85,10 +85,8 @@
 						<input white big type = "date" name = "startDate" id ="dateSelect" ng-model = "record.startDate" required>
 						<div class="invalidContainer" ng-class="{'invalid':form.startDate.$touched && form.startDate.$invalid}"></div>
 					</div>
-					<span class="errorText" ng-show="form.startDate.$touched && form.startDate.$invalid">
-						<span ng-show="form.startDate.$error.required">Start date is required.</span>
-						<span ng-show="form.startDate.$error.date">This date is invalid.</span>
-					</span>
+					<span class="errorText" ng-show="form.startDate.$touched && form.startDate.$error.required">Start date is required.</span>
+					<span class="errorText" ng-show="form.startDate.$touched && form.startDate.$error.date">This date is invalid.</span>
 				<br><br>
 
 				<!--Simple number picker for instructors to enter the repetition number-->
@@ -97,10 +95,9 @@
 						<input white type = "number" name = "reps" min = "1" max = "5" ng-model = "record.rep" required>
 						<div class="invalidContainer" ng-class="{'invalid':form.reps.$touched && form.reps.$invalid}"></div>
 					</div>
-					<span class="errorText" ng-show="form.reps.$touched && form.reps.$invalid">
-						<span ng-show="form.reps.$error.required">Repetition number is required.</span>
-						<span ng-show="form.reps.$error.min || form.reps.$error.max">Repetition number must be between 1 and 5.</span>
-					</span>
+					<span class="errorText" ng-show="form.reps.$touched && form.reps.$error.required">Repetition number is required.</span>
+					<span class="errorText" ng-show="form.reps.$touched && form.reps.$error.number">Repetition must be a number.</span>
+					<span class="errorText" ng-show="form.reps.$touched && (form.reps.$error.min || form.reps.$error.max)">Repetition number must be between 1 and 5.</span>
 				<br><br>
 				
 				<!--Submit button: runs the insertTask function-->

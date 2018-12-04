@@ -67,18 +67,17 @@
 							<div class="invalidContainer" ng-class="{'invalid':form.months.$touched && form.months2.$touched && (form.months.$invalid || form.months2.$invalid || form.monthsF.$invalid)}"></div>
 						</div>
 						<br><br>
-						<span class="errorText" ng-show="form.months.$touched && form.months2.$touched && (form.months.$invalid || form.months2.$invalid || form.monthsF.$invalid)">
-							<span ng-show="form.months.$error.required || form.months2.$error.required">Months are required.</span>
-							<span ng-show="form.months.$error.min || form.months.$error.max || form.months2.$error.min || form.months2.$error.max">Month values must be between 0 and 60, and the second value must be earlier than the first.</span>
-							<span ng-show="form.monthsF.$error.max">You can only project the graph one year into the future.</span>
-						</span>
+						<span class = "errorText" ng-show="form.months.$touched && form.months2.$touched && (form.months.$error.required || form.months2.$error.required)">Months are required.</span>
+						<span class = "errorText" ng-show="form.months.$touched && form.months2.$touched && (form.months.$error.number || form.months2.$error.number || form.monthsF.$error.number)">Month values must be numbers.</span>
+						<span class = "errorText" ng-show="form.months.$touched && form.months2.$touched && (form.months.$error.min || form.months.$error.max || form.months2.$error.min || form.months2.$error.max)">Month values must be between 0 and 60, and the second value must be earlier than the first.</span>
+						<span class = "errorText" ng-show="form.months.$touched && form.months2.$touched && form.monthsF.$error.max">You can only project the graph one year into the future.</span>
  					</div>
 
 					<!--Allows user to select which specific repetitions to display-->
 					<div class="threeColumn">
 					<label for="reptitions">Included repetitions</label><br>
 						<div class="inputWrapperBig">
-							<select white big id = "repNumbers" name = "repNumbers" ng-model = "selectedRep" required ng-options = "x for x in repOptions"></select>
+							<select white big id = "repNumbers" name = "repNumbers" ng-model = "selectedRep" required ng-options = "x disable when x.startsWith('Select') for x in repOptions"></select>
 							<div class="invalidContainer" ng-class="{'invalid':form.repNumbers.$touched && form.repNumbers.$invalid}"></div>
 						</div>
 						<span class="errorText" ng-show="form.repNumbers.$touched && form.repNumbers.$invalid">Repetitions are required.</span>

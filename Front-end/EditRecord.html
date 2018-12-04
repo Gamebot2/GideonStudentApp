@@ -94,10 +94,8 @@
 							<input white big type = "date" name = "startDate" id ="dateSelect" ng-model = "record.startDate" required>
 							<div class="invalidContainer" ng-class="{'invalid':form.startDate.$touched && form.startDate.$invalid}"></div>
 						</div>
-						<span class="errorText" ng-show="form.startDate.$touched && form.startDate.$invalid">
-							<span ng-show="form.startDate.$error.required">Start date is required.</span>
-							<span ng-show="form.startDate.$error.date">This date is invalid.</span>
-						</span>
+						<span class="errorText" ng-show="form.startDate.$touched && form.startDate.$error.required">Start date is required.</span>
+						<span class="errorText" ng-show="form.startDate.$touched && form.startDate.$error.date">This date is invalid.</span>
 					</div>
 
 					<!--Allows user to enter the ending date-->
@@ -107,10 +105,8 @@
 							<input white big type = "date" name = "endDate" id = "dateSelect" min = "{{record.startDate}}" ng-model = "record.endDate">
 							<div class="invalidContainer" ng-class="{'invalid':form.endDate.$touched && form.endDate.$invalid}"></div>
 						</div>
-						<span class="errorText" ng-show="form.endDate.$touched && form.endDate.$invalid">
-							<span ng-show="form.endDate.$error.date">This date is invalid.</span>
-							<span ng-show="form.endDate.$error.min">The end date must come after the start date.</span>
-						</span>
+						<span class="errorText" ng-show="form.endDate.$touched && form.endDate.$error.date">This date is invalid.</span>
+						<span class="errorText" ng-show="form.endDate.$touched && form.endDate.$error.min">The end date must come after the start date.</span>
 					</div>
 				</div>
 				<br><br>
@@ -123,10 +119,9 @@
 							<input white type = "number" name = "reps" min = "1" max = "5" ng-model = "record.rep" required>
 							<div class="invalidContainer" ng-class="{'invalid':form.reps.$touched && form.reps.$invalid}"></div>
 						</div>
-						<span class="errorText" ng-show="form.reps.$touched && form.reps.$invalid">
-							<span ng-show="form.reps.$error.required">Repetition number is required.</span>
-							<span ng-show="form.reps.$error.min || form.reps.$error.max">Repetition number must be between 1 and 5.</span>
-						</span>
+						<span class="errorText" ng-show="form.reps.$touched && form.reps.$error.required">Repetition number is required.</span>
+						<span class="errorText" ng-show="form.reps.$touched && form.reps.$error.number">Repetition must be a number.</span>
+						<span class="errorText" ng-show="form.reps.$touched && (form.reps.$error.min || form.reps.$error.max)">Repetition number must be between 1 and 5.</span>
 					</div>
 
 					<!--Simple number picker for instructors to enter the test time-->
@@ -136,10 +131,8 @@
 							<input white type = "number" name = "testTime" min = "0" max = "1000" ng-model = "record.testTime">
 							<div class="invalidContainer" ng-class="{'invalid':form.testTime.$touched && form.testTime.$invalid}"></div>
 						</div>
-						<span class="errorText" ng-show="form.testTime.$touched && form.testTime.$invalid">
-							<span ng-show="form.testTime.$error.date">This date is invalid.</span>
-							<span ng-show="form.testTime.$error.min || form.testTime.$error.max">Test time must be between 0 and 1000.</span>
-						</span>
+						<span class="errorText" ng-show="form.testTime.$touched && form.testTime.$error.number">Test time must be a number.</span>
+						<span class="errorText" ng-show="form.testTime.$touched && (form.testTime.$error.min || form.testTime.$error.max)">Test time must be between 0 and 1000.</span>
 					</div>
 
 					<!--Simple number picker for instructors to enter the number of mistakes-->	
@@ -149,9 +142,8 @@
 							<input white type = "number" name = "mistakes" min = "0" max = "1000" ng-model = "record.mistakes">
 							<div class="invalidContainer" ng-class="{'invalid':form.mistakes.$touched && form.mistakes.$invalid}"></div>
 						</div>
-						<span class="errorText" ng-show="form.mistakes.$touched && form.mistakes.$invalid">
-							<span ng-show="form.mistakes.$error.min || form.mistakes.$error.max">Mistake count must be between 0 and 1000.</span>
-						</span>
+						<span class="errorText" ng-show="form.mistakes.$touched && form.mistakes.$error.number">Mistakes must be a number.</span>
+						<span class="errorText" ng-show="form.mistakes.$touched && form.mistakes.$invalid">Mistake count must be between 0 and 1000.</span>
 					</div>
 				</div>
 				<br><br><br>

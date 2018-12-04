@@ -30,6 +30,8 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 	var exampleChart;
 	var myChart = document.getElementById('lineChart').getContext('2d');
 
+	$scope.repOptions = ["Select a category first"];
+
 	// initialize Verify
 	Verify.setScope($scope);
 
