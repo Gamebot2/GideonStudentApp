@@ -29,31 +29,31 @@
 	</head>
 	<body>
 		<!--List for displaying all students in the database that have book data-->
-		<div ng-app = "gideonApp" ng-controller = "listCtrl">
+		<div ng-app="gideonApp" ng-controller="listCtrl">
 			<!--Selection buttons in the header to move to insert and update pages-->
-			<div id = "header">
-				<button type = "button" class = "hoverable" id = "listBtn"   onclick = "location.href='RecordList.html'">Record List</button>
-				<button type = "button" class = "hoverable" id = "insertBtn" onclick = "location.href='InsertStudent.html'">Insert Student</button>
+			<div id="header">
+				<button type="button" class="hoverable" id="listBtn"   onclick="location.href='RecordList.html'">Record List</button>
+				<button type="button" class="hoverable" id="insertBtn" onclick="location.href='InsertStudent.html'">Insert Student</button>
 			</div>
 			<br/>
 
 			<h1>List of Students</h1>
 
 			<!--Filter text blocks-->
-			<div class = "columnContainer" id = "filterContainer">
-				<div class = "column" style = "width:50%">
-					<p id = "filterText">Filter by Name: </p>
-					<input black big id = "textFilter" name = "textFilter" type = "text" ng-model="clientFilter">
+			<div class="columnContainer" id="filterContainer">
+				<div class="column" style="width:50%">
+					<p id="filterText">Filter by Name: </p>
+					<input black big id="textFilter" name="textFilter" type="text" ng-model="clientFilter">
 				</div>
-				<div class = "column" style = "width:50%">
-					<p id = "filterText">Filter by Email: </p>
-					<input black big id = "textFilter" name = "textFilter" type = "text" ng-model="emailFilter">
+				<div class="column" style="width:50%">
+					<p id="filterText">Filter by Email: </p>
+					<input black big id="textFilter" name="textFilter" type="text" ng-model="emailFilter">
 				</div>
 			</div>
 
 			<!--Toggle for viewing only students with data, meant for testing-->
 			<br><br>
-			<button type = "button" class = "hoverable" id = "dataToggleBtn" ng-click = "toggleData()">
+			<button type="button" class="hoverable" id="dataToggleBtn" ng-click="toggleData()">
 				{{toggleButtonText}}
 			</button>
 			<br><br>
@@ -85,14 +85,14 @@
 					Address: {{student.address}}<br>
 					Phone: {{student.phone}}<br>
 					Current Passes: {{student.currentPasses}}<br><br>
-					<button type = "button" class = "hoverable" id = "accordionButton" ng-click = "lineChartButton(student)">Progress Chart</button>
-					<button type = "button" class = "hoverable" id = "accordionButton" ng-click = "editStudentButton(student)">Edit Student</button>
-					<button type = "button" class = "hoverable" id = "accordionButton" ng-click = "preloadRecordsList(student)">Record List</button>
+					<button type="button" class="hoverable" id="accordionButton" ng-click="lineChartButton(student)">Progress Chart</button>
+					<button type="button" class="hoverable" id="accordionButton" ng-click="editStudentButton(student)">Edit Student</button>
+					<button type="button" class="hoverable" id="accordionButton" ng-click="preloadRecordsList(student)">Record List</button>
 				</div>
 			</div>
 		</div>
 
 		<!--Footer exists to make selecting the last student on the list way less annoying-->
-		<div id = "footer">&nbsp;</div>
+		<div id="footer">&nbsp;</div>
 	</body>
 </html>

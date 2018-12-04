@@ -30,27 +30,27 @@
 		<link rel="stylesheet" type="text/css" href="RecordStyle.css">
 	</head>
 	<body>
-		<div class = "exterior" ng-app = "gideonApp" ng-controller = "insertRecordCtrl">
+		<div class="exterior" ng-app="gideonApp" ng-controller="insertRecordCtrl">
 			<button invis class="hoverable" id="backButton" onclick="location.href='RecordList.html'">Back to Record List</button>
 
 			<h1>Insert Record</h1>
 			<!--Form used for adding a new record for an existing student into the database-->
-			<form name = "form">
+			<form name="form">
 				<!--Displays list of all current students upon selection, with a custom filter-->
-				<label for = "client">Filter By Name: </label>
-					<input black id = "textFilter" name = "textFilter" type = "text" ng-model="clientFilter">
+				<label for="client">Filter By Name: </label>
+					<input black id="textFilter" name="textFilter" type="text" ng-model="clientFilter">
 					<div class="inputWrapperBig">
-						<select white big id="clientSelect" name = "client" ng-model = "client" ng-options = "v as v.name for v in names | filter: {name: clientFilter}" ng-change = "setId()" required></select>
+						<select white big id="clientSelect" name="client" ng-model="client" ng-options="v as v.name for v in names | filter: {name: clientFilter}" ng-change="setId()" required></select>
 						<div class="invalidContainer" ng-class="{'invalid':form.client.$touched && form.client.$invalid}"></div>
 					</div>
 					<span class="errorText" ng-show="form.client.$touched && form.client.$invalid">Name is required.</span>
 	          	<br><br>
 
 	  			<!--Displays all possible book categories-->
-				<label for = "category">Book Category</label><br>
+				<label for="category">Book Category</label><br>
 					<div class="inputWrapperBig">
-						<select white big id = "category" name = "category" ng-model = "record.category" ng-options = "x for x in categories" ng-change = "getSubcategories()" required>
-							<option value = "" selected disabled hidden>Choose category</option>
+						<select white big id="category" name="category" ng-model="record.category" ng-options="x for x in categories" ng-change="getSubcategories()" required>
+							<option value="" selected disabled hidden>Choose category</option>
 						</select>
 						<div class="invalidContainer" ng-class="{'invalid':form.category.$touched && form.category.$invalid}"></div>
 					</div>
@@ -58,10 +58,10 @@
 				<br><br>
 
 				<!--Displays all subcategories for a selected category-->
-				<label for = "subCategory">Book Sub-Category</label><br>
+				<label for="subCategory">Book Sub-Category</label><br>
 					<div class="inputWrapperBig">
-						<select white big id = "subCategory" name = "subcategory" ng-model = "record.subcategory" ng-options = "y disable when y.startsWith('Select') for y in subcategories" ng-change = "getTitles()" required>
-							<option value = "">Choose subcategory</option>
+						<select white big id="subCategory" name="subcategory" ng-model="record.subcategory" ng-options="y disable when y.startsWith('Select') for y in subcategories" ng-change="getTitles()" required>
+							<option value="">Choose subcategory</option>
 						</select>
 						<div class="invalidContainer" ng-class="{'invalid':form.subcategory.$touched && form.subcategory.$invalid}"></div>
 					</div>
@@ -69,10 +69,10 @@
 				<br><br>
 
 				<!--Displays all book titles for a given subcategory-->
-				<label for = "title">Book Title</label><br>
+				<label for="title">Book Title</label><br>
 					<div class="inputWrapperBig">
-						<select white big id = "title" name = "title" ng-model = "record.title" ng-options = "z.title as z.display disable when z.title.startsWith('Select') for z in titles" required>
-							<option value = "">Choose title</option>
+						<select white big id="title" name="title" ng-model="record.title" ng-options="z.title as z.display disable when z.title.startsWith('Select') for z in titles" required>
+							<option value="">Choose title</option>
 						</select>
 						<div class="invalidContainer" ng-class="{'invalid':form.title.$touched && form.title.$invalid}"></div>
 					</div>
@@ -80,9 +80,9 @@
 				<br><br>
 
 				<!--Simple datePicker for instructors to enter the startDate-->
-				<label for = "dateSelect">Start Date</label><br>
+				<label for="dateSelect">Start Date</label><br>
 					<div class="inputWrapperBig">
-						<input white big type = "date" name = "startDate" id ="dateSelect" ng-model = "record.startDate" required>
+						<input white big type="date" name="startDate" id ="dateSelect" ng-model="record.startDate" required>
 						<div class="invalidContainer" ng-class="{'invalid':form.startDate.$touched && form.startDate.$invalid}"></div>
 					</div>
 					<span class="errorText" ng-show="form.startDate.$touched && form.startDate.$error.required">Start date is required.</span>
@@ -90,9 +90,9 @@
 				<br><br>
 
 				<!--Simple number picker for instructors to enter the repetition number-->
-				<label for = "reps" id = "reps">Repetition</label>
+				<label for="reps" id="reps">Repetition</label>
 					<div class="inputWrapper">
-						<input white type = "number" name = "reps" min = "1" max = "5" ng-model = "record.rep" required>
+						<input white type="number" name="reps" min="1" max="5" ng-model="record.rep" required>
 						<div class="invalidContainer" ng-class="{'invalid':form.reps.$touched && form.reps.$invalid}"></div>
 					</div>
 					<span class="errorText" ng-show="form.reps.$touched && form.reps.$error.required">Repetition number is required.</span>
@@ -101,7 +101,7 @@
 				<br><br>
 				
 				<!--Submit button: runs the insertTask function-->
-				<button big ng-click = "createRecord()">Submit</button>
+				<button big ng-click="createRecord()">Submit</button>
 			</form>
 			<br><br>
 			<span ng-class="{'errorText':formStatus.id == 0, 'successText':formStatus.id == 1}">{{formStatus.text}}</span>

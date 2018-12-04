@@ -30,18 +30,18 @@
 		<link rel="stylesheet" type="text/css" href="RecordStyle.css">
 	</head>
 	<body>
-		<div class = "exterior" ng-app = "gideonApp" ng-controller = "editStudentCtrl">
+		<div class="exterior" ng-app="gideonApp" ng-controller="editStudentCtrl">
 			<button invis class="hoverable" id="backButton" onclick="location.href='StudentList.html'">Back to Student List</button>
 
 			<h1>Edit {{student.client}}</h1>
 			<!--Form used for editing a student in the database-->
-			<form name = "form">
+			<form name="form">
 				<div class="columnContainer" id="editRow">
 					<!--Name input, required field-->
 					<div class="threeColumn">
-						<label for = "student">Full Name</label><br>
+						<label for="student">Full Name</label><br>
 						<div class="inputWrapperBig">
-							<input white big type = "text" name = "client" ng-model = "student.client" required>
+							<input white big type="text" name="client" ng-model="student.client" required>
 							<div class="invalidContainer" ng-class="{'invalid':form.client.$touched && form.client.$invalid}"></div>
 						</div>
 						<span class="errorText" ng-show="form.client.$touched && form.client.$invalid">Name is required.</span>
@@ -49,28 +49,28 @@
 
 					<!--Email input, no required format-->
 					<div class="threeColumn">
-						<label for = "email">Email</label><br>
-						<input white big type = "text" ng-model = "student.email">
+						<label for="email">Email</label><br>
+						<input white big type="text" ng-model="student.email">
 					</div>
 
 					<!--Grade selection-->
 					<div class="threeColumn">
-						<label for = "email">Grade</label><br>
-						<select white big name = "grade" id = "gradeBox" ng-model = "student.grade">
-								<option value = "PreK (-1)">PreK</option>
-								<option value = "Kinder (0)">Kinder</option>
-								<option value = "1st">1st</option>
-								<option value = "2nd">2nd</option>
-								<option value = "3rd">3rd</option>
-								<option value = "4th">4th</option>
-								<option value = "5th">5th</option>
-								<option value = "6th">6th</option>
-								<option value = "7th">7th</option>
-								<option value = "8th">8th</option>
-								<option value = "9th">9th</option>
-								<option value = "10th">10th</option>
-								<option value = "11th">11th</option>
-								<option value = "12th">12th</option>
+						<label for="email">Grade</label><br>
+						<select white big name="grade" id="gradeBox" ng-model="student.grade">
+								<option value="PreK (-1)">PreK</option>
+								<option value="Kinder (0)">Kinder</option>
+								<option value="1st">1st</option>
+								<option value="2nd">2nd</option>
+								<option value="3rd">3rd</option>
+								<option value="4th">4th</option>
+								<option value="5th">5th</option>
+								<option value="6th">6th</option>
+								<option value="7th">7th</option>
+								<option value="8th">8th</option>
+								<option value="9th">9th</option>
+								<option value="10th">10th</option>
+								<option value="11th">11th</option>
+								<option value="12th">12th</option>
 						</select>
 					</div>
 				</div><br>
@@ -78,36 +78,36 @@
 				<div class="columnContainer" id="editRow">
 					<!--Phone input, no required format-->
 					<div class="twoColumn">
-						<label for = "email">Phone</label><br>
-						<input white big type = "text" ng-model = "student.phone">
+						<label for="email">Phone</label><br>
+						<input white big type="text" ng-model="student.phone">
 					</div>
 
 					<!--Address input, no required format-->
 					<div class="twoColumn">
-						<label for = "email">Address</label><br>
-						<input white big type = "text" ng-model = "student.address">
+						<label for="email">Address</label><br>
+						<input white big type="text" ng-model="student.address">
 					</div>
 				</div><br>
 				
 				<div class="columnContainer" id="editRow">
 					<!--Gender selection-->
 					<div class="twoColumn">
-						<label for = "email">Gender</label><br>
-						<select white big name = "gender" id = "genderBox" ng-model = "student.gender">
-							<option value = "Male">Male</option>
-							<option value = "Female">Female</option>
+						<label for="email">Gender</label><br>
+						<select white big name="gender" id="genderBox" ng-model="student.gender">
+							<option value="Male">Male</option>
+							<option value="Female">Female</option>
 						</select>
 					</div>
 
 					<!--Current passes input-->
 					<div class="twoColumn">
-						<label for = "email">Current Passes</label><br>
-						<input white big type = "text" ng-model = "student.currentPasses">
+						<label for="email">Current Passes</label><br>
+						<input white big type="text" ng-model="student.currentPasses">
 					</div>
 				</div><br><br>
 
 				<!--Submit button to perform the update-->
-				<button big ng-click = "updateStudent()">Submit</button>
+				<button big ng-click="updateStudent()">Submit</button>
 			</form>
 			<br><br>
 			<span ng-class="{'errorText':formStatus.id == 0, 'successText':formStatus.id == 1}">{{formStatus.text}}</span>

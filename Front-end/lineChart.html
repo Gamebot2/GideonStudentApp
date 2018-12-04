@@ -34,10 +34,10 @@
 	</head>
 	<body>
 		<!--Containing essentially a form for selected chart specifications-->
-		<div class="exterior" ng-app = "gideonApp" ng-controller = "chartCtrl">
-			<div id = "expandableContainer" ng-class = "{'collapsedContent':!expanded, 'expandedContent':expanded}">
+		<div class="exterior" ng-app="gideonApp" ng-controller="chartCtrl">
+			<div id="expandableContainer" ng-class="{'collapsedContent':!expanded, 'expandedContent':expanded}">
 				<button invis class="hoverable" id="backButton" onclick="location.href='StudentList.html'">Back to Student List</button>
-				<form name = "form">
+				<form name="form">
 				<h1>Progress Chart for {{studentName}}</h1>
 				<br>
 				<div class="columnContainer">
@@ -45,7 +45,7 @@
 					<div class="threeColumn">
 					<label for="category">Category</label><br>
 						<div class="inputWrapperBig">
-							<select white big id = "category" name = "category" ng-model = "selectedCategory" required ng-options = "y disable when y.startsWith('No data') for y in categoriesOfStudent" ng-change = "didUpdateCategory()"></select>
+							<select white big id="category" name="category" ng-model="selectedCategory" required ng-options="y disable when y.startsWith('No data') for y in categoriesOfStudent" ng-change="didUpdateCategory()"></select>
 							<div class="invalidContainer" ng-class="{'invalid':form.category.$touched && form.category.$invalid}"></div>
 						</div>
 						<span class="errorText" ng-show="form.category.$touched && form.category.$invalid">Category is required.</span>
@@ -56,28 +56,28 @@
 					<div class="threeColumn">
  					<label for="months">Time Range</label><br>
 						<div class="inputWrapperBig">
-							<input white type = "number" id = "months" name = "months" value = "12" ng-model = "months" min = "1" max = "60" required>
+							<input white type="number" id="months" name="months" value="12" ng-model="months" min="1" max="60" required>
 							months ago to
-							<input white type = "number" id = "months2" name = "months2" value = "12" ng-model = "months2" min = "0" max = "{{months-1}}" required>
+							<input white type="number" id="months2" name="months2" value="12" ng-model="months2" min="0" max="{{months-1}}" required>
 							months ago
 							<div ng-show="months2==0">
 								Project into the future by: 
-								<input white type = "number" id = "monthsF" name = "monthsF" value = "12" ng-model = "monthsF" max = "12"> months
+								<input white type="number" id="monthsF" name="monthsF" value="12" ng-model="monthsF" max="12"> months
 							</div>
 							<div class="invalidContainer" ng-class="{'invalid':form.months.$touched && form.months2.$touched && (form.months.$invalid || form.months2.$invalid || form.monthsF.$invalid)}"></div>
 						</div>
 						<br><br>
-						<span class = "errorText" ng-show="form.months.$touched && form.months2.$touched && (form.months.$error.required || form.months2.$error.required)">Months are required.</span>
-						<span class = "errorText" ng-show="form.months.$touched && form.months2.$touched && (form.months.$error.number || form.months2.$error.number || form.monthsF.$error.number)">Month values must be numbers.</span>
-						<span class = "errorText" ng-show="form.months.$touched && form.months2.$touched && (form.months.$error.min || form.months.$error.max || form.months2.$error.min || form.months2.$error.max)">Month values must be between 0 and 60, and the second value must be earlier than the first.</span>
-						<span class = "errorText" ng-show="form.months.$touched && form.months2.$touched && form.monthsF.$error.max">You can only project the graph one year into the future.</span>
+						<span class="errorText" ng-show="form.months.$touched && form.months2.$touched && (form.months.$error.required || form.months2.$error.required)">Months are required.</span>
+						<span class="errorText" ng-show="form.months.$touched && form.months2.$touched && (form.months.$error.number || form.months2.$error.number || form.monthsF.$error.number)">Month values must be numbers.</span>
+						<span class="errorText" ng-show="form.months.$touched && form.months2.$touched && (form.months.$error.min || form.months.$error.max || form.months2.$error.min || form.months2.$error.max)">Month values must be between 0 and 60, and the second value must be earlier than the first.</span>
+						<span class="errorText" ng-show="form.months.$touched && form.months2.$touched && form.monthsF.$error.max">You can only project the graph one year into the future.</span>
  					</div>
 
 					<!--Allows user to select which specific repetitions to display-->
 					<div class="threeColumn">
 					<label for="reptitions">Included repetitions</label><br>
 						<div class="inputWrapperBig">
-							<select white big id = "repNumbers" name = "repNumbers" ng-model = "selectedRep" required ng-options = "x disable when x.startsWith('Select') for x in repOptions"></select>
+							<select white big id="repNumbers" name="repNumbers" ng-model="selectedRep" required ng-options="x disable when x.startsWith('Select') for x in repOptions"></select>
 							<div class="invalidContainer" ng-class="{'invalid':form.repNumbers.$touched && form.repNumbers.$invalid}"></div>
 						</div>
 						<span class="errorText" ng-show="form.repNumbers.$touched && form.repNumbers.$invalid">Repetitions are required.</span>
@@ -95,17 +95,17 @@
 			<br>			
 
 			
-			<div id = "logoContainer" ng-class="{'logoOff':!logoDisplay, 'logoOn':logoDisplay}" ng-show="formStatus.id == 1" ng-click="expanded=!expanded">
-				<img id = "logo" src = "img/gideon-logo-white.png" alt = "show/hide form">
-				<div id = "logoTint"></div>
+			<div id="logoContainer" ng-class="{'logoOff':!logoDisplay, 'logoOn':logoDisplay}" ng-show="formStatus.id == 1" ng-click="expanded=!expanded">
+				<img id="logo" src="img/gideon-logo-white.png" alt="show/hide form">
+				<div id="logoTint"></div>
 			</div>
 
 			<!--HTML element for the generated chart-->
-			<div id = "chartspecs" ng-show="formStatus.id == 1">
-				<canvas id = "lineChart" ng-hide="errorMessage"></canvas>
+			<div id="chartspecs" ng-show="formStatus.id == 1">
+				<canvas id="lineChart" ng-hide="errorMessage"></canvas>
 			</div>
 		</div>
 
-		<div id = "footer" style = "margin-bottom:250px">&nbsp;</div>
+		<div id="footer" style="margin-bottom:250px">&nbsp;</div>
 	</body>
 </html>

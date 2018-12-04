@@ -30,19 +30,19 @@
 		<link rel="stylesheet" type="text/css" href="RecordStyle.css">
 	</head>
 	<body>		
-		<div class = "exterior" ng-app = "gideonApp" ng-controller = "editRecordCtrl">
+		<div class="exterior" ng-app="gideonApp" ng-controller="editRecordCtrl">
 			<button invis class="hoverable" id="backButton" onclick="location.href='RecordList.html'">Back to Record List</button>
 
 			<h1>Edit Record</h1>
 			<!--Form for updating records that are already in the system-->
-			<form name = "form">
+			<form name="form">
 				<div class="columnContainer" id="editSingleRow">
 					<div class="column" style="width:100%">
 					<!--Displays list of all current students upon selection, with a custom filter-->
-						<label for = "client">Filter By Name: </label>
-						<input black id = "textFilter" name = "textFilter" type = "text" ng-model="clientFilter">
+						<label for="client">Filter By Name: </label>
+						<input black id="textFilter" name="textFilter" type="text" ng-model="clientFilter">
 						<div class="inputWrapperBig">
-							<select white big id="clientSelect" name = "client" ng-model = "client" ng-options = "v as v.name for v in names | filter: {name: clientFilter}" ng-change = "setId()" required></select>
+							<select white big id="clientSelect" name="client" ng-model="client" ng-options="v as v.name for v in names | filter: {name: clientFilter}" ng-change="setId()" required></select>
 							<div class="invalidContainer" ng-class="{'invalid':form.client.$touched && form.client.$invalid}"></div>
 						</div>
 						<span class="errorText" ng-show="form.client.$touched && form.client.$invalid">Name is required.</span>
@@ -53,9 +53,9 @@
 	          	<div class="columnContainer" id="editRow">
 		  			<!--Displays all possible book categories-->
 		  			<div class="threeColumn">
-						<label for = "category">Book Category</label><br>
+						<label for="category">Book Category</label><br>
 						<div class="inputWrapperBig">
-							<select white big id = "category" name = "category" ng-model = "record.category" ng-options = "x for x in categories" ng-change = "getSubcategories()" required>
+							<select white big id="category" name="category" ng-model="record.category" ng-options="x for x in categories" ng-change="getSubcategories()" required>
 							</select>
 							<div class="invalidContainer" ng-class="{'invalid':form.category.$touched && form.category.$invalid}"></div>
 						</div>
@@ -64,9 +64,9 @@
 
 					<!--Displays all subcategories for a selected category-->
 					<div class="threeColumn">
-						<label for = "subCategory">Book Sub-Category</label><br>
+						<label for="subCategory">Book Sub-Category</label><br>
 						<div class="inputWrapperBig">
-							<select white big id = "subCategory" name = "subcategory" ng-model = "record.subcategory" ng-options = "y for y in subcategories" ng-change = "getTitles()" required>
+							<select white big id="subCategory" name="subcategory" ng-model="record.subcategory" ng-options="y for y in subcategories" ng-change="getTitles()" required>
 							</select>
 							<div class="invalidContainer" ng-class="{'invalid':form.subcategory.$touched && form.subcategory.$invalid}"></div>
 						</div>
@@ -75,9 +75,9 @@
 
 					<!--Displays all book titles for a given subcategory-->
 					<div class="threeColumn">
-						<label for = "title">Book Title</label><br>
+						<label for="title">Book Title</label><br>
 						<div class="inputWrapperBig">
-							<select white big id = "title" name = "title" ng-model = "record.bookTitle" ng-options = "z.title as z.display for z in titles" ng-change = "didSetBook()" required>
+							<select white big id="title" name="title" ng-model="record.bookTitle" ng-options="z.title as z.display for z in titles" ng-change="didSetBook()" required>
 							</select>
 							<div class="invalidContainer" ng-class="{'invalid':form.title.$touched && form.title.$invalid}"></div>
 						</div>
@@ -89,9 +89,9 @@
 				<div class="columnContainer" id="editRow">
 					<!--Simple datePicker for instructors to enter the startDate-->
 					<div class="twoColumn">
-						<label for = "dateSelect">Start Date</label><br>
+						<label for="dateSelect">Start Date</label><br>
 						<div class="inputWrapperBig">
-							<input white big type = "date" name = "startDate" id ="dateSelect" ng-model = "record.startDate" required>
+							<input white big type="date" name="startDate" id ="dateSelect" ng-model="record.startDate" required>
 							<div class="invalidContainer" ng-class="{'invalid':form.startDate.$touched && form.startDate.$invalid}"></div>
 						</div>
 						<span class="errorText" ng-show="form.startDate.$touched && form.startDate.$error.required">Start date is required.</span>
@@ -100,9 +100,9 @@
 
 					<!--Allows user to enter the ending date-->
 					<div class="twoColumn">
-						<label for = "dateSelect">End Date</label><br>
+						<label for="dateSelect">End Date</label><br>
 						<div class="inputWrapperBig">
-							<input white big type = "date" name = "endDate" id = "dateSelect" min = "{{record.startDate}}" ng-model = "record.endDate">
+							<input white big type="date" name="endDate" id="dateSelect" min="{{record.startDate}}" ng-model="record.endDate">
 							<div class="invalidContainer" ng-class="{'invalid':form.endDate.$touched && form.endDate.$invalid}"></div>
 						</div>
 						<span class="errorText" ng-show="form.endDate.$touched && form.endDate.$error.date">This date is invalid.</span>
@@ -113,10 +113,10 @@
 
 				<div class="columnContainer" id="editSingleRow">
 					<!--Simple number picker for instructors to enter the repetition number-->
-					<div id = "rep">
-						<label for = "reps">Repetition</label>
+					<div id="rep">
+						<label for="reps">Repetition</label>
 						<div class="inputWrapper">
-							<input white type = "number" name = "reps" min = "1" max = "5" ng-model = "record.rep" required>
+							<input white type="number" name="reps" min="1" max="5" ng-model="record.rep" required>
 							<div class="invalidContainer" ng-class="{'invalid':form.reps.$touched && form.reps.$invalid}"></div>
 						</div>
 						<span class="errorText" ng-show="form.reps.$touched && form.reps.$error.required">Repetition number is required.</span>
@@ -125,10 +125,10 @@
 					</div>
 
 					<!--Simple number picker for instructors to enter the test time-->
-					<div id = "testTime" ng-show = "record.test">
-						<label for = "testTime">Test Time</label>
+					<div id="testTime" ng-show="record.test">
+						<label for="testTime">Test Time</label>
 						<div class="inputWrapper">
-							<input white type = "number" name = "testTime" min = "0" max = "1000" ng-model = "record.testTime">
+							<input white type="number" name="testTime" min="0" max="1000" ng-model="record.testTime">
 							<div class="invalidContainer" ng-class="{'invalid':form.testTime.$touched && form.testTime.$invalid}"></div>
 						</div>
 						<span class="errorText" ng-show="form.testTime.$touched && form.testTime.$error.number">Test time must be a number.</span>
@@ -136,10 +136,10 @@
 					</div>
 
 					<!--Simple number picker for instructors to enter the number of mistakes-->	
-					<div id = "mistakes" ng-show = "record.test">
-						<label for = "mistakes">Mistakes</label>
+					<div id="mistakes" ng-show="record.test">
+						<label for="mistakes">Mistakes</label>
 						<div class="inputWrapper">
-							<input white type = "number" name = "mistakes" min = "0" max = "1000" ng-model = "record.mistakes">
+							<input white type="number" name="mistakes" min="0" max="1000" ng-model="record.mistakes">
 							<div class="invalidContainer" ng-class="{'invalid':form.mistakes.$touched && form.mistakes.$invalid}"></div>
 						</div>
 						<span class="errorText" ng-show="form.mistakes.$touched && form.mistakes.$error.number">Mistakes must be a number.</span>
@@ -149,7 +149,7 @@
 				<br><br><br>
 
 				<!--Submits form data-->
-				<button big ng-click = "updateRecord()">Submit</button>
+				<button big ng-click="updateRecord()">Submit</button>
 			</form>
 			<br><br>
 			<span ng-class="{'errorText':formStatus.id == 0, 'successText':formStatus.id == 1}">{{formStatus.text}}</span>
