@@ -97,7 +97,7 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 	var didFilter = $scope.didFilter = () => {
 		var allFilters = Object.keys(Filters).map(name => Filters[name]);
 		allFilters.forEach(f => $window.localStorage.setItem(f.id, f.model.value));
-		
+
 		$scope.records = allRecords.filter(r => allFilters.every(f => [f.wildcard, f.target(r)].includes(f.model.value)));
 	}
 
@@ -136,6 +136,10 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 			$window.localStorage.setItem(1, record.category);
 			window.location.href = "LineChart.html";
 		});
+	}
+
+	$scope.insertRecordButton = () => {
+		window.location.href = "InsertRecord.html";
 	}
 
 	$scope.editRecordButton = record => {

@@ -44,7 +44,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 	//Updates information for the selected category
 	$scope.didUpdateCategory = () => {
 		// Update repetition count for the form
-		$scope.repOptions = ["1","2"];
+		$scope.repOptions = ["All","1","2"];
 		if (["Calculation","Comprehension"].includes($scope.selectedCategory))
 			$scope.repOptions.push("3","4","5");
 
@@ -96,6 +96,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 				leastBook    = allBooks.length - 1;
 			
 			let xAxisLabels = []; // main container of x axis labels, labels are objects containing properties "month", "year", and "grade" (also date, but that's irrelevant here)
+			let monthInterval = highestDate - lowestDate > 12 ? 3 : 1;
 
 			let data    = [], 		// data line: x is date, y is large sequence number, main graph plot
 				bestFit = [], 		// best fit line: will contain two points outside the horizontal range of the graph (although currently not displayed, it is used to adjust y-axis bounds)
@@ -186,7 +187,8 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 				monthXAxis(label) {
 					let s = xAxisLabels[label - lowestDate];
 					if (s)
-						return s.month + 1;
+						if (s.month % monthInterval == 0)
+							return s.month + 1;
 				},
 				// callback for the x axis: displaying year numbers
 				yearXAxis(label) {
@@ -210,7 +212,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 								'2': "2nd Grade", 
 								'3': "3rd Grade", 
 								'4': `${s.grade}th Grade`,
-							})[Math.clamp(-1, s.grade, 4) + 1];
+							})[Math.clamp(-1, s.grade, 4)];
 						else if (s.month == 7)		// at the beginning of a school year, draw a divider
 							return "|";
 					}
@@ -302,7 +304,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 						ticks: {
 							dislay: false,
 							stepSize: 1,
-							autoSkip: true,
+							autoSkip: false,
 							min: lowestDate,
 							max: highestDate,
 							maxRotation: 0,

@@ -28,15 +28,15 @@
 		<link rel="stylesheet" type="text/css" href="ListStyle.css">
 	</head>
 	<body>
+		<div ng-app="gideonApp" ng-controller="recordListCtrl">
 		<!--Selection buttons in the header to move to insert and update pages-->
-		<div id="header">
-			<button type="button" class="hoverable" id="listBtn"   onclick="location.href='StudentList.html'">Student List</button>
-			<button type="button" class="hoverable" id="insertBtn" onclick="location.href='InsertRecord.html'">Insert Record</button>
-		</div>
-		<br/>
+			<div id="header">
+				<button type="button" class="hoverable" id="listBtn"   onclick="location.href='StudentList.html'">Student List</button>
+				<button type="button" class="hoverable" id="insertBtn" ng-click="insertRecordButton()">Insert Record</button>
+			</div>
+			<br/>
 
 		<!--List for displaying all students in the database that have book data-->
-		<div ng-app="gideonApp" ng-controller="recordListCtrl">
 			<h1>List of Records</h1>
 
 			<!--Filter select blocks-->

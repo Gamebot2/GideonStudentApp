@@ -14,19 +14,33 @@ gideonApp.controller('insertRecordCtrl', ($scope, $http, $window) => {
 	Verify.setScope($scope);
 
 	$scope.record = {};
-
+	var selectedStudentId = parseInt($window.localStorage.getItem(5));
 
 	// Preloads selection boxes with a disabled value (these and only these should start with the letters "Select")
 	$scope.subcategories = ["Select a category first"];
 	$scope.titles = [{title: "Select a subcategory first", display: "Select a subcategory first"}];
 
+	// Facilitates the JSON packaging by setting the id property
+	$scope.setId = () => {
+		$scope.record.id = $scope.client.id;
+	}
+
 	// Returns a list of all students for easy name selection	
 	$http.get(`${URL}students`)
 	.then(response => {
-		$scope.names = response.data.map(student => ({ 
-			name: student.client, // names contain ids to make sure every name is distinct - the name will be displayed but the id will be used
-			id: student.studentId,
-		}));
+		$scope.names = response.data.map(student => {
+			let obj = { 
+				name: student.client, // names contain ids to make sure every name is distinct - the name will be displayed but the id will be used
+				id: student.studentId,
+			}
+
+			if (student.studentId == selectedStudentId) {
+				$scope.client = obj;
+				$scope.setId();
+			}
+
+			return obj;
+		});
 	});
 
 	$http.get(`${URL}categories`)
@@ -52,11 +66,7 @@ gideonApp.controller('insertRecordCtrl', ($scope, $http, $window) => {
 			}));
 		});
 	}
-
-	// Facilitates the JSON packaging by setting the id property
-	$scope.setId = () => {
-		$scope.record.id = $scope.client.id;
-	}
+	
 
 	// Form submission
 	$scope.createRecord = () => {
