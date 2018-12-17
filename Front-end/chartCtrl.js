@@ -80,11 +80,6 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 	});
 
 
-	//// CHART DEFAULTS ////
-	Chart.defaults.global.defaultFontSize = 16;
-	Chart.defaults.global.defaultFontColor = '#000';
-
-
 	//// GIANT CHART GENERATION METHOD ////
 	// "records" is intended to be a list of records drawn from an http call (response.data)
 	let gen = records => {
@@ -96,7 +91,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 				leastBook    = allBooks.length - 1;
 			
 			let xAxisLabels = []; // main container of x axis labels, labels are objects containing properties "month", "year", and "grade" (also date, but that's irrelevant here)
-			let monthInterval = highestDate - lowestDate > 12 ? 3 : 1;
+			let monthInterval = highestDate - lowestDate > 13 ? 3 : 1;
 
 			let data    = [], 		// data line: x is date, y is large sequence number, main graph plot
 				bestFit = [], 		// best fit line: will contain two points outside the horizontal range of the graph (although currently not displayed, it is used to adjust y-axis bounds)
@@ -159,6 +154,11 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 
 			s = allBooks[greatestBook-1];
 			greatestBook = s.sequenceLarge - s.sequence + 1 + s.sequenceLength; // set top bound to the start of the next sequence
+
+			let yAxisGridLineIsMajor = [];
+			for (s = greatestBook; s >= leastBook; s--)
+				yAxisGridLineIsMajor.push(allBooks[s-1].sequence == 1 ? 1 : 0);
+			console.log(yAxisGridLineIsMajor);
 
 
 			//// IGL LINE: an arbitrary goal line which is fixed for each category ////
@@ -250,18 +250,27 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 
 			console.log(data);
 
+			//// GLOBAL SPECS ////
+			Chart.defaults.global.defaultFontSize = 16;
+			Chart.defaults.global.defaultFontColor = '#000';
+			Chart.defaults.global.elements.line.borderWidth = 3;
+
+
 			//// CHART SPECIFICATIONS ////
 			let chartSpecs = {
 				datasets: [
 						{
 							label: "Progress",
 							data: data,
-							backgroundColor: "rgba(255, 0, 0, 0.4)",
-							borderColor: "rgba(255, 0, 0, 0.4)",
+							backgroundColor: "rgba(231, 76, 60, 0.75)",
+							borderColor: "rgba(231, 76, 60, 0.75)",
 							fill: false,
 							cubicInterpolationMode: 'monotone',
-							hitRadius: 30,
-						}, {
+							hitRadius: 20,
+							pointRadius: 3,
+							pointHoverRadius: 4,
+							pointBorderWidth: 0,
+						}, /*{
 							label: "Best Fit Line",
 							data: bestFit,
 							backgroundColor: "rgba(0, 0, 255, 0.4)",
@@ -270,12 +279,12 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 							borderDash: [5],
 							lineTension: 0,
 							pointRadius: 0,
-							hidden: true,		// hidden because it is not necessary right now
-						}, {
+							hidden: true,		// line of best fit not necessary
+						},*/{
 							label: "IGL",
 							data: igl,
-							backgroundColor: "rgba(0, 255, 255, 0.4)",
-							borderColor: "rgba(0, 255, 255, 0.4)",
+							backgroundColor: "rgba(46, 204, 113, 0.75)",
+							borderColor: "rgba(46, 204, 113, 0.75)",
 							fill: false,
 							cubicInterpolationMode: 'monotone',
 							pointRadius: 0,
@@ -297,6 +306,11 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 					{
 						id:"xAxis1",
 						type: 'linear',
+						gridLines: {
+							display: true,
+							lineWidth: 2,
+							color: "rgba(0, 0, 0, 0.5)",
+						},
 						scaleLabel: {
 							display: false,
 							padding: -5,
@@ -316,6 +330,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 						gridLines: {
 							display: false,
 							drawBorder: true,
+							color: "rgba(0, 0, 0, 0.5)",
 						},
 						scaleLabel: {
 							display: false,
@@ -338,6 +353,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 							display: false,
 							drawBorder: true,
 							drawOnChartArea: false,
+							color: "rgba(0, 0, 0, 0.5)",
 						},
 						scaleLabel: {
 							display: false,
@@ -358,13 +374,16 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 						type: 'linear',
 						position: 'left',
 						display: true,
+						gridLines: {
+							lineWidth: 2,
+							color: yAxisGridLineIsMajor.map(o => o ? "rgba(0, 0, 0, 0.5)" : "rgba(0, 0, 0, 0.1)"),
+						},
 						scaleLabel: {
 							display: true,
 							labelString: $scope.selectedCategory,
 						},
 						ticks: {
 							stepSize: 1,
-							autoSkip: true,
 							autoSkipPadding: 50,
 							min: leastBook,
 							max: greatestBook,
@@ -433,6 +452,10 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 			$scope.until = $scope.months2;
 			if ($scope.months2 == 0 && Number.isInteger($scope.monthsF))
 				$scope.until = -Math.max($scope.monthsF, 0)
+
+			// NOTE: we are subtracting 1 from $scope.until in order to display the entire most recent month
+			// (eg: if it is currently December 15th, the graph will stop on December 31st)
+			$scope.until -= 1;
 
 			$http.get(`${URL}recordsForChart?StudentId=${$scope.studentId}&Category=${$scope.selectedCategory}&Months=${$scope.months}&Until=${$scope.until}&Reps=${$scope.selectedRep}`)
 			.then(response => {

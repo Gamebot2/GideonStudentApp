@@ -34,8 +34,8 @@ public class RecordServiceImpl implements RecordService{
 		
 		// Pruning list to include just the time period
 		DateTime dt = new DateTime().withTimeAtStartOfDay().withDayOfMonth(1);
-		Date monthsDate = dt.minusMonths(months   ).toDate(),
-		     untilDate  = dt.minusMonths(until - 1).toDate(); // subtracting 1 from until in order to display the entire most recent month, rather than just the beginning of it
+		Date monthsDate = dt.minusMonths(months).toDate(),
+		     untilDate  = dt.minusMonths(until).toDate();
 		
 		for(int r = 0; r < allRecords.size(); r++) {
 			Record currR = allRecords.get(r);
