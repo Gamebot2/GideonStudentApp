@@ -257,14 +257,14 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 					
 					// Add enters to the record notes
 					(theRecord.notes || "None").split(' ').forEach(str => {
-						let desiredString = description[description.length-1] + " " + str
+						let desiredString = description[description.length-1] + " " + str;
 						if (desiredString.length < 100)
-							description[description.length-1] = desiredString
+							description[description.length-1] = desiredString;
 						else
-							description.push(str)
+							description.push(str);
 					});
 
-					return description
+					return description;
 				},
 			}
 
