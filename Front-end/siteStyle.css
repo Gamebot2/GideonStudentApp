@@ -42,7 +42,7 @@ h1, h3 {
 
 
 /*Input CSS (including some button stuff)*/
-select[white], input[white] {
+select[white], input[white], textarea[white] {
 	border: 1px solid #ccc;
     border-radius: 4px;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15), 3px 3px 10px rgba(0, 0, 0, 0.1);
@@ -50,7 +50,7 @@ select[white], input[white] {
     padding: 5px 5px;
     transition-duration: .4s;
 }
-select[black], input[black] {
+select[black], input[black], textarea[black] {
 	background-color: rgba(201, 76, 76, 0);
 	box-shadow: none;
 	border: none;
@@ -58,16 +58,16 @@ select[black], input[black] {
 	border-radius: 0px;
 	outline: none;
 }
-select[big], input[big], button[big] {
+select[big], input[big], textarea[big], button[big] {
 	display: inline-block;
 	width: 100%;
 	padding: 12px 20px;
 }
 
-input:focus, select:focus, button:focus {
+input:focus, select:focus, textarea:focus, button:focus {
 	outline: none;
 }
-input[white]:focus, select[white]:focus {
+input[white]:focus, select[white]:focus, textarea[white]:focus {
 	box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4), 5px 5px 20px rgba(0, 0, 0, 0.3);
 }
 

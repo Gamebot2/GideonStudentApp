@@ -9,6 +9,7 @@ CREATE VIEW `records_joined` AS
         r.Test,
         r.TestTime,
         r.Mistakes,
+        r.Notes,
         s.Client,
         b.Category,
         b.Subcategory,
@@ -18,7 +19,7 @@ CREATE VIEW `records_joined` AS
 	JOIN students s ON r.StudentId = s.StudentId
 	JOIN books b ON r.BookId = b.BookId
 	ORDER BY r.StartDate DESC;
-    
+
 CREATE VIEW `students_s` AS
 	SELECT
 		s.StudentId,

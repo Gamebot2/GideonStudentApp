@@ -99,6 +99,10 @@
 					<span class="errorText" ng-show="form.reps.$touched && form.reps.$error.number">Repetition must be a number.</span>
 					<span class="errorText" ng-show="form.reps.$touched && (form.reps.$error.min || form.reps.$error.max)">Repetition number must be between 1 and 5.</span>
 				<br><br>
+
+				<label for="notes" id="notes">Notes</label>
+					<textarea white rows="3" name="notes" id="notes" ng-model="record.notes"></textarea>
+				<br><br>
 				
 				<!--Submit button: runs the insertTask function-->
 				<button big ng-click="createRecord()">Submit</button>

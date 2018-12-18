@@ -11,13 +11,14 @@ public class Master {
 	private String title;
 	private Date startDate;
 	private int rep;
+	private String notes;
 	
 
 	public Master() {
 		super();
 	}
 	
-	public Master(int id, String category, String subcategory, String title, Date startDate, int rep) {
+	public Master(int id, String category, String subcategory, String title, Date startDate, int rep, String notes) {
 		super();
 		this.id = id;
 		this.category = category;
@@ -25,6 +26,7 @@ public class Master {
 		this.title = title;
 		this.startDate = startDate;
 		this.rep = rep;
+		this.setNotes(notes);
 	}
 
 	public int getId() {
@@ -74,6 +76,14 @@ public class Master {
 	
 	public void setRep(int rep) {
 		this.rep = rep;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 
 

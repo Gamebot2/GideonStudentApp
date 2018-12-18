@@ -98,13 +98,21 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 				igl     = [],		// igl line: an arbitrary goal line that denotes an international standard in some categories
 				now     = [];		// now line: a vertical line that displays the current date for graphs that go past the current date
 
+			let dataLookup = {};	// stores dictionary mappings from x axis values to full record objects
+
 			//// DATA POINTS: Creates a point mapping each record to its respective spot on the x and y axis ////
 			data = records.map(record => {
 				greatestBook = Math.max(record.sequenceLarge, greatestBook); // adjust y-axis bounds
 				leastBook = Math.min(record.sequenceLarge, leastBook);
 
+				let x = Dates.dateToMonthIndex(Dates.stringToDateObject(record.startDate));
+				if (!dataLookup[x])
+					dataLookup[x] = [record];
+				else
+					dataLookup[x].push(record);
+
 				return {
-					x: Dates.dateToMonthIndex(Dates.stringToDateObject(record.startDate)),
+					x: x,
 					y: record.sequenceLarge,
 				};
 			});
@@ -158,7 +166,6 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 			let yAxisGridLineIsMajor = [];
 			for (s = greatestBook; s >= leastBook; s--)
 				yAxisGridLineIsMajor.push(allBooks[s-1].sequence == 1 ? 1 : 0);
-			console.log(yAxisGridLineIsMajor);
 
 
 			//// IGL LINE: an arbitrary goal line which is fixed for each category ////
@@ -244,11 +251,23 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 				// callback for the tooltip: displaying exact dates
 				descTooltip(tooltipItem, data) {
 					let theDate = Dates.indexToDateObject(tooltipItem.xLabel);
-					return `started on ${theDate.month + 1}/${theDate.date}/${theDate.year}`;
+					let theRecord = dataLookup[tooltipItem.xLabel].filter(r => r.sequenceLarge == tooltipItem.yLabel)[0];
+					
+					let description = [`Started on ${theDate.month + 1}/${theDate.date}/${theDate.year}`, `Rep ${theRecord.rep}`, `Notes:`];
+					
+					// Add enters to the record notes
+					(theRecord.notes || "None").split(' ').forEach(str => {
+						let desiredString = description[description.length-1] + " " + str
+						if (desiredString.length < 100)
+							description[description.length-1] = desiredString
+						else
+							description.push(str)
+					});
+
+					return description
 				},
 			}
 
-			console.log(data);
 
 			//// GLOBAL SPECS ////
 			Chart.defaults.global.defaultFontSize = 16;
@@ -266,7 +285,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 							borderColor: "rgba(231, 76, 60, 0.75)",
 							fill: false,
 							cubicInterpolationMode: 'monotone',
-							hitRadius: 20,
+							hitRadius: 5,
 							pointRadius: 3,
 							pointHoverRadius: 4,
 							pointBorderWidth: 0,

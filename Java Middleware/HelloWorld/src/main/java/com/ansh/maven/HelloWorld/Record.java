@@ -13,6 +13,7 @@ public class Record {
 	private int Test;
 	private int TestTime;
 	private int Mistakes;
+	private String Notes;
 	private String name;
 	private int sequenceLarge;
 	private String bookTitle;
@@ -24,7 +25,7 @@ public class Record {
 	}
 
 	public Record(int recordId, int studentId, int bookId, Date startDate, Date endDate, int rep, int test,
-			int testTime, int mistakes) {
+			int testTime, int mistakes, String notes) {
 		super();
 		RecordId = recordId;
 		StudentId = studentId;
@@ -35,6 +36,7 @@ public class Record {
 		Test = test;
 		TestTime = testTime;
 		Mistakes = mistakes;
+		Notes = notes;
 	}
 	
 	public String getCategory() {
@@ -148,11 +150,19 @@ public class Record {
 	public void setMistakes(int mistakes) {
 		Mistakes = mistakes;
 	}
+	
+	public String getNotes() {
+		return Notes;
+	}
+	
+	public void setNotes(String notes) {
+		Notes = notes;
+	}
 
 	@Override
 	public String toString() {
 		return "Record [RecordId=" + RecordId + ", StudentId=" + StudentId + ", BookId=" + BookId + ", startDate="
 				+ StartDate + ", endDate=" + EndDate + ", Rep=" + Rep + ", Test=" + Test + ", TestTime=" + TestTime
-				+ ", Mistakes=" + Mistakes + "]";
+				+ ", Mistakes=" + Mistakes + "]" + " Notes: " + Notes;
 	}	
 }
