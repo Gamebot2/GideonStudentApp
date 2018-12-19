@@ -491,4 +491,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 
 
 
+	$scope.backButton = () => {
+		$window.history.back();
+	}
 });

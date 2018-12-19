@@ -38,7 +38,7 @@
 			<form name="form">
 				<div class="columnContainer" id="editRow">
 					<!--Name input, required field-->
-					<div class="threeColumn">
+					<div class="twoColumn">
 						<label for="student">Full Name</label><br>
 						<div class="inputWrapperBig">
 							<input white big type="text" name="client" ng-model="student.client" required>
@@ -48,11 +48,13 @@
 					</div>
 
 					<!--Email input, no required format-->
-					<div class="threeColumn">
+					<div class="twoColumn">
 						<label for="email">Email</label><br>
 						<input white big type="text" ng-model="student.email">
 					</div>
+				</div><br>
 
+				<div class="columnContainer" id="editRow">
 					<!--Grade selection-->
 					<div class="threeColumn">
 						<label for="email">Grade</label><br>
@@ -73,30 +75,28 @@
 								<option value="12th">12th</option>
 						</select>
 					</div>
-				</div><br>
 
-				<div class="columnContainer" id="editRow">
 					<!--Phone input, no required format-->
-					<div class="twoColumn">
+					<div class="threeColumn">
 						<label for="email">Phone</label><br>
 						<input white big type="text" ng-model="student.phone">
 					</div>
 
-					<!--Address input, no required format-->
-					<div class="twoColumn">
-						<label for="email">Address</label><br>
-						<input white big type="text" ng-model="student.address">
-					</div>
-				</div><br>
-				
-				<div class="columnContainer" id="editRow">
 					<!--Gender selection-->
-					<div class="twoColumn">
+					<div class="threeColumn">
 						<label for="email">Gender</label><br>
 						<select white big name="gender" id="genderBox" ng-model="student.gender">
 							<option value="Male">Male</option>
 							<option value="Female">Female</option>
 						</select>
+					</div>
+				</div><br>
+				
+				<div class="columnContainer" id="editRow">
+					<!--Address input, no required format-->
+					<div class="twoColumn">
+						<label for="email">Address</label><br>
+						<input white big type="text" ng-model="student.address">
 					</div>
 
 					<!--Current passes input-->

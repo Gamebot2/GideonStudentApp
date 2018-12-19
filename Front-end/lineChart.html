@@ -36,7 +36,7 @@
 		<!--Containing essentially a form for selected chart specifications-->
 		<div class="exterior" ng-app="gideonApp" ng-controller="chartCtrl">
 			<div id="expandableContainer" ng-class="{'collapsedContent':!expanded, 'expandedContent':expanded}">
-				<button invis class="hoverable" id="backButton" onclick="location.href='StudentList.html'">Back to Student List</button>
+				<button invis class="hoverable" id="backButton" ng-click="backButton()">Back</button>
 				<form name="form">
 				<h1>Progress Chart for {{studentName}}</h1>
 				<br>
