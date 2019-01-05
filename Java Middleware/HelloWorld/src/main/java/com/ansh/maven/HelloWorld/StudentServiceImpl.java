@@ -1,6 +1,7 @@
 package com.ansh.maven.HelloWorld;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,13 @@ public class StudentServiceImpl implements StudentService{
 
 	// Returns students ordered by recently used for the list display, with a specified limit (0 corresponds to no limit)
 	@Override
-	public List<Student> getStudentsForList(boolean withData, int limit) {
-		return studentDao.getStudentsForList(withData, limit);
+	public List<Student> getStudentsForList(boolean withData, String sortingMode, int limit) {
+		return studentDao.getStudentsForList(withData, sortingMode, limit);
+	}
+	
+	@Override
+	public List<Integer> getStudentIdsWithRecords() {
+		return studentDao.getStudentIdsWithRecords();
 	}
 
 	// Returns all book categories for which a student has records

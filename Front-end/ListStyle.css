@@ -68,6 +68,9 @@ body {
 	margin: auto;
 	width: 50%;
 }
+#filterContainer>.column {
+	padding: 10px;
+}
 #filterText {
 	display: block;
 	text-align: center;

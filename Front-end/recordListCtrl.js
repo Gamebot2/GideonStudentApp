@@ -86,6 +86,19 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 				record.startDateDisplay = record.startDate ? new Date(record.startDate.split("-").join("/")).toLocaleDateString() : "";
 				record.endDateDisplay = record.endDate ? new Date(record.endDate.split("-").join("/")).toLocaleDateString() : "In Progress";
 
+				switch (record.category) {
+					case "Calculation":
+						record.displayTitle = record.bookTitle;
+						break;
+					case "Word Problems":
+					case "Grammar":
+						record.displayTitle = record.category + " " + record.bookTitle;
+						break;
+					case "Comprehension":
+						record.displayTitle = record.subcategory + " " + record.bookTitle;
+						break;
+				}
+
 				return record;
 			});
 			// Apply the filters to the student's records
@@ -102,7 +115,7 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 	}
 
 	// FETCH DATA
-	$http.get(`${URL}students`)
+	$http.get(`${URL}listStudents?withData=true&sortBy=name&limit=0`)
 	.then(response => {
 		$scope.students = response.data.map(o => ({name: o.client, id: o.studentId}));
 		if ($scope.studentFilter == 0)

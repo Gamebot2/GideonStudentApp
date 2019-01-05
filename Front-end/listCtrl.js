@@ -10,28 +10,36 @@
 
 gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 
-	var dataSwitch = false;
+	// Data switch begins as true because it is flipped to false when students finish loading
+	var dataSwitch = true;
+	$scope.toggleData = () => {
+		dataSwitch = !dataSwitch;
+		$scope.toggleButtonText = dataSwitch ? "Display All Students" : "Display Students With Records";
+		$scope.students = dataSwitch ? $scope.allStudents.filter(s => $scope.studentIdsWithData.has(s.studentId)) : $scope.allStudents;
+	}
 
 	//Preload $scope.students with an initial "loading" value and the toggle button text with its initial state
+	$scope.allStudents = [];
 	$scope.students = [{
 		client: "Loading",
 		email: "",
 	}];
 	$scope.expandedStudentId = -1;
 
-	var getStudents = () => {
-		$http.get(`${URL}listStudents?withData=${dataSwitch}&limit=0`)
+	var getStudents = (sortBy, lim) => {
+		$http.get(`${URL}listStudents?withData=false&sortBy=${sortBy}&limit=${lim}`)
 		.then(response => {
-			$scope.students = response.data;
+			$scope.allStudents = response.data;
+			$scope.toggleData();
 		});
-		$scope.toggleButtonText = dataSwitch ? "Display All Students" : "Display Students With Records";
 	}
-	getStudents();
+	getStudents("recent", 0);
 
-	$scope.toggleData = () => {
-		dataSwitch = !dataSwitch;
-		getStudents();
-	}
+	$http.get(`${URL}studentIdsWithRecords`)
+	.then(response => {
+		$scope.studentIdsWithData = new Set(response.data);
+		console.log($scope.studentIdsWithData);
+	});
 	
 	// ACCORDION MANAGEMENT
 	$scope.manageExpansion = studentId => {

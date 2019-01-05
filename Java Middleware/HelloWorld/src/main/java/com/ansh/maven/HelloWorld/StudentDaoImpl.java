@@ -37,10 +37,18 @@ public class StudentDaoImpl implements StudentDao {
 
 	// Returns students ordered by recently used for the list display, with a specified limit (0 corresponds to no limit)
 	@Override
-	public List<Student> getStudentsForList(boolean withData, int limit) {
-		String sql = "SELECT * FROM students_s ORDER BY LastUsed DESC";
+	public List<Student> getStudentsForList(boolean withData, String sortingMode, int limit) {
+		String sql = "SELECT * FROM students_s #";
 		RowMapper<Student> rowMapper = new StudentRowMapper();
 		
+		// sorting mode check
+		if (sortingMode.equalsIgnoreCase("recent"))
+			sql = sql.replaceAll("#", "ORDER BY LastUsed DESC");
+		else if (sortingMode.equalsIgnoreCase("name"))
+			sql = sql.replaceAll("#", "ORDER BY Client");
+		else
+			sql = sql.replaceAll("#", "");
+			
 		// withData check
 		if (withData)
 			sql = sql.replace("_s", "_withdata");
@@ -51,6 +59,12 @@ public class StudentDaoImpl implements StudentDao {
 			return this.jdbcTemplate.query(sql, rowMapper, limit);
 		} else
 			return this.jdbcTemplate.query(sql, rowMapper);
+	}
+	
+	@Override
+	public List<Integer> getStudentIdsWithRecords() {
+		String sql = "SELECT StudentId FROM students_withdata";
+		return jdbcTemplate.queryForList(sql, Integer.class);
 	}
 	
 	// Returns the grade of a single student

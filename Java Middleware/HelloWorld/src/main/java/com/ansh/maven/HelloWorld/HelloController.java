@@ -98,9 +98,16 @@ public class HelloController {
 	//Returns students ordered by recently used for the list display, with a specified limit (0 corresponds to no limit)
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/listStudents")
-	public List<Student> getStudentsForList(@RequestParam("withData") boolean withData, @RequestParam("limit") int limit) {
+	public List<Student> getStudentsForList(@RequestParam("withData") boolean withData, @RequestParam("sortBy") String sortingMode, @RequestParam("limit") int limit) {
 		System.out.println("Method getStudentsForList() called");
-		return studentService.getStudentsForList(withData, limit);
+		return studentService.getStudentsForList(withData, sortingMode, limit);
+	}
+	
+	@CrossOrigin(origins = webOrigin)
+	@RequestMapping("/studentIdsWithRecords")
+	public List<Integer> getStudentIdsWithRecords() {
+		System.out.println("Method getStudentIdsWithRecords() called");
+		return studentService.getStudentIdsWithRecords();
 	}
 	
 	//Returns all categories that a student is working in

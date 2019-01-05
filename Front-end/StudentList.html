@@ -80,14 +80,13 @@
 				</div>
 				<!--Additional information and buttons hidden in an accordion-->
 				<div id="expandableContainer" ng-class="{'collapsedContent':student.studentId!=expandedStudentId, 'expandedContent':student.studentId==expandedStudentId}">
-					ID: {{student.studentId}}<br>
 					Gender: {{student.gender}}<br>
 					Address: {{student.address}}<br>
 					Phone: {{student.phone}}<br>
 					Current Passes: {{student.currentPasses}}<br><br>
 					<button type="button" class="hoverable" id="accordionButton" ng-click="lineChartButton(student)">Progress Chart</button>
 					<button type="button" class="hoverable" id="accordionButton" ng-click="editStudentButton(student)">Edit Student</button>
-					<button type="button" class="hoverable" id="accordionButton" ng-click="preloadRecordsList(student)">Record List</button>
+					<button type="button" class="hoverable" id="accordionButton" ng-click="preloadRecordsList(student)" ng-show="studentIdsWithData.has(student.studentId)">Record List</button>
 				</div>
 			</div>
 		</div>
