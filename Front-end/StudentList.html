@@ -84,7 +84,7 @@
 					Address: {{student.address}}<br>
 					Phone: {{student.phone}}<br>
 					Current Passes: {{student.currentPasses}}<br><br>
-					<button type="button" class="hoverable" id="accordionButton" ng-click="lineChartButton(student)">Progress Chart</button>
+					<button type="button" class="hoverable" id="accordionButton" ng-click="lineChartButton(student)" ng-show="studentIdsWithData.has(student.studentId)">Progress Chart</button>
 					<button type="button" class="hoverable" id="accordionButton" ng-click="editStudentButton(student)">Edit Student</button>
 					<button type="button" class="hoverable" id="accordionButton" ng-click="preloadRecordsList(student)" ng-show="studentIdsWithData.has(student.studentId)">Record List</button>
 				</div>

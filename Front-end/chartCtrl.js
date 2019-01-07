@@ -161,7 +161,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 			leastBook = s.sequenceLarge - s.sequence + 1; // set bottom bound to the start of the lowest sequence
 
 			s = allBooks[greatestBook-1];
-			greatestBook = s.sequenceLarge - s.sequence + 1 + s.sequenceLength; // set top bound to the start of the next sequence
+			greatestBook = Math.min(allBooks.length, s.sequenceLarge - s.sequence + 1 + s.sequenceLength); // set top bound to the start of the next sequence, without going over
 
 			let yAxisGridLineIsMajor = [];
 			for (s = greatestBook; s >= leastBook; s--)

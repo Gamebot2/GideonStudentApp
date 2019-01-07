@@ -1,0 +1,17 @@
+.exterior {
+	padding: 20px;
+}
+
+#logo {
+	display: block;
+  	margin-left: auto;
+  	margin-right: auto;
+  	width: 30%;
+  	height: auto;
+}
+
+#loginBlock {
+	position: relative;
+	width: 50%;
+	left: 25%;
+}

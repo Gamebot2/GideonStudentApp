@@ -38,7 +38,6 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 	$http.get(`${URL}studentIdsWithRecords`)
 	.then(response => {
 		$scope.studentIdsWithData = new Set(response.data);
-		console.log($scope.studentIdsWithData);
 	});
 	
 	// ACCORDION MANAGEMENT
