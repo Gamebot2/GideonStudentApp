@@ -42,10 +42,17 @@ public class StudentDaoImpl implements StudentDao {
 		RowMapper<Student> rowMapper = new StudentRowMapper();
 		
 		// sorting mode check
-		if (sortingMode.equalsIgnoreCase("recent"))
-			sql = sql.replaceAll("#", "ORDER BY LastUsed DESC");
-		else if (sortingMode.equalsIgnoreCase("name"))
-			sql = sql.replaceAll("#", "ORDER BY Client");
+		HashMap<String, String> sortingModes = new HashMap<>();
+		sortingModes.put("recent", "ORDER BY LastUsed DESC");
+		sortingModes.put("name", "ORDER BY Client");
+		sortingModes.put("namedesc", "ORDER BY Client DESC");
+		sortingModes.put("email", "ORDER BY Email");
+		sortingModes.put("emaildesc", "ORDER BY Email DESC");
+		sortingModes.put("grade", "ORDER BY Grade");
+		sortingModes.put("gradedesc", "ORDER BY Grade DESC");
+		
+		if (sortingModes.containsKey(sortingMode))
+			sql = sql.replaceAll("#", sortingModes.get(sortingMode));
 		else
 			sql = sql.replaceAll("#", "");
 			
