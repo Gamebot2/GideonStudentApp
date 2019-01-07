@@ -73,14 +73,14 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 		refreshStudents();
 	});
 
-	var getStudents = (sortBy, lim) => {
-		$http.get(`${URL}listStudents?withData=false&sortBy=${sortBy}&limit=${lim}`)
+	var getStudents = lim => {
+		$http.get(`${URL}listStudents?withData=false&limit=${lim}`)
 		.then(response => {
 			$scope.allStudents = response.data;
 			refreshStudents();
 		});
 	}
-	getStudents("recent", 0);
+	getStudents(0);
 	
 	// ACCORDION MANAGEMENT
 	$scope.manageExpansion = studentId => {
