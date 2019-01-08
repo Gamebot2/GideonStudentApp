@@ -68,7 +68,7 @@ body {
 	margin: auto;
 	width: 50%;
 }
-#filterContainer>.column {
+#filterContainer > md-input-container {
 	padding: 10px;
 }
 #filterText {

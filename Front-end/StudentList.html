@@ -6,15 +6,15 @@
 		<meta name="msapplication-TileColor" content="#da532c">
 		<meta name="theme-color" content="#ffffff">
 
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"></script>
-  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
-  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
-  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
-  		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-aria.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-messages.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
   		<script src="gideonApp.js"></script>
   		<script src="listCtrl.js"></script>
-		<script src="ripple.js"></script>
+		<!--<script src="ripple.js"></script>-->
 
 		<link rel="manifest" href="/site.webmanifest">
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -24,6 +24,7 @@
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 		<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
 		<link rel="stylesheet" type="text/css" href="SiteStyle.css">
 		<link rel="stylesheet" type="text/css" href="ListStyle.css">
 	</head>
@@ -32,8 +33,8 @@
 		<div ng-app="gideonApp" ng-controller="listCtrl">
 			<!--Selection buttons in the header to move to insert and update pages-->
 			<div id="header">
-				<button type="button" class="hoverable" id="listBtn"   onclick="location.href='RecordList.html'">Record List</button>
-				<button type="button" class="hoverable" id="insertBtn" onclick="location.href='InsertStudent.html'">Insert Student</button>
+				<md-button class="md-accent md-raised" id="listBtn"   onclick="location.href='RecordList.html'">Record List</md-button>
+				<md-button class="md-accent md-raised" id="insertBtn" onclick="location.href='InsertStudent.html'">Insert Student</md-button>
 			</div>
 			<br/>
 
@@ -41,21 +42,21 @@
 
 			<!--Filter text blocks-->
 			<div class="columnContainer" id="filterContainer">
-				<div class="column" style="width:50%">
-					<p id="filterText">Filter by Name: </p>
-					<input black big id="textFilter" name="textFilter" type="text" ng-model="clientFilter">
-				</div>
-				<div class="column" style="width:50%">
-					<p id="filterText">Filter by Email: </p>
-					<input black big id="textFilter" name="textFilter" type="text" ng-model="emailFilter">
-				</div>
+				<md-input-container class="column" style="width:50%">
+					<label>Filter by Name: </label>
+					<input black big md-select-on-focus id="textFilter" name="textFilter" type="text" ng-model="clientFilter">
+				</md-input-container>
+				<md-input-container class="column" style="width:50%">
+					<label>Filter by Email: </label>
+					<input black big md-select-on-focus id="textFilter" name="textFilter" type="text" ng-model="emailFilter">
+				</md-input-container>
 			</div>
 
 			<!--Toggle for viewing only students with data, meant for testing-->
 			<br><br>
-			<button type="button" class="hoverable" id="dataToggleBtn" ng-click="toggleData()">
+			<md-button class="md-accent md-raised" id="dataToggleBtn" ng-click="toggleData()">
 				{{toggleButtonText}}
-			</button>
+			</md-button>
 			<br><br>
 
 			<!--Header of table-->
@@ -84,9 +85,9 @@
 					Address: {{student.address}}<br>
 					Phone: {{student.phone}}<br>
 					Current Passes: {{student.currentPasses}}<br><br>
-					<button type="button" class="hoverable" id="accordionButton" ng-click="lineChartButton(student)" ng-show="studentIdsWithData.has(student.studentId)">Progress Chart</button>
-					<button type="button" class="hoverable" id="accordionButton" ng-click="editStudentButton(student)">Edit Student</button>
-					<button type="button" class="hoverable" id="accordionButton" ng-click="preloadRecordsList(student)" ng-show="studentIdsWithData.has(student.studentId)">Record List</button>
+					<md-button class="md-accent md-raised" id="accordionButton" ng-click="editStudentButton(student)">Edit Student</md-button>
+					<md-button class="md-accent md-raised" id="accordionButton" ng-click="lineChartButton(student)" ng-show="studentIdsWithData.has(student.studentId)">Progress Chart</md-button>
+					<md-button class="md-accent md-raised" id="accordionButton" ng-click="preloadRecordsList(student)" ng-show="studentIdsWithData.has(student.studentId)">Record List</md-button>
 				</div>
 			</div>
 		</div>

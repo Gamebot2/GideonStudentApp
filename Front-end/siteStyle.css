@@ -114,7 +114,7 @@ select {
 
 /*Button CSS, including ripple and press effects*/
 button {
-	background-color: gold;
+	/*background-color: gold;*/
 	color: black;
 	position: relative;
 	margin: 0px 4px;
