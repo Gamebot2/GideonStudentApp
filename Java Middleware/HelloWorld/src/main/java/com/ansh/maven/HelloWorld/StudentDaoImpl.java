@@ -37,17 +37,9 @@ public class StudentDaoImpl implements StudentDao {
 
 	// Returns students ordered by recently used for the list display, with a specified limit (0 corresponds to no limit)
 	@Override
-	public List<Student> getStudentsForList(boolean withData, String sortingMode, int limit) {
-		String sql = "SELECT * FROM students_s #";
+	public List<Student> getStudentsForList(boolean withData, int limit) {
+		String sql = "SELECT * FROM students_s ORDER BY LastUsed DESC";
 		RowMapper<Student> rowMapper = new StudentRowMapper();
-		
-		// sorting mode check
-		if (sortingMode.equalsIgnoreCase("recent"))
-			sql = sql.replaceAll("#", "ORDER BY LastUsed DESC");
-		else if (sortingMode.equalsIgnoreCase("name"))
-			sql = sql.replaceAll("#", "ORDER BY Client");
-		else
-			sql = sql.replaceAll("#", "");
 			
 		// withData check
 		if (withData)

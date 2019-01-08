@@ -27,8 +27,8 @@ public class StudentServiceImpl implements StudentService{
 
 	// Returns students ordered by recently used for the list display, with a specified limit (0 corresponds to no limit)
 	@Override
-	public List<Student> getStudentsForList(boolean withData, String sortingMode, int limit) {
-		return studentDao.getStudentsForList(withData, sortingMode, limit);
+	public List<Student> getStudentsForList(boolean withData, int limit) {
+		return studentDao.getStudentsForList(withData, limit);
 	}
 	
 	@Override

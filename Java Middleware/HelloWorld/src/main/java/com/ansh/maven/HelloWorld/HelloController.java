@@ -98,9 +98,9 @@ public class HelloController {
 	//Returns students ordered by recently used for the list display, with a specified limit (0 corresponds to no limit)
 	@CrossOrigin(origins = webOrigin)
 	@RequestMapping("/listStudents")
-	public List<Student> getStudentsForList(@RequestParam("withData") boolean withData, @RequestParam("sortBy") String sortingMode, @RequestParam("limit") int limit) {
-		System.out.println("Method getStudentsForList() called");
-		return studentService.getStudentsForList(withData, sortingMode, limit);
+	public List<Student> getStudentsForList(@RequestParam("withData") boolean withData, @RequestParam("limit") int limit) {
+		System.out.println("Method getStudentsForList() called " + (withData ? "with data " : "") + " with a limit of " + limit);
+		return studentService.getStudentsForList(withData, limit);
 	}
 	
 	@CrossOrigin(origins = webOrigin)

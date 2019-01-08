@@ -10,14 +10,6 @@
 
 gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 
-	// Data switch begins as true because it is flipped to false when students finish loading
-	var dataSwitch = true;
-	$scope.toggleData = () => {
-		dataSwitch = !dataSwitch;
-		$scope.toggleButtonText = dataSwitch ? "Display All Students" : "Display Students With Records";
-		$scope.students = dataSwitch ? $scope.allStudents.filter(s => $scope.studentIdsWithData.has(s.studentId)) : $scope.allStudents;
-	}
-
 	//Preload $scope.students with an initial "loading" value and the toggle button text with its initial state
 	$scope.allStudents = [];
 	$scope.students = [{
@@ -26,19 +18,69 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 	}];
 	$scope.expandedStudentId = -1;
 
-	var getStudents = (sortBy, lim) => {
-		$http.get(`${URL}listStudents?withData=false&sortBy=${sortBy}&limit=${lim}`)
-		.then(response => {
-			$scope.allStudents = response.data;
-			$scope.toggleData();
-		});
+	// SORT BY BUTTONS
+	var sortingModes = {
+		init() {
+			this["nullcheck"] = (s, t) => {
+				if (!s && !t) return "0";
+				if (!s) return "1";
+				if (!t) return "-1";
+			}
+			this["name"] 		= (s, t) => s.client.localeCompare(t.client);
+			this["namedesc"] 	= (s, t) => -this["name"](s, t);
+			this["email"] 		= (s, t) => parseInt(this["nullcheck"](s.email, t.email) || s.email.localeCompare(t.email));
+			this["emaildesc"] 	= (s, t) => parseInt(this["nullcheck"](s.email, t.email) || -s.email.localeCompare(t.email));
+			this["grade"] 		= (s, t) => parseInt(this["nullcheck"](s.grade, t.grade) || parseInt(s.grade.match(/\d+/)) - parseInt(t.grade.match(/\d+/)));
+			this["gradedesc"] 	= (s, t) => parseInt(this["nullcheck"](s.grade, t.grade) || -parseInt(s.grade.match(/\d+/)) + parseInt(t.grade.match(/\d+/)));
+
+			delete this.init; // remove this function from the object, to avoid clutter
+			return this;
+		}
+	}.init();
+	var currentSortBy = "";
+
+	var dataSwitch = true;
+	var refreshStudents = () => {
+		var temp = $scope.allStudents;
+
+		if (dataSwitch)
+			temp = temp.filter(s => $scope.studentIdsWithData.has(s.studentId));
+		if (currentSortBy != "recent")
+			temp = temp.sort(sortingModes[currentSortBy]);
+
+		$scope.students = temp;
 	}
-	getStudents("recent", 0);
+
+	$scope.getSortBy = sortBy => {
+		if (currentSortBy == sortBy)
+			sortBy += "desc";
+		currentSortBy = sortBy;
+
+		refreshStudents();
+	}
+	$scope.getSortBy("recent");
+	
+	$scope.toggleData = () => {
+		dataSwitch = !dataSwitch;
+		$scope.toggleButtonText = dataSwitch ? "Display All Students" : "Display Students With Records";
+		refreshStudents();
+	}
+	$scope.toggleData();
 
 	$http.get(`${URL}studentIdsWithRecords`)
 	.then(response => {
 		$scope.studentIdsWithData = new Set(response.data);
+		refreshStudents();
 	});
+
+	var getStudents = lim => {
+		$http.get(`${URL}listStudents?withData=false&limit=${lim}`)
+		.then(response => {
+			$scope.allStudents = response.data;
+			refreshStudents();
+		});
+	}
+	getStudents(0);
 	
 	// ACCORDION MANAGEMENT
 	$scope.manageExpansion = studentId => {
