@@ -9,4 +9,4 @@
 
 gideonApp = angular.module('gideonApp', ['ngMaterial']);
 
-const URL = "http://localhost:8080/";
+const URL = "http://gideonjavapp.us-east-1.elasticbeanstalk.com/";
