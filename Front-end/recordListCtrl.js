@@ -115,9 +115,9 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 	}
 
 	// FETCH DATA
-	$http.get(`${URL}listStudents?withData=true&sortBy=name&limit=0`)
+	$http.get(`${URL}listStudents?withData=true&limit=0`)
 	.then(response => {
-		$scope.students = response.data.map(o => ({name: o.client, id: o.studentId}));
+		$scope.students = response.data.map(o => ({name: o.client, id: o.studentId})).sort((a, b) => a.name.localeCompare(b.name));
 		if ($scope.studentFilter == 0)
 			$scope.studentFilter = $scope.students[0].id;
 		didSelectStudent();
