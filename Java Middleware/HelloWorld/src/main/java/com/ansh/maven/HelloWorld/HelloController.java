@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
 	
-	public final String webOrigin = "http://gideonwebapp-env.ndmz3rvgbd.us-east-1.elasticbeanstalk.com";
+	public final String webOrigin = "http://gideonrecords.us-east-1.elasticbeanstalk.com";
 	
 	@Autowired
 	BookService bookService;
