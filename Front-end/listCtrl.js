@@ -103,4 +103,11 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 		$window.localStorage.setItem(5, student.studentId);
 		window.location.href = "RecordList.html";
 	}
+	$scope.removeStudent = student => {
+		$http.get(`${URL}removeStudent?Id=` + student.studentId)
+		.then(response => {
+			console.log("Deleted student with id " + student.studentId);
+			refreshStudents();
+		});
+	}
 });
