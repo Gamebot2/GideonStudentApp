@@ -13,4 +13,5 @@ public interface StudentService {
 	List<String> getCategories(int StudentId);
 	int addStudent(StudentMaster student);
 	int updateStudent(Student student);
+	int removeStudent(int StudentId);
 }

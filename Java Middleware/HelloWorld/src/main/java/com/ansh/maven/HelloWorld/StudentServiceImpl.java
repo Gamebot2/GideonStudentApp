@@ -63,5 +63,11 @@ public class StudentServiceImpl implements StudentService{
 	public int updateStudent(Student student) {
 		return studentDao.updateStudent(student) + studentDao.updateLastUsed(student.getStudentId());
 	}
+
+	@Override
+	public int removeStudent(int StudentId) {
+		// TODO Auto-generated method stub
+		return studentDao.removeStudent(StudentId);
+	}
 	
 }
