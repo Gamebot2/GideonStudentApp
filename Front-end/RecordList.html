@@ -59,7 +59,7 @@
 				<md-input-container class="column" style="width:34%">
 					<label>Rep</label>
 					<md-select ng-model="repFilter.value" ng-change="didFilter()">
-						<md-option ng-repeat="r in reps" value="{{r}}">{{r}}</md-option>
+						<md-option ng-repeat="r in reps" value={{r}}>{{r}}</md-option>
 					</md-select>
 				</md-input-container>
 				<md-input-container class="column" style="width:33%">
