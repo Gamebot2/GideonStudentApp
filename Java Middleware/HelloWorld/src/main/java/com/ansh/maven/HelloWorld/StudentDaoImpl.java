@@ -97,4 +97,11 @@ public class StudentDaoImpl implements StudentDao {
 		this.jdbcTemplate.update(sql, dateFormat.format(new Date()), id);
 		return 0;
 	}
+
+	@Override
+	public int removeStudent(int studentId) {
+		// TODO Auto-generated method stub
+		String sql = "DELETE FROM students WHERE StudentId = " + studentId;
+		return this.jdbcTemplate.update(sql);
+	}
 }
