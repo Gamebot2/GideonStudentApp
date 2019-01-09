@@ -82,3 +82,11 @@ input[black] {
 	width: 100%;
 	text-align: center;
 }
+
+
+label {
+	margin-left: 10px;
+}
+md-select * {
+	animation: none;
+}

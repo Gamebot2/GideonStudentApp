@@ -44,16 +44,15 @@
 			<div class="columnContainer" id="filterContainer">
 				<md-input-container class="column" style="width:50%">
 					<label>Filter by Name: </label>
-					<input black big md-select-on-focus id="textFilter" name="textFilter" type="text" ng-model="clientFilter">
+					<input md-select-on-focus id="textFilter" name="textFilter" type="text" ng-model="clientFilter">
 				</md-input-container>
 				<md-input-container class="column" style="width:50%">
 					<label>Filter by Email: </label>
-					<input black big md-select-on-focus id="textFilter" name="textFilter" type="text" ng-model="emailFilter">
+					<input md-select-on-focus id="textFilter" name="textFilter" type="text" ng-model="emailFilter">
 				</md-input-container>
 			</div>
 
 			<!--Toggle for viewing only students with data, meant for testing-->
-			<br><br>
 			<md-button class="md-accent md-raised" id="dataToggleBtn" ng-click="toggleData()">
 				{{toggleButtonText}}
 			</md-button>
