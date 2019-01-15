@@ -73,12 +73,7 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 			filter.model.value = filter.wildcard;
 	}
 
-	// Runs when the student is selected
-	var didSelectStudent = $scope.didSelectStudent = () => {
-		// First, update the storage slot for the student
-		$window.localStorage.setItem(5, $scope.studentFilter);
-
-		// Then, load all records for that student
+	var getRecords = () => {
 		$http.get(`${URL}recordsById?StudentId=${$scope.studentFilter}`)
 		.then(response => {
 			allRecords = response.data.map(record => {
@@ -104,6 +99,15 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 			// Apply the filters to the student's records
 			didFilter();
 		});
+	}
+
+	// Runs when the student is selected
+	var didSelectStudent = $scope.didSelectStudent = () => {
+		// First, update the storage slot for the student
+		$window.localStorage.setItem(5, $scope.studentFilter);
+
+		// Then, load all records for that student
+		getRecords();
 	}
 
 	// Runs when any optional filter is selected
@@ -158,6 +162,16 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 	$scope.editRecordButton = record => {
 		$window.localStorage.setItem(0, JSON.stringify(record));
 		window.location.href = "EditRecord.html";
+	}
+
+	$scope.removeRecord = record => {
+		if (confirm(`Are you sure you want to delete ${record.name}'s record for ${record.displayTitle}?`)) {
+			$http.get(`${URL}removeRecord?Id=${record.recordId}`)
+			.then(_ => {
+				console.log("Deleted record with id " + record.recordId);
+				getRecords();
+			});
+		}
 	}
 
 });

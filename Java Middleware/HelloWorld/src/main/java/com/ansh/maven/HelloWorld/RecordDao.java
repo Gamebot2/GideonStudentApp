@@ -10,5 +10,6 @@ public interface RecordDao {
 	List<Record> getIncompleteRecords();
 	int addRecord(Master master, Book book);
 	int updateRecord(Record record, Book book);
+	int removeRecord(int id);
 	List<Data> getInternationalData(String category);
 }

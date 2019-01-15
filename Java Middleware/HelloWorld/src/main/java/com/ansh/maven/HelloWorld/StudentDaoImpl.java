@@ -98,10 +98,10 @@ public class StudentDaoImpl implements StudentDao {
 		return 0;
 	}
 
+	// Deletes a student and their records using a procedure call
 	@Override
 	public int removeStudent(int studentId) {
-		// TODO Auto-generated method stub
-		String sql = "DELETE FROM students WHERE StudentId = " + studentId;
-		return this.jdbcTemplate.update(sql);
+		String sql = "CALL `delete_student` (?)";
+		return this.jdbcTemplate.update(sql, studentId);
 	}
 }

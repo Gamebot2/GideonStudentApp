@@ -104,10 +104,12 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 		window.location.href = "RecordList.html";
 	}
 	$scope.removeStudent = student => {
-		$http.get(`${URL}removeStudent?Id=` + student.studentId)
-		.then(response => {
-			console.log("Deleted student with id " + student.studentId);
-			refreshStudents();
-		});
+		if (confirm(`Are you sure you want to delete ${student.client} and all of their records? This action cannot be undone!`)) {
+			$http.get(`${URL}removeStudent?Id=${student.studentId}`)
+			.then(_ => {
+				console.log("Deleted student with id " + student.studentId);
+				getStudents(0);
+			});
+		}
 	}
 });
