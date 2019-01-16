@@ -12,7 +12,7 @@ Application for storing student books completion data for the subjects of Math a
 
 ## Authors
 
-* **Ansh Jain** - *Initial creation and setup* - [Gamebot3](https://github.com/Gamebot3)
+* **Ansh Jain** - *Initial creation, setup, and deployment* - [Gamebot3](https://github.com/Gamebot3)
 * **Matthew Zhang** - *App improvements and takeover* - [matthew-zhang-306](https://github.com/matthew-zhang-306)
 
 ## Code of Conduct
