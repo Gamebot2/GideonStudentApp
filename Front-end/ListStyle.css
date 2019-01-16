@@ -61,6 +61,14 @@ body {
 	animation-duration: 0s;
 	float: left;
 }
+.warn {
+	background-color: #FF5A5A;
+	color: white;
+}
+.warn:hover {
+	background-color: #C51A1A;
+	color: white;
+}
 
 
 /*FILTER CSS*/

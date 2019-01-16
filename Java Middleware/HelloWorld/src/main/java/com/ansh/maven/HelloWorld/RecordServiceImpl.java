@@ -81,7 +81,10 @@ public class RecordServiceImpl implements RecordService{
 		return recordDao.updateRecord(record, book) + studentDao.updateLastUsed(record.getStudentId());
 	}
 	
-	
+	@Override
+	public int removeRecord(int id) {
+		return recordDao.removeRecord(id);
+	}
 	
 	// Gathers international goal line
 	@Override

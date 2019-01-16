@@ -76,7 +76,11 @@ public class RecordDaoImpl implements RecordDao{
 		return 0;
 	}
 	
-	
+	@Override
+	public int removeRecord(int id) {
+		String sql = "DELETE FROM records WHERE RecordId = ?";
+		return this.jdbcTemplate.update(sql, id);
+	}
 	
 	// Gathers international goal line
 	@Override

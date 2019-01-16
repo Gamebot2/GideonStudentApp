@@ -90,17 +90,17 @@
 							Category: {{record.category}}<br>
 							Subcategory: {{record.subcategory}}<br>
 							Rep: {{record.rep}}<br><br>
-							<button type="button" class="hoverable" id="accordionButton" ng-click="progressChartButton(record)">Progress Chart</button>
-							<br><br><br>
 						</div>
 						<div class="column" style="width:50%">
 							End Date: {{record.endDateDisplay}}<br>
 							Test Time: {{record.testTime}}<br>
 							Mistakes: {{record.mistakes}}<br><br>
-							<button type="button" class="hoverable" id="accordionButton" ng-click="editRecordButton(record)">Edit Record</button>
-							<br><br><br>
 						</div>
 					</div>
+					<br>
+					<button type="button" class="hoverable" id="accordionButton" ng-click="progressChartButton(record)">Progress Chart</button>
+					<button type="button" class="hoverable" id="accordionButton" ng-click="editRecordButton(record)">Edit Record</button>
+					<button type="button" class="warn" id="accordionButton" ng-click="removeRecord(record)">Delete Record</button>
 				</div>
 			</div>
 		</div>

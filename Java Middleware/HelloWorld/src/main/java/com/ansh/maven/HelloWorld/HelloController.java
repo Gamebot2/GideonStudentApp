@@ -230,6 +230,14 @@ public class HelloController {
 		return a;
 	}
 	
+	//Deletes a record given an ID with which to delete
+	@CrossOrigin(origins = webOrigin)
+	@RequestMapping("/removeRecord")
+	public int removeRecord(@RequestParam("Id") int id) {
+		System.out.println("Method removeRecord() called on id " + id);
+		return recordService.removeRecord(id);
+	}
+	
 
 	//Gathers international goal line
 	@CrossOrigin(origins = webOrigin)

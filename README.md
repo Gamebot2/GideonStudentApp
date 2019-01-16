@@ -6,13 +6,14 @@ Application for storing student books completion data for the subjects of Math a
 
 ## Built With
 
+* [Amazon Web Services](http://aws.amazon.com) - Deployment
 * [AngularJS](https://angular.io/) - Web Framework
 * [Maven](https://maven.apache.org/) - Dependency Management
 * [MySQL](https://www.mysql.com/) - Database Management
 
 ## Authors
 
-* **Ansh Jain** - *Initial creation and setup* - [Gamebot3](https://github.com/Gamebot3)
+* **Ansh Jain** - *Initial creation, setup, and deployment* - [Gamebot3](https://github.com/Gamebot3)
 * **Matthew Zhang** - *App improvements and takeover* - [matthew-zhang-306](https://github.com/matthew-zhang-306)
 
 ## Code of Conduct
