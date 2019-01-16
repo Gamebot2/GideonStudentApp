@@ -6,6 +6,7 @@ Application for storing student books completion data for the subjects of Math a
 
 ## Built With
 
+* [Amazon Web Services] (http://aws.amazon.com) - Deployment
 * [AngularJS](https://angular.io/) - Web Framework
 * [Maven](https://maven.apache.org/) - Dependency Management
 * [MySQL](https://www.mysql.com/) - Database Management
