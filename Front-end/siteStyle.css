@@ -5,15 +5,17 @@
 body {
 	font-family: 'Roboto', sans-serif;
 	color: black;
+	margin: 0px;
 }
-#header {
-	top: 0;
+#siteHeader {
+	background-color: black;
+	color: white;
+	display: block;
 	width: 100%;
-	overflow: auto;
+	padding: 10px;
 }
-#footer {
-	bottom: 0;
-	margin-top: 250px;
+#siteHeader div {
+	display: inline;
 }
 h1, h3 {
 	text-align: center;

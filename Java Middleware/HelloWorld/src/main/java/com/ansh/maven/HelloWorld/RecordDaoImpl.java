@@ -6,6 +6,7 @@ import java.util.*;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Repository;
 public class RecordDaoImpl implements RecordDao{
 
 	@Autowired
+	@Qualifier("demo")
 	private JdbcTemplate jdbcTemplate;
 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

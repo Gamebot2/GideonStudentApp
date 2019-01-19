@@ -14,8 +14,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class StudentDaoImpl implements StudentDao {
 	
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
+	private JdbcTemplate jdbcTemplate = SpringConfig.getDemoJdbcTemplate();
 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	

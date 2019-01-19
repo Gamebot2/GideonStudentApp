@@ -38,6 +38,9 @@
 				<input white big type="password" id="password" name="password" placeholder="Password" ng-model="password">
 				<br><br>
 				<button big type="submit" ng-click="login()">Log in</button>
+				<br><br><br>
+				<p style="text-align:center">OR</p>
+				<button big type="submit" ng-click="guest()">Proceed as Guest</button>
 				<br><br>
 				<span ng-class="{'errorText':formStatus.id == 0, 'successText':formStatus.id == 1}">{{formStatus.text}}</span>
 			</form>

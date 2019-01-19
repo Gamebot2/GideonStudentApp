@@ -3,6 +3,7 @@ package com.ansh.maven.HelloWorld;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,6 +17,7 @@ import com.ansh.maven.HelloWorld.BookRowMapper;
 public class BookDaoImpl implements BookDao {
 	
 	@Autowired
+	@Qualifier("demo")
 	private JdbcTemplate jdbcTemplate;
 
 	//Retrieves all books from the database

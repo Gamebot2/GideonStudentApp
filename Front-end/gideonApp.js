@@ -9,4 +9,25 @@
 
 gideonApp = angular.module('gideonApp', ['ngMaterial']);
 
-const URL = "http://gideonjavapp.us-east-1.elasticbeanstalk.com/";
+const URL = "http://localhost:5000/";
+
+
+var loggedIn = false;
+
+gideonApp.controller('header', ($scope, $http) => {
+    $scope.loggedIn = false;
+    $http.get(`${URL}getLoggedIn`).then(response => {
+        loggedIn = $scope.loggedIn = response.data;
+    });
+
+    $scope.login = () => {
+        window.location.href = "Home.html";
+    }
+
+    $scope.logout = () => {
+		$http.get(`${URL}logout`)
+		.then(_ => {
+			window.location.href = "Home.html";
+		});
+	}
+})

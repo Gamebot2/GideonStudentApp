@@ -168,7 +168,7 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 		if (confirm(`Are you sure you want to delete ${record.name}'s record for ${record.displayTitle}?`)) {
 			$http.get(`${URL}removeRecord?Id=${record.recordId}`)
 			.then(_ => {
-				console.log("Deleted record with id " + record.recordId);
+				console.log(`Deleted record with id ${record.recordId}`);
 				getRecords();
 			});
 		}

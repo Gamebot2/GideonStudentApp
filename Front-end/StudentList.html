@@ -27,9 +27,13 @@
 		<link rel="stylesheet" type="text/css" href="SiteStyle.css">
 		<link rel="stylesheet" type="text/css" href="ListStyle.css">
 	</head>
-	<body>
+	<body ng-app="gideonApp">
+		<div ng-controller="header">
+			<div ng-include="'Header.html'"></div>
+		</div>
+		
 		<!--List for displaying all students in the database that have book data-->
-		<div ng-app="gideonApp" ng-controller="listCtrl">
+		<div ng-controller="listCtrl">
 			<!--Selection buttons in the header to move to insert and update pages-->
 			<div id="header">
 				<button type="button" class="hoverable" id="listBtn"   onclick="location.href='RecordList.html'">Record List</button>

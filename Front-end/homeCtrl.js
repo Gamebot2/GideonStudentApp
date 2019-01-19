@@ -4,8 +4,19 @@ gideonApp.controller('homeCtrl', ($scope, $http, $window) => {
 	Verify.setScope($scope);
 
 	$scope.login = () => {
-		if (!Verify.errorIf($scope.username != "Ansh" || $scope.password != "Jain", "Username and/or password not recognized."))
-			window.location.href = "StudentList.html";
+		$http.get(`${URL}login?user=${$scope.username}&pass=${$scope.password}`)
+		.then(response => {
+			if (!Verify.errorIf(response.data < 0, "Username and/or password not recognized."))
+				window.location.href = "StudentList.html";
+		});
+	}
+
+	$scope.guest = () => {
+		$http.get(`${URL}logout`)
+		.then(response => {
+			if (!Verify.errorIf(response.data < 0, "Error"))
+				window.location.href = "StudentList.html";
+		});
 	}
 
 });
