@@ -64,7 +64,7 @@ public class HelloController {
 	}
 	
 	//Returns all books in the book database
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/books")
 	public List<Book> getAllBooks() {
 		System.out.println("Method getAllBooks() called");
@@ -72,7 +72,7 @@ public class HelloController {
 	}
 	
 	//Returns a specific book by name
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/book")
 	public Book getBookByName(@RequestParam("Category") String category, @RequestParam("Subcategory") String subcategory, @RequestParam("Title") String title) {
 		System.out.printf("Method getBookByName() called for category %s, subcategory %s, and title %s\n", category, subcategory, title);
@@ -80,7 +80,7 @@ public class HelloController {
 	}
 	
 	//Returns all categories of books
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/categories")
 	public List<String> getAllCategories() {
 		System.out.println("Method getAllCategories() called");
@@ -88,7 +88,7 @@ public class HelloController {
 	}
 	
 	//Returns all subcategories given a specific category
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/subcategories")
 	public List<String> getSubcategories(@RequestParam("Category") String category) {
 		System.out.println("Method getSubcategories() called for category " + category);
@@ -96,7 +96,7 @@ public class HelloController {
 	}
 	
 	//Returns all titles given a specific subcategory
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/titles")
 	public List<String> getTitles(@RequestParam("Subcategory") String subcategory) {
 		System.out.println("Method getTitles() called for subcategory " + subcategory);
@@ -104,14 +104,14 @@ public class HelloController {
 	}
 	
 	//Returns all books, ordered in sequence, in a category
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/booksInCategory")
 	public List<Book> getBooksInCategory(@RequestParam("Category") String category) {
 		System.out.println("Method getBooksInCategory() called for category " + category);
 		return bookService.getBooksInCategory(category);
 	}
 	
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/booksInSubcategory")
 	public List<Book> getBookInSubcategory(@RequestParam("Category") String category, @RequestParam("Subcategory") String subcategory) {
 		System.out.printf("Method getBooksInSubcategotry() called for category %s, subcategory %s\n", category, subcategory);
@@ -119,7 +119,7 @@ public class HelloController {
 	}
 	
 	//Returns all students in the student database
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/students")
 	public List<Student> getAllStudents() {
 		System.out.println("Method getAllStudents() called");
@@ -127,7 +127,7 @@ public class HelloController {
 	}
 	
 	//Returns all data for a student given the student's ID
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/student")
 	public Student getStudentById(@RequestParam("Id") int StudentId) {
 		System.out.println("Method getStudentById() called for Student ID " + StudentId);
@@ -135,14 +135,14 @@ public class HelloController {
 	}
 	
 	//Returns students ordered by recently used for the list display, with a specified limit (0 corresponds to no limit)
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/listStudents")
 	public List<Student> getStudentsForList(@RequestParam("withData") boolean withData, @RequestParam("limit") int limit) {
 		System.out.println("Method getStudentsForList() called " + (withData ? "with data " : "") + " with a limit of " + limit);
 		return studentService.getStudentsForList(withData, limit);
 	}
 	
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/studentIdsWithRecords")
 	public List<Integer> getStudentIdsWithRecords() {
 		System.out.println("Method getStudentIdsWithRecords() called");
@@ -150,7 +150,7 @@ public class HelloController {
 	}
 	
 	//Returns all categories that a student is working in
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/categoriesByStudent")
 	public List<String> getCategories(@RequestParam("Id") int StudentId) {
 		System.out.println("Method getCategories() called for Student ID " + StudentId);
@@ -158,7 +158,7 @@ public class HelloController {
 	}
 	
 	//Returns grade of the student as an integer value
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/gradeOfStudent")
 	public int getGrade(@RequestParam("Id") int StudentId) {
 		System.out.println("Method getGrade() called for Student ID " + StudentId);
@@ -166,7 +166,7 @@ public class HelloController {
 	}
 	
 	//Adds a new student to the students database
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/addStudent")
 	public int addStudent(@RequestBody(required=false) StudentMaster student) {
 		System.out.println("Method addStudent() called" );
@@ -182,7 +182,7 @@ public class HelloController {
 	}
 	
 	//Edits student data in the students database
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/updateStudent")
 	public int updateStudent(@RequestBody(required=false) Student student) {
 		System.out.println("Method updateStudent() called");
@@ -198,7 +198,7 @@ public class HelloController {
 	}
 	
 	//Deletes a student given an ID with which to delete
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/removeStudent")
 	public int removeStudent(@RequestParam("Id") int id) {
 		System.out.println("Method removeStudent() called on id " + id);
@@ -206,7 +206,7 @@ public class HelloController {
 	}
 	
 	//Returns all records in the record database
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/records")
 	public List<Record> getAllRecords() {
 		System.out.println("Method getAllRecords() called");
@@ -214,7 +214,7 @@ public class HelloController {
 	}
 	
 	//Returns all records in the record database that do not have end dates
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/incompleteRecords")
 	public List<Record> getIncompleteRecords() {
 		System.out.println("Method getIncompleteRecords() called");
@@ -222,7 +222,7 @@ public class HelloController {
 	}
 	
 	//Returns all records for a given student and a given category with time and repetition constraints (NOTE: includes one record before/after the start time, useful for graphing)
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/recordsForChart")
 	public List<Record> getRecordsForChart(@RequestParam("StudentId") int StudentId, @RequestParam("Category") String category, @RequestParam("Months") int months, @RequestParam("Until") int until, @RequestParam("Reps") String whichReps) {
 		System.out.printf("Method getRecordsById() called for Student ID %d, category %s, month number %d, and until %d, for rep number %s\n", StudentId, category, months, until, whichReps);
@@ -230,7 +230,7 @@ public class HelloController {
 	}
 	
 	//Returns all records for a given student and a given category
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/recordsById")
 	public List<Record> getAllRecordsById(@RequestParam("StudentId") int StudentId) {
 		System.out.println("Method getRecordsById() called for Student ID " + StudentId);
@@ -238,7 +238,7 @@ public class HelloController {
 	}
 	
 	//Adds a new record to the database
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/addRecord")
 	public int addRecord(@RequestBody(required=false) Master master) {
 		System.out.println("Method addRecord() called");
@@ -254,7 +254,7 @@ public class HelloController {
 	}
 	
 	//Updates an existing record in the database
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/updateRecord")
 	public int updateRecord(@RequestBody(required=false) Record record) {
 		System.out.println("Method updateRecord() called");
@@ -270,7 +270,7 @@ public class HelloController {
 	}
 	
 	//Deletes a record given an ID with which to delete
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/removeRecord")
 	public int removeRecord(@RequestParam("Id") int id) {
 		System.out.println("Method removeRecord() called on id " + id);
@@ -279,7 +279,7 @@ public class HelloController {
 	
 
 	//Gathers international goal line
-	@CrossOrigin 
+	@CrossOrigin
 	@RequestMapping("/internationalData")
 	public List<Data> getInternationalData(@RequestParam("Category") String category) {
 		System.out.println("Method getInternationalData() called for category " + category);
