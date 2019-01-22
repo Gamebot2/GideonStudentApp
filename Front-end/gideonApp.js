@@ -21,13 +21,13 @@ gideonApp.controller('header', ($scope, $http) => {
     });
 
     $scope.login = () => {
-        window.location.href = "Home.html";
+        window.location.href = "index.html";
     }
 
     $scope.logout = () => {
 		$http.get(`${URL}logout`)
 		.then(_ => {
-			window.location.href = "Home.html";
+			window.location.href = "index.html";
 		});
 	}
 })
