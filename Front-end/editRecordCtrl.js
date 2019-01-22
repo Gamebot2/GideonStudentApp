@@ -101,12 +101,23 @@ gideonApp.controller('editRecordCtrl', ($scope, $http, $window) => {
 				data: JSON.stringify($scope.record),
 			})
 			.then(response => {
-				if (Verify.successIf(response.data == 0, "Successfully updated."))
+				if (Verify.successIf(response.data >= 0, "Successfully updated."))
 					window.location.href = "RecordList.html"; // return back to the list if the update was successful
 			})
 			.catch(Verify.error);
 		} catch (err) {
 			Verify.error(err);
+		}
+	}
+
+	// Delete button
+	$scope.removeRecord = () => {
+		if (confirm(`Are you sure you want to delete this record? This cannot be undone!`)) {
+			$http.get(`${URL}removeRecord?Id=${$scope.record.recordId}`)
+			.then(response => {
+				if (Verify.successIf(response.data >= 0, "Deleted."))
+					window.location.href = "RecordList.html"; // return back to the list if the delete was successful
+			});
 		}
 	}
 });

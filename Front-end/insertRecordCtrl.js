@@ -22,7 +22,8 @@ gideonApp.controller('insertRecordCtrl', ($scope, $http, $window) => {
 
 	// Facilitates the JSON packaging by setting the id property
 	$scope.setId = () => {
-		$scope.record.id = $scope.client.id;
+		if ($scope.client)
+			$scope.record.id = $scope.client.id;
 	}
 
 	// Returns a list of all students for easy name selection	
@@ -85,7 +86,7 @@ gideonApp.controller('insertRecordCtrl', ($scope, $http, $window) => {
 				data: JSON.stringify($scope.record),
 			})
 			.then(response => {
-				Verify.successIf(response.data == 0, `Successfully added record for ${$scope.client.name}`);
+				Verify.successIf(response.data >= 0, `Successfully added record for ${$scope.client.name}`);
 				$window.localStorage.setItem(5, $scope.client.id);
 			})
 			.catch(Verify.error);

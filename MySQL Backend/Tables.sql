@@ -3,19 +3,20 @@ CREATE DATABASE `gideon` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE gideon;
 
 -- books
-CREATE TABLE `books` (
+CREATE TABLE `demobooks` (
 	`BookId` INT(11) NOT NULL,
 	`Subject` VARCHAR(25) DEFAULT NULL,
 	`Category` VARCHAR(255) DEFAULT NULL,
 	`Subcategory` VARCHAR(255) DEFAULT NULL,
 	`Title` VARCHAR(255) DEFAULT NULL,
-    `Abbreviation` VARCHAR(255) DEFAULT NULL,
+    `SequenceName` VARCHAR(255) DEFAULT NULL,
 	`GradeLevel` VARCHAR(255) DEFAULT NULL,
 	`Test` INT(11) NOT NULL,
 	`TimeAllowed` INT(11) NOT NULL,
 	`MistakesAllowed` INT(11) NOT NULL,
 	`Sequence` INT(11) NOT NULL,
 	`SequenceLarge` INT(11) NOT NULL,
+    `SequenceLength` INT(11) DEFAULT 1 NOT NULL,
 	PRIMARY KEY (`BookId`),
 	KEY `Test_index` (`Test`),
 	KEY `TimeAllowed_index` (`TimeAllowed`),
@@ -24,29 +25,8 @@ CREATE TABLE `books` (
 	KEY `SequenceLarge_index` (`SequenceLarge`)
 )	ENGINE=INNODB DEFAULT CHARSET=UTF8;
 
--- records
-CREATE TABLE `records` (
-	`RecordId` INT(11) NOT NULL AUTO_INCREMENT,
-	`StudentId` INT(11) NOT NULL,
-	`BookId` INT(11) NOT NULL,
-	`StartDate` DATETIME DEFAULT NULL,
-	`EndDate` DATETIME DEFAULT NULL,
-	`Rep` INT(11) NOT NULL DEFAULT 1,
-	`Test` INT(11) NOT NULL DEFAULT 0,
-	`TestTime` VARCHAR(255) DEFAULT NULL,
-	`Mistakes` VARCHAR(255) DEFAULT NULL,
-    `Notes` VARCHAR(1023) DEFAULT NULL,
-	PRIMARY KEY (`RecordId`),
-	CONSTRAINT FOREIGN KEY (`StudentId`) REFERENCES `students`(`StudentId`),
-	CONSTRAINT FOREIGN KEY (`BookId`) REFERENCES `books`(`BookId`),
-	KEY `StudentId_index` (`StudentId`),
-	KEY `BookId_index` (`BookId`),
-	KEY `Rep_index` (`Rep`),
-	KEY `Test_index` (`Test`)
-)	ENGINE=INNODB AUTO_INCREMENT=276 DEFAULT CHARSET=UTF8;
-
 -- students
-CREATE TABLE `students` (
+CREATE TABLE `demostudents` (
 	`StudentId` INT(11) NOT NULL AUTO_INCREMENT,
 	`Client` VARCHAR(45) DEFAULT NULL,
 	`Email` VARCHAR(255) DEFAULT NULL,
@@ -71,12 +51,33 @@ CREATE TABLE `students` (
 	KEY `ClientId_index` (`ClientId`)
 )	ENGINE=INNODB AUTO_INCREMENT=66 DEFAULT CHARSET=UTF8;
 
+-- records
+CREATE TABLE `demorecords` (
+	`RecordId` INT(11) NOT NULL AUTO_INCREMENT,
+	`StudentId` INT(11) NOT NULL,
+	`BookId` INT(11) NOT NULL,
+	`StartDate` DATETIME DEFAULT NULL,
+	`EndDate` DATETIME DEFAULT NULL,
+	`Rep` INT(11) NOT NULL DEFAULT 1,
+	`Test` INT(11) NOT NULL DEFAULT 0,
+	`TestTime` VARCHAR(255) DEFAULT NULL,
+	`Mistakes` VARCHAR(255) DEFAULT NULL,
+    `Notes` VARCHAR(1023) DEFAULT NULL,
+	PRIMARY KEY (`RecordId`),
+	CONSTRAINT FOREIGN KEY (`StudentId`) REFERENCES `demostudents`(`StudentId`),
+	CONSTRAINT FOREIGN KEY (`BookId`) REFERENCES `demobooks`(`BookId`),
+	KEY `StudentId_index` (`StudentId`),
+	KEY `BookId_index` (`BookId`),
+	KEY `Rep_index` (`Rep`),
+	KEY `Test_index` (`Test`)
+)	ENGINE=INNODB AUTO_INCREMENT=276 DEFAULT CHARSET=UTF8;
+
 -- international data
-CREATE TABLE `internationaldata` (
+CREATE TABLE `demointernationaldata` (
 	`DataId` INT(11) NOT NULL AUTO_INCREMENT,
     `Category` VARCHAR(255) NOT NULL,
     `BookId` INT(11) NOT NULL,
     `Grade` VARCHAR(12) NOT NULL,
     PRIMARY KEY (`DataId`),
-    CONSTRAINT FOREIGN KEY (`BookId`) REFERENCES `books`(`BookId`)
+    CONSTRAINT FOREIGN KEY (`BookId`) REFERENCES `demobooks`(`BookId`)
 )	ENGINE=INNODB AUTO_INCREMENT=66 DEFAULT CHARSET=UTF8;

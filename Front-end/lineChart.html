@@ -32,9 +32,13 @@
 		<link rel="stylesheet" type="text/css" href="SiteStyle.css">
 		<link rel="stylesheet" type="text/css" href="LineChart.css">
 	</head>
-	<body>
+	<body ng-app="gideonApp">
+		<div ng-controller="header">
+			<div ng-include="'Header.html'"></div>
+		</div>
+
 		<!--Containing essentially a form for selected chart specifications-->
-		<div class="exterior" ng-app="gideonApp" ng-controller="chartCtrl">
+		<div class="exterior" ng-controller="chartCtrl">
 			<div id="expandableContainer" ng-class="{'collapsedContent':!expanded, 'expandedContent':expanded}">
 				<button invis class="hoverable" id="backButton" ng-click="backButton()">Back</button>
 				<form name="form">

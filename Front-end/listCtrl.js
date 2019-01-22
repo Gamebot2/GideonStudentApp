@@ -103,13 +103,4 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 		$window.localStorage.setItem(5, student.studentId);
 		window.location.href = "RecordList.html";
 	}
-	$scope.removeStudent = student => {
-		if (confirm(`Are you sure you want to delete ${student.client} and all of their records? This action cannot be undone!`)) {
-			$http.get(`${URL}removeStudent?Id=${student.studentId}`)
-			.then(_ => {
-				console.log(`Deleted student with id ${student.studentId}`);
-				getStudents(0);
-			});
-		}
-	}
 });

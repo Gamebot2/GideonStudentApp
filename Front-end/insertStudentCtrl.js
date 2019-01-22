@@ -30,7 +30,7 @@ gideonApp.controller('insertStudentCtrl', ($scope, $http) => {
 				data: JSON.stringify($scope.student),
 			})
 			.then(response => {
-				Verify.successIf(response.data == 0, `Successfully added ${$scope.student.client}`);
+				Verify.successIf(response.data >= 0, `Successfully added ${$scope.student.client}`);
 			})
 			.catch(Verify.error);
 		}

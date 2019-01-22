@@ -21,19 +21,5 @@ public class SpringConfig {
 		return new JdbcTemplate(ds);
 	}
 	
-	@Bean(name = "demo")
-	public JdbcTemplate demoJdbcTemplate() {
-		DriverManagerDataSource ds = new DriverManagerDataSource("jdbc:mysql://gideondb.cebb7aomhqwq.us-east-1.rds.amazonaws.com:3306/gideondb", "masteruser", "gideonFrisco!");
-		return new JdbcTemplate(ds);
-	}
-	
-	public static JdbcTemplate getGideonJdbcTemplate() {
-		return new SpringConfig().gideonJdbcTemplate();
-	}
-	
-	public static JdbcTemplate getDemoJdbcTemplate() {
-		return new SpringConfig().demoJdbcTemplate();
-	}
-	
 	
 }

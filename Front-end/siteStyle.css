@@ -142,6 +142,14 @@ button[invis]:hover {
 	background-color: rgba(0, 0, 0, 0.15);
 	color: black;
 }
+button[warn] {
+	background-color: #FF5A5A;
+	color: white;
+}
+button[warn]:hover {
+	background-color: #C51A1A;
+	color: white;
+}
 
 #rippleContainer {
 	overflow: hidden;

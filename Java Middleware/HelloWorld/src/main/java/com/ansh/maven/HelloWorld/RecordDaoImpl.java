@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 public class RecordDaoImpl implements RecordDao{
 
 	@Autowired
-	@Qualifier("demo")
+	@Qualifier("gideon")
 	private JdbcTemplate jdbcTemplate;
 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -24,7 +24,8 @@ public class RecordDaoImpl implements RecordDao{
 	//Retrieves all records from every student in the database
 	@Override
 	public List<Record> getAllRecords() {
-		String sql = "SELECT * FROM records_joined";
+		String sql = "SELECT * FROM demorecords_joined";
+		sql = HelloController.setTargetTable(sql);
 		RowMapper<Record> rowMapper = new RecordRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
@@ -32,7 +33,8 @@ public class RecordDaoImpl implements RecordDao{
 	//Returns all records that have start dates, but do not have end dates
 	@Override
 	public List<Record> getIncompleteRecords() {
-		String sql = "SELECT * FROM records_joined WHERE EndDate IS NULL";
+		String sql = "SELECT * FROM demorecords_joined WHERE EndDate IS NULL";
+		sql = HelloController.setTargetTable(sql);
 		RowMapper<Record> rowMapper = new RecordRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
@@ -40,7 +42,8 @@ public class RecordDaoImpl implements RecordDao{
 	//Returns all records for a certain student and a certain category
 	@Override
 	public List<Record> getAllRecordsById(int StudentId) {
-		String sql = "SELECT * FROM records_joined WHERE StudentId = ?";
+		String sql = "SELECT * FROM demorecords_joined WHERE StudentId = ?";
+		sql = HelloController.setTargetTable(sql);
 		RowMapper<Record> rowMapper = new RecordRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper, StudentId);
 	}
@@ -48,7 +51,8 @@ public class RecordDaoImpl implements RecordDao{
 	// Returns records for a student within a certain range, plus or minus one record, with a specific category and rep count
 	@Override
 	public List<Record> getRecordsForChart(int StudentId, String category, int months, int until, String whichReps) {
-		String sql = "SELECT * FROM records_joined WHERE StudentId = ? AND Category = ? # AND StartDate IS NOT NULL ORDER BY StartDate ASC";
+		String sql = "SELECT * FROM demorecords_joined WHERE StudentId = ? AND Category = ? # AND StartDate IS NOT NULL ORDER BY StartDate ASC";
+		sql = HelloController.setTargetTable(sql);
 		RowMapper<Record> rowMapper = new RecordRowMapper();
 		
 		if(whichReps.equalsIgnoreCase("All")) {		// Content of query depends on repetition selection
@@ -59,6 +63,18 @@ public class RecordDaoImpl implements RecordDao{
 			return this.jdbcTemplate.query(sql, rowMapper, StudentId, category, whichReps);
 		}
 	}
+	
+	// Gathers international goal line
+	@Override
+	public List<Data> getInternationalData(String category) {
+		String sql = "SELECT * FROM demointernationaldata_joined WHERE Category = ?";
+		sql = HelloController.setTargetTable(sql);
+		RowMapper<Data> rowMapperD = new DataRowMapper();
+		return this.jdbcTemplate.query(sql, rowMapperD, category);
+	}
+	
+	
+	
 
 	//Adds a new record to the record database with all of the following information, formats the appropriate SQL string
 	@Override
@@ -82,14 +98,6 @@ public class RecordDaoImpl implements RecordDao{
 	public int removeRecord(int id) {
 		String sql = "DELETE FROM records WHERE RecordId = ?";
 		return this.jdbcTemplate.update(sql, id);
-	}
-	
-	// Gathers international goal line
-	@Override
-	public List<Data> getInternationalData(String category) {
-		String sql = "SELECT * FROM internationaldata_joined WHERE Category = ?";
-		RowMapper<Data> rowMapperD = new DataRowMapper();
-		return this.jdbcTemplate.query(sql, rowMapperD, category);
 	}
 	
 }

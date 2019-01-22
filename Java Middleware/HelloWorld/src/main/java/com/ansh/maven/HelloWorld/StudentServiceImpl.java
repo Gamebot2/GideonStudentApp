@@ -52,21 +52,32 @@ public class StudentServiceImpl implements StudentService{
 			return Integer.parseInt(gradeString.replaceAll("\\D+",""));
 	}
 
+	
+	// NOTE: Anything that modifies data in the database will do nothing if the user is accessing the demo database: 1 will be returned
+	
 	// Adds a student to the database
 	@Override
 	public int addStudent(StudentMaster student) {
+		if (!HelloController.isLoggedIn())
+			return 1;
+		
 		return studentDao.addStudent(student);
 	}
 	
 	// Updates student information in the database
 	@Override
 	public int updateStudent(Student student) {
+		if (!HelloController.isLoggedIn())
+			return 1;
+		
 		return studentDao.updateStudent(student) + studentDao.updateLastUsed(student.getStudentId());
 	}
 
 	@Override
 	public int removeStudent(int studentId) {
-		// TODO Auto-generated method stub
+		if (!HelloController.isLoggedIn())
+			return 1;
+		
 		return studentDao.removeStudent(studentId);
 	}
 	

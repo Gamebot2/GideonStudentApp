@@ -29,9 +29,14 @@
 		<link rel="stylesheet" type="text/css" href="SiteStyle.css">
 		<link rel="stylesheet" type="text/css" href="RecordStyle.css">
 	</head>
-	<body>
-		<div class="exterior" ng-app="gideonApp" ng-controller="editStudentCtrl">
+	<body ng-app="gideonApp">
+		<div ng-controller="header">
+			<div ng-include="'Header.html'"></div>
+		</div>
+
+		<div class="exterior" ng-controller="editStudentCtrl">
 			<button invis class="hoverable" id="backButton" onclick="location.href='StudentList.html'">Back to Student List</button>
+			<button warn class="hoverable" id="deleteButton" ng-click="removeStudent()">Delete Student</button>
 
 			<h1>Edit {{student.client}}</h1>
 			<!--Form used for editing a student in the database-->

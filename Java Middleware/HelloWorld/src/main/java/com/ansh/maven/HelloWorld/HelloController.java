@@ -29,11 +29,10 @@ public class HelloController {
 	}
 	static void setLoggedIn(boolean log) {
 		loggedIn = log;
-		if (loggedIn) {
-			
-		} else {
-			
-		}
+	}
+	
+	public static String setTargetTable(String sql) {
+		return loggedIn ? sql.replaceAll("demo", "") : sql;
 	}
 	
 	@CrossOrigin

@@ -66,10 +66,22 @@ public class RecordServiceImpl implements RecordService{
 	public List<Record> getIncompleteRecords() {
 		return recordDao.getIncompleteRecords();
 	}
+	
+	// Gathers international goal line
+	@Override
+	public List<Data> getInternationalData(String category) {
+		return recordDao.getInternationalData(category);
+	}
+	
+
+	// NOTE: Anything that modifies data in the database will do nothing if the user is accessing the demo database: 1 will be returned
 
 	// Adds a record to the database
 	@Override
 	public int addRecord(Master master) {
+		if (!HelloController.isLoggedIn())
+			return 1;
+		
 		Book book = bookDao.getBookByName(master.getCategory(), master.getSubcategory(), master.getTitle());
 		return recordDao.addRecord(master, book) + studentDao.updateLastUsed(master.getId());
 	}
@@ -77,19 +89,19 @@ public class RecordServiceImpl implements RecordService{
 	// Updates a record in the database with an end date
 	@Override
 	public int updateRecord(Record record) {
+		if (!HelloController.isLoggedIn())
+			return 1;
+		
 		Book book = bookDao.getBookById(record.getBookId());
 		return recordDao.updateRecord(record, book) + studentDao.updateLastUsed(record.getStudentId());
 	}
 	
 	@Override
 	public int removeRecord(int id) {
+		if (!HelloController.isLoggedIn())
+			return 1;
+		
 		return recordDao.removeRecord(id);
-	}
-	
-	// Gathers international goal line
-	@Override
-	public List<Data> getInternationalData(String category) {
-		return recordDao.getInternationalData(category);
 	}
 
 }
