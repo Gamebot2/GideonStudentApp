@@ -23,7 +23,7 @@ public class BookDaoImpl implements BookDao {
 	//Retrieves all books from the database
 	@Override
 	public List<Book> getAllBooks() {
-		String sql = "SELECT * FROM demobooks ORDER BY Category, SequenceLarge";
+		String sql = "SELECT * FROM demobooks ORDER BY Subject, Category, SequenceLarge";
 		sql = HelloController.setTargetTable(sql);
 		RowMapper<Book> rowMapper = new BookRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);

@@ -6,7 +6,7 @@ Mostly miscellaneous queries meant to be edited and used one at a time
 
 -- database overview
 SHOW DATABASES;
-USE gideon;
+USE gideondb;
 SHOW TABLES;
 
 -- table overview
@@ -16,9 +16,9 @@ DESCRIBE students;
 DESCRIBE internationaldata;
 
 -- table select
-SELECT * FROM books;
-SELECT * FROM records;
-SELECT * FROM students;
+SELECT * FROM books ORDER BY Subject, Category, SequenceLarge;
+SELECT * FROM records ORDER BY StartDate DESC;
+SELECT * FROM students ORDER BY LastUsed DESC;
 SELECT * FROM internationaldata;
 
 -- view select
