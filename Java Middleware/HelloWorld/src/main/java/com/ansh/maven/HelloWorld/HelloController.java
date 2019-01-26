@@ -22,6 +22,9 @@ public class HelloController {
 	@Autowired
 	RecordService recordService;
 	
+	@Autowired
+	UserService userService;
+	
 	static boolean loggedIn = false;
 	
 	public static boolean isLoggedIn() {
@@ -39,12 +42,11 @@ public class HelloController {
 	@RequestMapping("/login")
 	public int login(@RequestParam("user") String user, @RequestParam("pass") String pass) {
 		System.out.println(user + " attempted login");
-		if (user.equals("Ansh") && pass.equals("Jain")) {
+		int result = userService.getLogIn(user, pass);
+		
+		if (result == 0)
 			setLoggedIn(true);
-			return 0;
-		} else {
-			return -1;
-		}
+		return result;
 	}
 	
 	@CrossOrigin
@@ -60,6 +62,13 @@ public class HelloController {
 	public boolean getLoggedIn() {
 		System.out.println("Fetched login: current status is " + loggedIn);
 		return loggedIn;
+	}
+	
+	@CrossOrigin
+	@RequestMapping("/register")
+	public int register(@RequestParam("user") String user, @RequestParam("pass") String pass) {
+		System.out.println(user + " registered");
+		return userService.register(user, pass);
 	}
 	
 	//Returns all books in the book database

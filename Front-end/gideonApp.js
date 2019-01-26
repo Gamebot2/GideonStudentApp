@@ -9,7 +9,11 @@
 
 gideonApp = angular.module('gideonApp', ['ngMaterial']);
 
-const URL = "http://gideon-records.us-east-1.elasticbeanstalk.com/";
+const URLs = {
+    online: "http://gideon-records.us-east-1.elasticbeanstalk.com/",
+    local: "http://localhost:5000/"
+};
+const URL = URLs.online;
 
 
 var loggedIn = false;
