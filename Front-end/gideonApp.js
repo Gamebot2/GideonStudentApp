@@ -13,7 +13,7 @@ const URLs = {
     online: "http://gideon-records.us-east-1.elasticbeanstalk.com/",
     local: "http://localhost:5000/"
 };
-const URL = URLs.online;
+const URL = URLs.local;
 
 
 var loggedIn = false;
@@ -33,5 +33,5 @@ gideonApp.controller('header', ($scope, $http) => {
 		.then(_ => {
 			window.location.href = "index.html";
 		});
-	}
+    }
 })

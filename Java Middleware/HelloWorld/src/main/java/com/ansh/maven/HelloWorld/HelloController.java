@@ -44,6 +44,8 @@ public class HelloController {
 		System.out.println(user + " attempted login");
 		int result = userService.getLogIn(user, pass);
 		
+		System.out.println(result);
+		
 		if (result == 0)
 			setLoggedIn(true);
 		return result;
@@ -67,8 +69,8 @@ public class HelloController {
 	@CrossOrigin
 	@RequestMapping("/register")
 	public int register(@RequestParam("user") String user, @RequestParam("pass") String pass) {
-		System.out.println(user + " registered");
-		return userService.register(user, pass);
+		// this method doesn't do anything, haha. users must be registered directly into the database
+		return 1337;
 	}
 	
 	//Returns all books in the book database

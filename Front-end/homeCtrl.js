@@ -19,4 +19,8 @@ gideonApp.controller('homeCtrl', ($scope, $http, $window) => {
 		});
 	}
 
+	$scope.register = () => {
+		$http.get(`${URL}register?user=${$scope.username}&pass=${$scope.password}`).then(_ => {});
+	}
+
 });
