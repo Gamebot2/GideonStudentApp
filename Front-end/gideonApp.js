@@ -34,4 +34,8 @@ gideonApp.controller('header', ($scope, $http) => {
 			window.location.href = "index.html";
 		});
     }
+
+    $scope.goTo = href => {
+        window.location.href = href;
+    }
 })

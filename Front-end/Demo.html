@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Demo</title>
+
+		<meta name="msapplication-TileColor" content="#da532c">
+		<meta name="theme-color" content="#ffffff">
+
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+        <script src="gideonApp.js"></script>
+        <script src="demoCtrl.js"></script>
+		<script src="ripple.js"></script>
+
+		<link rel="manifest" href="/site.webmanifest">
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+		<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+		<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+		<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+        <link rel="stylesheet" type="text/css" href="SiteStyle.css">
+        <link rel="stylesheet" type="text/css" href="DemoStyle.css">
+	</head>
+	<body ng-app="gideonApp">
+		<div ng-controller="header">
+			<div ng-include="'Header.html'"></div>
+		</div>
+		
+		<!--Demo control-->
+		<div ng-controller="demoCtrl" class="container">
+            <button invis class="hoverable" id="backButton" ng-click="backButton()">Back</button>
+            <div id="content">
+                <h1>About Demo Mode</h1>
+                <br>
+                <p>The purpose of demo mode is to allow recruitors to see first-hand how the application works while protecting student information under Gideon. The app works similarly in demo mode as it does with authorized users, but with a few key limitations:</p>
+                <ul>
+                    <li>The sample data displayed is minimal in nature and final.</li>
+                    <li>Student and record data cannot be inserted, updated, or removed in the database, although the forms can still be used.</li>
+                    <li>The application's "present date" is set to a constant March 1st, 2018.</li>
+                    <li>International goal lines on progress charts are empty and will never appear.</li>
+                </ul>
+            </div>
+		</div>
+	</body>
+</html>

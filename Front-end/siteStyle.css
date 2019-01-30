@@ -2,7 +2,11 @@
 * {
 	box-sizing: border-box; /*ensures all elements pad on the inside*/
 }
+html {
+	min-height: 100%;
+}
 body {
+	background: linear-gradient(to bottom, #FFD700, #FFA500) no-repeat bottom;
 	font-family: 'Roboto', sans-serif;
 	color: black;
 	margin: 0px;

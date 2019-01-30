@@ -30,20 +30,21 @@
 	</head>
 	<body>
 		<div class="exterior" ng-app="gideonApp" ng-controller="homeCtrl">
-			<img id="logo" src="img/gideon-logo-white.png" alt="Gideon">
+			&nbsp;
+			<div whitecard>
+				<img id="logo" src="img/gideon-logo-white.png" alt="Gideon">
 
-			<h1>Login</h1>
-			<form id="loginBlock">
-				<input white big type="text"     id="username" name="username" placeholder="Username" ng-model="username">
-				<input white big type="password" id="password" name="password" placeholder="Password" ng-model="password">
-				<br><br>
-				<button big type="submit" ng-click="login()">Log in</button>
-				<br><br><br>
-				<p style="text-align:center">OR</p>
-				<button big type="submit" ng-click="guest()">Proceed as Guest</button>
-				<br><br>
-				<span ng-class="{'errorText':formStatus.id == 0, 'successText':formStatus.id == 1}">{{formStatus.text}}</span>
-			</form>
+				<form id="loginBlock">
+					<input white big type="text"     id="username" name="username" placeholder="Username" ng-model="username" required>
+					<input white big type="password" id="password" name="password" placeholder="Password" ng-model="password" required>
+					<br><br>
+					<button big type="submit" ng-click="login()">Log in</button>
+					<br><br><br>
+					<button invis big type="submit" ng-click="guest()">Proceed as Guest</button>
+					<br><br>
+					<span ng-class="{'errorText':formStatus.id == 0, 'successText':formStatus.id == 1}">{{formStatus.text}}</span>
+				</form>
+			</div>
 		</div>
 	</body>
 </html>
