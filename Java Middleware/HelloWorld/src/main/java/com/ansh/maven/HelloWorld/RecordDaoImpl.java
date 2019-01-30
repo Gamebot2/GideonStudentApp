@@ -79,8 +79,8 @@ public class RecordDaoImpl implements RecordDao{
 	//Adds a new record to the record database with all of the following information, formats the appropriate SQL string
 	@Override
 	public int addRecord(Master master, Book book) {
-		String sql = "INSERT INTO records (StudentId, BookId, StartDate, EndDate, Rep, Test, TestTime, Mistakes, Notes) VALUES (?, ?, ?, null, ?, ?, null, null, ?)";
-
+		String sql = "INSERT INTO demorecords (StudentId, BookId, StartDate, EndDate, Rep, Test, TestTime, Mistakes, Notes) VALUES (?, ?, ?, null, ?, ?, null, null, ?)";
+		sql = HelloController.setTargetTable(sql);
 		String formatted = dateFormat.format(master.getStartDate());
 		this.jdbcTemplate.update(sql, master.getId(), book.getBookId(), formatted, master.getRep(), book.getTest(), master.getNotes());
 		return 0;
@@ -89,14 +89,16 @@ public class RecordDaoImpl implements RecordDao{
 	//Updates an already existing record
 	@Override
 	public int updateRecord(Record record, Book book) {
-		String sql = "UPDATE records SET StudentId = ?, BookId = ?, StartDate = ?, EndDate = ?, Rep = ?, TestTime = ?, Mistakes = ?, Notes = ? WHERE RecordId = ?";
+		String sql = "UPDATE demorecords SET StudentId = ?, BookId = ?, StartDate = ?, EndDate = ?, Rep = ?, TestTime = ?, Mistakes = ?, Notes = ? WHERE RecordId = ?";
+		sql = HelloController.setTargetTable(sql);
 		this.jdbcTemplate.update(sql, record.getStudentId(), book.getBookId(), record.getStartDate(), record.getEndDate(), record.getRep(), record.getTestTime(), record.getMistakes(), record.getNotes(), record.getRecordId());
 		return 0;
 	}
 	
 	@Override
 	public int removeRecord(int id) {
-		String sql = "DELETE FROM records WHERE RecordId = ?";
+		String sql = "DELETE FROM demorecords WHERE RecordId = ?";
+		sql = HelloController.setTargetTable(sql);
 		return this.jdbcTemplate.update(sql, id);
 	}
 	

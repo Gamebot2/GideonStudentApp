@@ -86,7 +86,8 @@ public class StudentDaoImpl implements StudentDao {
 	// Adds a student to the database
 	@Override
 	public int addStudent(StudentMaster student) {
-		String sql = "INSERT INTO students (Client, FirstName, LastName, Grade, Gender, LastUsed) VALUES (?, ?, ?, ?, ?, ?);";
+		String sql = "INSERT INTO demostudents (Client, FirstName, LastName, Grade, Gender, LastUsed) VALUES (?, ?, ?, ?, ?, ?);";
+		sql = HelloController.setTargetTable(sql);
 		this.jdbcTemplate.update(sql, student.getClient(), student.getFirstName(), student.getLastName(), student.getGrade(), student.getGender(), dateFormat.format(new Date()));
 		return 0;
 	}
@@ -94,7 +95,8 @@ public class StudentDaoImpl implements StudentDao {
 	// Updates student information in the database
 	@Override
 	public int updateStudent(Student s) {
-		String sql = "UPDATE students SET Client = ?, Email = ?, Phone = ?, Address = ?, Grade = ?, Gender = ?, CurrentPasses = ? WHERE StudentId = ?";
+		String sql = "UPDATE demostudents SET Client = ?, Email = ?, Phone = ?, Address = ?, Grade = ?, Gender = ?, CurrentPasses = ? WHERE StudentId = ?";
+		sql = HelloController.setTargetTable(sql);
 		this.jdbcTemplate.update(sql, s.getClient(), s.getEmail(), s.getPhone(), s.getAddress(), s.getGrade(), s.getGender(), s.getCurrentPasses(), s.getStudentId());
 		return 0;
 	}
@@ -103,7 +105,8 @@ public class StudentDaoImpl implements StudentDao {
 	// Sets the last used date of the student with either a studentId or a recordId
 	@Override
 	public int updateLastUsed(int id) {
-		String sql = "UPDATE students SET LastUsed = ? WHERE StudentId = ?";
+		String sql = "UPDATE demostudents SET LastUsed = ? WHERE StudentId = ?";
+		sql = HelloController.setTargetTable(sql);
 		this.jdbcTemplate.update(sql, dateFormat.format(new Date()), id);
 		return 0;
 	}
@@ -111,7 +114,8 @@ public class StudentDaoImpl implements StudentDao {
 	// Deletes a student and their records using a procedure call
 	@Override
 	public int removeStudent(int studentId) {
-		String sql = "CALL `delete_student` (?)";
+		String sql = "CALL `delete_demostudent` (?)";
+		sql = HelloController.setTargetTable(sql);
 		return this.jdbcTemplate.update(sql, studentId);
 	}
 }

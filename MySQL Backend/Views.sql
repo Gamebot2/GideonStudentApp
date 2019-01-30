@@ -78,3 +78,11 @@ BEGIN
 	DELETE FROM students WHERE StudentId = Id;
 END //
 DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE `delete_demostudent` (IN Id INT(11))
+BEGIN
+	DELETE FROM demorecords WHERE RecordId > 0 AND StudentId = Id;
+	DELETE FROM demostudents WHERE StudentId = Id;
+END //
+DELIMITER ;

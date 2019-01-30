@@ -44,8 +44,6 @@ public class HelloController {
 		System.out.println(user + " attempted login");
 		int result = userService.getLogIn(user, pass);
 		
-		System.out.println(result);
-		
 		if (result == 0)
 			setLoggedIn(true);
 		return result;
