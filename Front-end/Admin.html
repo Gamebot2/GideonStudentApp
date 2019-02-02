@@ -39,9 +39,9 @@
             <div ng-show="loggedIn" ng-hide="!loggedIn" class="container" id="content">
                 <h1>Admin Settings</h1>
                 <br>
-                <button big ng-click="gradeIncrement()">Increment Global Grades (to be run every August 1st)</button>
+                <button big ng-click="shiftGrades(true)">Increment Global Grades (to be run every August 1st)</button>
                 <br>
-                <button big ng-click="gradeDecrement()">Decrement Global Grades (to be run in the event of a mistake)</button>
+                <button big ng-click="shiftGrades(false)">Decrement Global Grades (to be run in the event of a mistake)</button>
                 <br>
                 <button big warn ng-click="terminate()">Terminate Account (currently does nothing)</button>
 			</div>

@@ -13,4 +13,5 @@ public interface StudentDao {
 	int updateStudent(Student s);
 	int updateLastUsed(int id);
 	int removeStudent(int studentId);
+	int shiftGrades(boolean isInc);
 }

@@ -73,12 +73,22 @@ public class StudentServiceImpl implements StudentService{
 		return studentDao.updateStudent(student) + studentDao.updateLastUsed(student.getStudentId());
 	}
 
+	// Removes a student and their records from the database
 	@Override
 	public int removeStudent(int studentId) {
 		if (!HelloController.isLoggedIn())
 			return 1;
 		
 		return studentDao.removeStudent(studentId);
+	}
+	
+	// Shifts all grades up or down
+	@Override
+	public int shiftGrades(boolean isInc) {
+		if (!HelloController.isLoggedIn())
+			return 1;
+		
+		return studentDao.shiftGrades(isInc);
 	}
 	
 }

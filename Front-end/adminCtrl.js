@@ -13,14 +13,13 @@ gideonApp.controller('adminCtrl', ($scope, $http, $window) => {
         $scope.loggedIn = response.data;
     });
 
-    $scope.gradeIncrement = () => {
-
-    }
-    $scope.gradeDecrement = () => {
-        
-    }
-
     $scope.backButton = () => {
 		$window.history.back();
 	}
+
+    $scope.shiftGrades = isInc => {
+        $http.get(`${URL}shiftGrades?isIncrementing=${isInc}`).then(response => {
+            $scope.backButton();
+        })
+    }
 });

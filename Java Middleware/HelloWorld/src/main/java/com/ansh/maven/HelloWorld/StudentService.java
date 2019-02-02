@@ -14,4 +14,5 @@ public interface StudentService {
 	int addStudent(StudentMaster student);
 	int updateStudent(Student student);
 	int removeStudent(int studentId);
+	int shiftGrades(boolean isInc);
 }

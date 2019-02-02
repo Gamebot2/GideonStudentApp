@@ -178,15 +178,13 @@ public class HelloController {
 	@RequestMapping("/addStudent")
 	public int addStudent(@RequestBody(required=false) StudentMaster student) {
 		System.out.println("Method addStudent() called" );
-		int a;
 		try {
-			a = studentService.addStudent(student);
+			return studentService.addStudent(student);
 		} catch (java.lang.RuntimeException e) {
 			System.out.println("Method addStudent() failed:");
 			e.printStackTrace();
-			a = -1;
+			return -1;
 		}
-		return a;
 	}
 	
 	//Edits student data in the students database
@@ -194,15 +192,13 @@ public class HelloController {
 	@RequestMapping("/updateStudent")
 	public int updateStudent(@RequestBody(required=false) Student student) {
 		System.out.println("Method updateStudent() called");
-		int a;
 		try {
-			a = studentService.updateStudent(student);
+			return studentService.updateStudent(student);
 		} catch (java.lang.RuntimeException e) {
 			System.out.println("Method updateStudent() failed:");
 			e.printStackTrace();
-			a = -1;
+			return -1;
 		}
-		return a;
 	}
 	
 	//Deletes a student given an ID with which to delete
@@ -210,7 +206,27 @@ public class HelloController {
 	@RequestMapping("/removeStudent")
 	public int removeStudent(@RequestParam("Id") int id) {
 		System.out.println("Method removeStudent() called on id " + id);
-		return studentService.removeStudent(id);
+		try {
+			return studentService.removeStudent(id);
+		} catch (java.lang.RuntimeException e) {
+			System.out.println("Method removeStudent() failed:");
+			e.printStackTrace();
+			return -1;
+		}
+	}
+	
+	//Shifts all grades up or down
+	@CrossOrigin
+	@RequestMapping("/shiftGrades")
+	public int shiftGrades(@RequestParam("isIncrementing") boolean isInc) {
+		System.out.println("Method shiftGrades() called with intent to " + (isInc ? "increment" : "decrement"));
+		try {
+			return studentService.shiftGrades(isInc);
+		} catch (java.lang.RuntimeException e) {
+			System.out.println("Method shiftGrades() failed:");
+			e.printStackTrace();
+			return -1;
+		}
 	}
 	
 	//Returns all records in the record database
@@ -250,15 +266,13 @@ public class HelloController {
 	@RequestMapping("/addRecord")
 	public int addRecord(@RequestBody(required=false) Master master) {
 		System.out.println("Method addRecord() called");
-		int a;
 		try {
-			a = recordService.addRecord(master);
+			return recordService.addRecord(master);
 		} catch (java.lang.RuntimeException e) {
 			System.out.println("Method addRecord() failed:");
 			e.printStackTrace();
-			a = -1;
+			return -1;
 		}
-		return a;
 	}
 	
 	//Updates an existing record in the database
@@ -266,15 +280,13 @@ public class HelloController {
 	@RequestMapping("/updateRecord")
 	public int updateRecord(@RequestBody(required=false) Record record) {
 		System.out.println("Method updateRecord() called");
-		int a; 
 		try {
-			a = recordService.updateRecord(record);
+			return recordService.updateRecord(record);
 		} catch (java.lang.RuntimeException e) {
 			System.out.println("Method updateRecord() failed:");
 			e.printStackTrace();
-			a = -1;
+			return -1;
 		}
-		return a;
 	}
 	
 	//Deletes a record given an ID with which to delete
@@ -282,7 +294,13 @@ public class HelloController {
 	@RequestMapping("/removeRecord")
 	public int removeRecord(@RequestParam("Id") int id) {
 		System.out.println("Method removeRecord() called on id " + id);
-		return recordService.removeRecord(id);
+		try {
+			return recordService.removeRecord(id);
+		} catch (java.lang.RuntimeException e) {
+			System.out.println("Method removeRecord() failed:");
+			e.printStackTrace();
+			return -1;
+		}
 	}
 	
 

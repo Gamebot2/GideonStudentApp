@@ -118,4 +118,17 @@ public class StudentDaoImpl implements StudentDao {
 		sql = HelloController.setTargetTable(sql);
 		return this.jdbcTemplate.update(sql, studentId);
 	}
+	
+	// Shifts all grades up or down
+	@Override
+	public int shiftGrades(boolean isInc) {
+		String sql = "";
+		if (isInc)
+			sql = "CALL `grade_increment` ()";
+		else
+			sql = "CALL `grade_decrement` ()";
+		
+		return this.jdbcTemplate.update(sql);
+	}
+	
 }

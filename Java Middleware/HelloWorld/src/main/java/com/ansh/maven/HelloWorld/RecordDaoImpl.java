@@ -95,6 +95,7 @@ public class RecordDaoImpl implements RecordDao{
 		return 0;
 	}
 	
+	// Removes a record from the database with an id
 	@Override
 	public int removeRecord(int id) {
 		String sql = "DELETE FROM demorecords WHERE RecordId = ?";

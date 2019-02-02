@@ -96,6 +96,7 @@ public class RecordServiceImpl implements RecordService{
 		return recordDao.updateRecord(record, book) + studentDao.updateLastUsed(record.getStudentId());
 	}
 	
+	// Removes a record from the database with an id
 	@Override
 	public int removeRecord(int id) {
 		if (!HelloController.isLoggedIn())
