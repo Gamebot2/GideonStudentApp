@@ -12,9 +12,12 @@ public class UserServiceImpl implements UserService {
 	private UserDao userDao;
 
 	@Override
-	public int getLogIn(String user, String pass) {
+	public User getLogIn(String user, String pass) {
 		return userDao.getLogIn(user, pass);
 	}
 
-	
+	@Override
+	public int terminateAccount(String username) {
+		return userDao.terminateAccount(username);
+	}
 }

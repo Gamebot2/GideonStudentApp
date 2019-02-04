@@ -22,4 +22,15 @@ gideonApp.controller('adminCtrl', ($scope, $http, $window) => {
             $scope.backButton();
         })
     }
+
+    $scope.terminate = () => {
+        if (confirm(`Are you sure you want to terminate ${currentUsername}?`)) {
+			$http.get(`${URL}terminateAccount`)
+			.then(_ => {
+				$http.get(`${URL}logout`).then(_ => {
+                    window.location.href = "index.html";
+                });
+			});
+		}
+    }
 });

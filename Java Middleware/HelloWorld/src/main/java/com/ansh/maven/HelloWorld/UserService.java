@@ -4,5 +4,6 @@ import java.util.*;
 
 
 public interface UserService {
-	int getLogIn(String user, String pass);
+	User getLogIn(String user, String pass);
+	int terminateAccount(String username);
 }

@@ -3,5 +3,6 @@ package com.ansh.maven.HelloWorld;
 import java.util.*;
 
 public interface UserDao {
-	int getLogIn(String user, String pass);
+	User getLogIn(String user, String pass);
+	int terminateAccount(String username);
 }

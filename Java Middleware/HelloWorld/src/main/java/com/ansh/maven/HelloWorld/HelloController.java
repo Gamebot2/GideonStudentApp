@@ -25,43 +25,52 @@ public class HelloController {
 	@Autowired
 	UserService userService;
 	
-	static boolean loggedIn = false;
+	static User currentUser = null;
 	
 	public static boolean isLoggedIn() {
-		return loggedIn;
+		return currentUser != null && currentUser.getTerminated() == 0;
 	}
-	static void setLoggedIn(boolean log) {
-		loggedIn = log;
+	static void setUser(User user) {
+		currentUser = user;
 	}
 	
 	public static String setTargetTable(String sql) {
-		return loggedIn ? sql.replaceAll("demo", "") : sql;
+		return isLoggedIn() ? sql.replaceAll("demo", "") : sql;
 	}
 	
 	@CrossOrigin
 	@RequestMapping("/login")
 	public int login(@RequestParam("user") String user, @RequestParam("pass") String pass) {
 		System.out.println(user + " attempted login");
-		int result = userService.getLogIn(user, pass);
+		User result = userService.getLogIn(user, pass);
 		
-		if (result == 0)
-			setLoggedIn(true);
-		return result;
+		setUser(result);
+		return isLoggedIn() ? 0 : -1;
 	}
 	
 	@CrossOrigin
 	@RequestMapping("/logout")
 	public int logout() {
 		System.out.println("Logged out");
-		setLoggedIn(false);
+		setUser(null);
 		return 0;
 	}
 	
 	@CrossOrigin
 	@RequestMapping("/getLoggedIn")
 	public boolean getLoggedIn() {
-		System.out.println("Fetched login: current status is " + loggedIn);
-		return loggedIn;
+		System.out.println("Fetched login: current status is " + isLoggedIn());
+		return isLoggedIn();
+	}
+	
+	@CrossOrigin
+	@RequestMapping("/getUser")
+	public List<String> getUser() {
+		// Note: this method returns a list because for some reason, you can't return a string using $http because AngularJS thinks it's JSON
+		System.out.println("Fetched user");
+		List<String> output = new ArrayList<String>();
+		output.add(isLoggedIn() ? currentUser.getUsername() : "");
+		return output;
 	}
 	
 	@CrossOrigin
@@ -69,6 +78,15 @@ public class HelloController {
 	public int register(@RequestParam("user") String user, @RequestParam("pass") String pass) {
 		// this method doesn't do anything, haha. users must be registered directly into the database
 		return 1337;
+	}
+	
+	@CrossOrigin
+	@RequestMapping("/terminateAccount")
+	public int terminateAccount() {
+		if (!isLoggedIn())
+			return -1;
+		System.out.println("Terminated account of " + currentUser.getUsername());
+		return userService.terminateAccount(currentUser.getUsername());
 	}
 	
 	//Returns all books in the book database

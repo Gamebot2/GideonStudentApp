@@ -16,12 +16,14 @@ const URLs = {
 const URL = URLs.local;
 
 
+var currentUsername = "";
 var loggedIn = false;
 
 gideonApp.controller('header', ($scope, $http) => {
-    $scope.loggedIn = false;
-    $http.get(`${URL}getLoggedIn`).then(response => {
-        loggedIn = $scope.loggedIn = response.data;
+    
+    $http.get(`${URL}getUser`).then(response => {
+        currentUsername = $scope.currentUsername = response.data[0];
+        loggedIn = $scope.loggedIn = (response.data != "");
     });
 
     $scope.login = () => {
