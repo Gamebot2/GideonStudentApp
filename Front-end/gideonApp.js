@@ -13,7 +13,7 @@ const URLs = {
     online: "http://gideon-records.us-east-1.elasticbeanstalk.com/",
     local: "http://localhost:5000/"
 };
-const URL = URLs.local;
+const URL = URLs.online;
 
 
 var currentUsername = "";
