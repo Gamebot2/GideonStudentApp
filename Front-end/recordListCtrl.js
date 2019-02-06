@@ -4,14 +4,14 @@
  *
  * NOTES:
  * - The variable "gideonApp" is defined in gideonApp.js. That file must be included prior to this one in html.
- * - The page requires slots 5, 6, 7, and 8 in the window storage to track the previously used filters during the session. These slots should be unused in every other page, unless they are being used to pre-initialize filter values for this page.
+ * - The page requires slots 6, 7, and 8 in the window storage to track the previously used filters during the session. These slots should be unused in every other page, unless they are being used to pre-initialize filter values for this page.
  */
 
 
 gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 
 	// INITIALIZE RECORDS
-	var allRecords = [{
+	let allRecords = [{
 		bookTitle: "Loading"
 	}];
 	$scope.records = allRecords;
@@ -26,8 +26,8 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 	$scope.endDateFilter = {};
 
 	// Big Filters dictionary stores information about how filters should be processed.
-	var Filters = {
-		"category": {
+	const Filters = {
+		category: {
 			id: 6,								// "id" is the filter's spot in local storage
 			model: $scope.categoryFilter,		// "model" is an object pointer where the selected value is being held
 			wildcard: "Any",					// "wildcard" is the value for which filtering should not occur
@@ -36,9 +36,9 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 			},
 			target(record) {					// "target" identifies the part of a record object which must match the filter
 				return record.category;
-			},
+			}
 		},
-		"rep": {
+		rep: {
 			id: 7,
 			model: $scope.repFilter,
 			wildcard: "Any",
@@ -47,9 +47,9 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 			},
 			target(record) {
 				return record.rep;
-			},
+			}
 		},
-		"status": {
+		status: {
 			id: 8,
 			model: $scope.endDateFilter,
 			wildcard: "All",
@@ -58,25 +58,22 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 			},
 			target(record) {
 				return record.endDateDisplay;
-			},
+			}
 		}
 	};
 
 	// Loads all filters from local storage
-	for (var name in Filters) {
-		var filter = Filters[name];
+	Object.keys(Filters).forEach((name) => {
+		let filter = Filters[name];
 
-		var opt = $window.localStorage.getItem(filter.id);
-		if (opt)
-			filter.model.value = filter.load(opt);
-		else
-			filter.model.value = filter.wildcard;
-	}
+		let opt = $window.localStorage.getItem(filter.id);
+		filter.model.value = opt ? filter.load(opt) : filter.wildcard;
+	});
 
-	var getRecords = () => {
+	let getRecords = () => {
 		$http.get(`${URL}recordsById?StudentId=${$scope.studentFilter}`)
-		.then(response => {
-			allRecords = response.data.map(record => {
+		.then((response) => {
+			allRecords = response.data.map((record) => {
 				// Note that we're replacing - with / in the dates because of some weird JS date parsing stuff where using - will cause the date to be one day off
 				record.startDateDisplay = record.startDate ? new Date(record.startDate.split("-").join("/")).toLocaleDateString() : "";
 				record.endDateDisplay = record.endDate ? new Date(record.endDate.split("-").join("/")).toLocaleDateString() : "In Progress";
@@ -97,71 +94,74 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 				return record;
 			});
 			// Apply the filters to the student's records
-			didFilter();
+			$scope.didFilter();
 		});
-	}
+	};
 
 	// Runs when the student is selected
-	var didSelectStudent = $scope.didSelectStudent = () => {
+	$scope.didSelectStudent = () => {
 		// First, update the storage slot for the student
 		$window.localStorage.setItem(5, $scope.studentFilter);
 
 		// Then, load all records for that student
 		getRecords();
-	}
+	};
 
 	// Runs when any optional filter is selected
-	var didFilter = $scope.didFilter = () => {
-		var allFilters = Object.keys(Filters).map(name => Filters[name]);
-		allFilters.forEach(f => $window.localStorage.setItem(f.id, f.model.value));
+	$scope.didFilter = () => {
+		let allFilters = Object.keys(Filters).map((name) => Filters[name]);
+		allFilters.forEach((filt) => $window.localStorage.setItem(filt.id, filt.model.value));
 
-		$scope.records = allRecords.filter(r => allFilters.every(f => [f.wildcard, f.target(r)].includes(f.model.value)));
-	}
+		$scope.records = allRecords.filter((record) => allFilters.every((filt) => [filt.wildcard, filt.target(record)].includes(filt.model.value)));
+	};
 
 	// FETCH DATA
 	$http.get(`${URL}listStudents?withData=true&limit=0`)
-	.then(response => {
-		$scope.students = response.data.map(o => ({name: o.client, id: o.studentId})).sort((a, b) => a.name.localeCompare(b.name));
-		if ($scope.studentFilter == 0)
+	.then((response) => {
+		$scope.students = response.data.map((student) => ({name: student.client, id: student.studentId})).sort((a, b) => a.name.localeCompare(b.name));
+		if ($scope.studentFilter === 0) {
 			$scope.studentFilter = $scope.students[0].id;
-		didSelectStudent();
+		}
+		$scope.didSelectStudent();
 	});
 
 	$http.get(`${URL}categories`)
-	.then(response => {
+	.then((response) => {
 		$scope.categories = response.data;
-		$scope.categories.unshift(Filters["category"].wildcard);
+		$scope.categories.unshift(Filters.category.wildcard);
 	});
 
-	$scope.reps = [Filters["rep"].wildcard, 1, 2, 3, 4, 5];
-	$scope.statuses = [Filters["status"].wildcard, "In Progress"];
+	$scope.reps = [Filters.rep.wildcard, 1, 2, 3, 4, 5];
+	$scope.statuses = [Filters.status.wildcard, "In Progress"];
 
 
 	// ACCORDION MANAGEMENT
 	$scope.expandedRecordId = -1;
-	$scope.manageExpansion = recordId => {
-		if ($scope.expandedRecordId == recordId)
+	$scope.manageExpansion = (recordId) => {
+		if ($scope.expandedRecordId === recordId) {
 			$scope.expandedRecordId = -1;
-		else
+		}
+		else {
 			$scope.expandedRecordId = recordId;
-	}
+		}
+	};
 
-	$scope.progressChartButton = record => {
+	$scope.progressChartButton = (record) => {
 		$http.get(`${URL}student?Id=${record.studentId}`)
-		.then(response => {
+		.then((response) => {
 			$window.localStorage.setItem(0, JSON.stringify(response.data));
 			$window.localStorage.setItem(1, record.category);
 			window.location.href = "LineChart.html";
 		});
-	}
+	};
 
 	$scope.insertRecordButton = () => {
 		window.location.href = "InsertRecord.html";
-	}
+	};
 
-	$scope.editRecordButton = record => {
+	$scope.editRecordButton = (record) => {
 		$window.localStorage.setItem(0, JSON.stringify(record));
 		window.location.href = "EditRecord.html";
-	}
+	};
 
 });

@@ -4,7 +4,6 @@
  *
  * NOTES:
  * - The variable "gideonApp" is defined in gideonApp.js. That file must be included prior to this one in html.
- * - The page requires slots 2, 3, and 4 in the window storage to track the previously used filters during the session. These slots should be unused in every other page, unless they are being used to pre-initialize filter values for this page.
  */
 
 
@@ -14,18 +13,18 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 	$scope.allStudents = [];
 	$scope.students = [{
 		client: "Loading",
-		email: "",
+		email: ""
 	}];
 	$scope.expandedStudentId = -1;
 
 	// SORT BY BUTTONS
-	var sortingModes = {
+	const sortingModes = {
 		init() {
 			this["nullcheck"] = (s, t) => {
-				if (!s && !t) return "0";
-				if (!s) return "1";
-				if (!t) return "-1";
-			}
+				if (!s && !t) { return "0"; }
+				if (!s) { return "1"; }
+				if (!t) { return "-1"; }
+			};
 			this["name"] 		= (s, t) => s.client.localeCompare(t.client);
 			this["namedesc"] 	= (s, t) => -this["name"](s, t);
 			this["email"] 		= (s, t) => parseInt(this["nullcheck"](s.email, t.email) || s.email.localeCompare(t.email));
@@ -37,70 +36,75 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 			return this;
 		}
 	}.init();
-	var currentSortBy = "";
+	let currentSortBy = "";
 
-	var dataSwitch = true;
-	var refreshStudents = () => {
-		var temp = $scope.allStudents;
+	let dataSwitch = true;
+	let refreshStudents = () => {
+		let temp = $scope.allStudents;
 
-		if (dataSwitch)
-			temp = temp.filter(s => $scope.studentIdsWithData.has(s.studentId));
-		if (currentSortBy != "recent")
+		if (dataSwitch) {
+			temp = temp.filter((student) => $scope.studentIdsWithData.has(student.studentId));
+		}
+		if (currentSortBy != "recent") {
 			temp = temp.sort(sortingModes[currentSortBy]);
+		}
 
 		$scope.students = temp;
-	}
+	};
 
-	$scope.getSortBy = sortBy => {
-		if (currentSortBy == sortBy)
+	$scope.getSortBy = (sortBy) => {
+		if (currentSortBy === sortBy) {
 			sortBy += "desc";
+		}
 		currentSortBy = sortBy;
 
 		refreshStudents();
-	}
+	};
 	$scope.getSortBy("recent");
 	
 	$scope.toggleData = () => {
 		dataSwitch = !dataSwitch;
 		$scope.toggleButtonText = dataSwitch ? "Display All Students" : "Display Students With Records";
 		refreshStudents();
-	}
+	};
 	$scope.toggleData();
 
 	$http.get(`${URL}studentIdsWithRecords`)
-	.then(response => {
+	.then((response) => {
 		$scope.studentIdsWithData = new Set(response.data);
 		refreshStudents();
 	});
 
-	var getStudents = lim => {
+	let getStudents = (lim) => {
 		$http.get(`${URL}listStudents?withData=false&limit=${lim}`)
-		.then(response => {
+		.then((response) => {
 			$scope.allStudents = response.data;
 			refreshStudents();
 		});
-	}
+	};
 	getStudents(0);
 	
 	// ACCORDION MANAGEMENT
-	$scope.manageExpansion = studentId => {
-		if ($scope.expandedStudentId == studentId)
+	$scope.manageExpansion = (studentId) => {
+		if ($scope.expandedStudentId === studentId) {
 			$scope.expandedStudentId = -1;
-		else
+		}
+		else {
 			$scope.expandedStudentId = studentId;
-	}
+		}
+	};
 
 	// ACCORDION BUTTONS
-	$scope.lineChartButton = student => {
+	$scope.lineChartButton = (student) => {
 		$window.localStorage.setItem(0, JSON.stringify(student));
 		window.location.href = "LineChart.html";
-	}
-	$scope.editStudentButton = student => {
+	};
+	$scope.editStudentButton = (student) => {
 		$window.localStorage.setItem(0, JSON.stringify(student));
 		window.location.href = "EditStudent.html";
-	}
-	$scope.preloadRecordsList = student => {
+	};
+	$scope.preloadRecordsList = (student) => {
 		$window.localStorage.setItem(5, student.studentId);
 		window.location.href = "RecordList.html";
-	}
+	};
 });

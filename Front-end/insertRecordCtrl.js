@@ -18,24 +18,28 @@ gideonApp.controller('insertRecordCtrl', ($scope, $http, $window) => {
 
 	// Preloads selection boxes with a disabled value (these and only these should start with the letters "Select")
 	$scope.subcategories = ["Select a category first"];
-	$scope.titles = [{title: "Select a subcategory first", display: "Select a subcategory first"}];
+	$scope.titles = [{
+		title: "Select a subcategory first",
+		display: "Select a subcategory first"
+	}];
 
 	// Facilitates the JSON packaging by setting the id property
 	$scope.setId = () => {
-		if ($scope.client)
+		if ($scope.client) {
 			$scope.record.id = $scope.client.id;
-	}
+		}
+	};
 
 	// Returns a list of all students for easy name selection	
 	$http.get(`${URL}students`)
-	.then(response => {
-		$scope.names = response.data.map(student => {
+	.then((response) => {
+		$scope.names = response.data.map((student) => {
 			let obj = { 
 				name: student.client, // names contain ids to make sure every name is distinct - the name will be displayed but the id will be used
-				id: student.studentId,
-			}
+				id: student.studentId
+			};
 
-			if (student.studentId == selectedStudentId) {
+			if (student.studentId === selectedStudentId) {
 				$scope.client = obj;
 				$scope.setId();
 			}
@@ -45,34 +49,35 @@ gideonApp.controller('insertRecordCtrl', ($scope, $http, $window) => {
 	});
 
 	$http.get(`${URL}categories`)
-	.then(response => {
+	.then((response) => {
 		$scope.categories = response.data;
 	});
 
 	//Returns a list of subcategories based on the selected category
 	$scope.getSubcategories = () => {
 		$http.get(`${URL}subcategories?Category=${$scope.record.category}`)
-		.then(response => {
+		.then((response) => {
 			$scope.subcategories = response.data;
 		});
-	}
+	};
 
 	//Returns a list of titles based on the selected subCategory
 	$scope.getTitles = () => {
 		$http.get(`${URL}titles?Subcategory=${$scope.record.subcategory}`)
-		.then(response => {
-			$scope.titles = response.data.map((o,i) => ({
-				title: o,
-				display: `${i+1}: ${o}`
+		.then((response) => {
+			$scope.titles = response.data.map((title, index) => ({
+				title: title,
+				display: `${index+1}: ${title}`
 			}));
 		});
-	}
+	};
 	
 
 	// Form submission
 	$scope.createRecord = () => {
-		if (!Verify.check())
+		if (!Verify.check()) {
 			return;
+		}
 		
 		//Inserts the record with an HTTP post call
 		try {
@@ -83,9 +88,9 @@ gideonApp.controller('insertRecordCtrl', ($scope, $http, $window) => {
 					"Content-Type": "application/json",
 					"Accept": "application/json"
 				},
-				data: JSON.stringify($scope.record),
+				data: JSON.stringify($scope.record)
 			})
-			.then(response => {
+			.then((response) => {
 				Verify.successIf(response.data >= 0, `Successfully added record for ${$scope.client.name}`);
 				$window.localStorage.setItem(5, $scope.client.id);
 			})
@@ -94,5 +99,5 @@ gideonApp.controller('insertRecordCtrl', ($scope, $http, $window) => {
 		catch (err) {
 			Verify.error(err);
 		}
-	}
+	};
 });

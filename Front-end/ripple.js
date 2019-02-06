@@ -7,19 +7,19 @@
  */
 
 
-var buttons = document.getElementsByTagName('button');
+let buttons = document.getElementsByTagName('button');
 
 setTimeout(() => {	// for some reason, getElementsByTagName takes absolutely forever to load, so this is a manual timeout to wait for all the buttons to come in
 	console.log("Number of buttons detected: " + buttons.length);
 
-	Array.prototype.forEach.call(buttons, b => {
+	Array.prototype.forEach.call(buttons, (b) => {
 		// ripple event
-		b.onmousedown = e => {
-			var button = e.srcElement;								
+		b.onmousedown = (e) => {
+			let button = e.srcElement;								
 																			// CREATES
-			var rippleContainer = document.createElement('div');			// <div id = "rippleContainer">
+			let rippleContainer = document.createElement('div');			// <div id = "rippleContainer">
 			rippleContainer.setAttribute('id', 'rippleContainer');			// 		<span id = "rippleCircle" style = "left:[x]px; top:[y]px"></span>
-			var rippleCircle = document.createElement('span');				// </div>
+			let rippleCircle = document.createElement('span');				// </div>
 			rippleCircle.setAttribute('id', 'rippleCircle');
 			rippleCircle.setAttribute('style', `left: ${e.offsetX}px; top: ${e.offsetY}px;`);
 			rippleContainer.appendChild(rippleCircle);
@@ -27,7 +27,7 @@ setTimeout(() => {	// for some reason, getElementsByTagName takes absolutely for
 
 			// remove container after a set period
 			setTimeout(() => button.removeChild(rippleContainer), 1000);
-		}
+		};
 	});
 }, 1000);
 

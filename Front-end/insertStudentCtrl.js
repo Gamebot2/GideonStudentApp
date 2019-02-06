@@ -15,8 +15,9 @@ gideonApp.controller('insertStudentCtrl', ($scope, $http) => {
 
 	// Form submission
 	$scope.createStudent = () => {
-		if (!Verify.check())
+		if (!Verify.check()) {
 			return;
+		}
 
 		// Inserts the student with an HTTP post call
 		try {
@@ -27,9 +28,9 @@ gideonApp.controller('insertStudentCtrl', ($scope, $http) => {
 					"Content-Type": "application/json",
 					"Accept": "application/json"
 				},
-				data: JSON.stringify($scope.student),
+				data: JSON.stringify($scope.student)
 			})
-			.then(response => {
+			.then((response) => {
 				Verify.successIf(response.data >= 0, `Successfully added ${$scope.student.client}`);
 			})
 			.catch(Verify.error);
@@ -37,5 +38,5 @@ gideonApp.controller('insertStudentCtrl', ($scope, $http) => {
 		catch (err) {
 			Verify.error(err);
 		}
-	}
+	};
 });
