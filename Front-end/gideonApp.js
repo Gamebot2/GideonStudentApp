@@ -7,24 +7,25 @@
  */
 
 
-const URL = "http://localhost:8080/";
-
-<<<<<<< HEAD
-gideonApp = angular.module('gideonApp', ['ngMaterial', 'ngMessages']).config(function($mdThemingProvider) {
-    $mdThemingProvider.definePalette('black', $mdThemingProvider.extendPalette('grey', {
-        '500': '#000000',
-    }));
-    $mdThemingProvider.theme('default')
-        .primaryPalette('black')
-        .accentPalette('amber')
-        .warnPalette('red');
-});
-=======
 const URLs = {
     online: "http://gideon-records.us-east-1.elasticbeanstalk.com/",
     local: "http://localhost:5000/"
 };
 const URL = URLs.local;
+
+
+gideonApp = angular.module('gideonApp', ['ngMaterial', 'ngMessages']).config(($mdThemingProvider) => {
+    $mdThemingProvider.definePalette('black', $mdThemingProvider.extendPalette('grey', {
+        '500': '#000000',
+    }));
+    $mdThemingProvider.definePalette('gold', $mdThemingProvider.extendPalette('amber', {
+        '500': '#FFD700',
+    }));
+    $mdThemingProvider.theme('default')
+        .primaryPalette('black')
+        .accentPalette('gold')
+        .warnPalette('red');
+});
 
 
 let currentUsername = "";
@@ -55,4 +56,3 @@ gideonApp.controller('header', ($scope, $http) => {
         window.location.href = href;
     };
 });
->>>>>>> master

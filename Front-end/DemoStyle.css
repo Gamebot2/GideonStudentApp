@@ -1,0 +1,13 @@
+#content {
+    position: relative;
+    width: 75%;
+    left: 12.5%;
+}
+
+.container {
+    padding: 20px;
+}
+
+button {
+    margin: 10px;
+}

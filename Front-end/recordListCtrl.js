@@ -46,13 +46,8 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 				return parseInt(item) || this.wildcard; // If the item is not a number, it has to be the wildcard.
 			},
 			target(record) {
-<<<<<<< HEAD
 				return record.rep + ""; // casting to a string because for some reason md-select does not like numerical options
 			},
-=======
-				return record.rep;
-			}
->>>>>>> master
 		},
 		status: {
 			id: 8,
@@ -113,16 +108,9 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 	};
 
 	// Runs when any optional filter is selected
-<<<<<<< HEAD
-	var didFilter = $scope.didFilter = () => {
-		var allFilters = Object.keys(Filters).map(name => Filters[name]);
-		allFilters.forEach(f => $window.localStorage.setItem(f.id, f.model.value));
-		console.log(allFilters);
-=======
 	$scope.didFilter = () => {
 		let allFilters = Object.keys(Filters).map((name) => Filters[name]);
 		allFilters.forEach((filt) => $window.localStorage.setItem(filt.id, filt.model.value));
->>>>>>> master
 
 		$scope.records = allRecords.filter((record) => allFilters.every((filt) => [filt.wildcard, filt.target(record)].includes(filt.model.value)));
 	};

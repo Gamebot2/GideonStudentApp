@@ -17,10 +17,7 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 	}];
 
 	$scope.expandedStudentId = -1;
-	var currentSortBy = "";
-	var dataSwitch = true;
 
-<<<<<<< HEAD
 	// SORTING FUNCTIONS CONTAINER (uses some magic)
 	var sortingModes = {
 		init() {
@@ -36,37 +33,11 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 			this["emaildesc"] 	= (s, t) => this["nullsort"](s.email,  t.email,  (u, v) => -u.localeCompare(v));
 			this["grade"] 		= (s, t) => this["nullsort"](s.grade,  t.grade,  (u, v) => parseInt(u.match(/\d+/)) - parseInt(v.match(/\d+/)));
 			this["gradedesc"] 	= (s, t) => this["nullsort"](s.grade,  t.grade,  (u, v) => -parseInt(u.match(/\d+/)) + parseInt(v.match(/\d+/)));
-=======
-	// SORT BY BUTTONS
-	const sortingModes = {
-		init() {
-			this["nullcheck"] = (s, t) => {
-				if (!s && !t) { return "0"; }
-				if (!s) { return "1"; }
-				if (!t) { return "-1"; }
-			};
-			this["name"] 		= (s, t) => s.client.localeCompare(t.client);
-			this["namedesc"] 	= (s, t) => -this["name"](s, t);
-			this["email"] 		= (s, t) => parseInt(this["nullcheck"](s.email, t.email) || s.email.localeCompare(t.email));
-			this["emaildesc"] 	= (s, t) => parseInt(this["nullcheck"](s.email, t.email) || -s.email.localeCompare(t.email));
-			this["grade"] 		= (s, t) => parseInt(this["nullcheck"](s.grade, t.grade) || parseInt(s.grade.match(/\d+/)) - parseInt(t.grade.match(/\d+/)));
-			this["gradedesc"] 	= (s, t) => parseInt(this["nullcheck"](s.grade, t.grade) || -parseInt(s.grade.match(/\d+/)) + parseInt(t.grade.match(/\d+/)));
->>>>>>> master
 
 			delete this.init; // remove this function from the object, to avoid clutter
 			return this;
 		}
 	}.init();
-<<<<<<< HEAD
-	
-	// RELOAD LIST OF STUDENTS based on sort and data filters
-	var refreshStudents = () => {
-		var temp = $scope.allStudents.slice();
-
-		if (dataSwitch)
-			temp = temp.filter(s => $scope.studentIdsWithData.has(s.studentId));
-		if (sortingModes[currentSortBy] != null && sortingModes[currentSortBy] != undefined)
-=======
 	let currentSortBy = "";
 
 	let dataSwitch = true;
@@ -76,37 +47,26 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 		if (dataSwitch) {
 			temp = temp.filter((student) => $scope.studentIdsWithData.has(student.studentId));
 		}
-		if (currentSortBy != "recent") {
->>>>>>> master
+		if (currentSortBy != "default") {
 			temp = temp.sort(sortingModes[currentSortBy]);
 		}
 
 		$scope.students = temp;
 	};
 
-<<<<<<< HEAD
 	// CHANGE SORT METHOD
-	$scope.getSortBy = sortBy => {
-		if (currentSortBy.startsWith(sortBy))
-			sortBy += "desc";
-		if (currentSortBy == sortBy)
-			sortBy = "";
-		currentSortBy = sortBy;
-
-		refreshStudents();
-	}
-	$scope.getSortBy("");
-=======
 	$scope.getSortBy = (sortBy) => {
-		if (currentSortBy === sortBy) {
+		if (currentSortBy.startsWith(sortBy)) {
 			sortBy += "desc";
+		}
+		if (currentSortBy == sortBy) {
+			sortBy = "default";
 		}
 		currentSortBy = sortBy;
 
 		refreshStudents();
-	};
-	$scope.getSortBy("recent");
->>>>>>> master
+	}
+	$scope.getSortBy("default");
 	
 	// TOGGLE DATA FILTER
 	$scope.toggleData = () => {
@@ -123,12 +83,7 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 		refreshStudents();
 	});
 
-<<<<<<< HEAD
-	// GET STUDENTS (note: currently exists in a function to allow for pagination later)
-	var getStudents = lim => {
-=======
 	let getStudents = (lim) => {
->>>>>>> master
 		$http.get(`${URL}listStudents?withData=false&limit=${lim}`)
 		.then((response) => {
 			$scope.allStudents = response.data;
@@ -159,16 +114,5 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 	$scope.preloadRecordsList = (student) => {
 		$window.localStorage.setItem(5, student.studentId);
 		window.location.href = "RecordList.html";
-<<<<<<< HEAD
-	}
-	$scope.removeStudent = student => {
-		console.log("Removed student with ID " + student.studentId);
-		$http.get(`${URL}removeStudents?Id=` + student.studentId)
-		.then(response => {
-			refreshStudents();
-		});
-	}
-=======
 	};
->>>>>>> master
 });
