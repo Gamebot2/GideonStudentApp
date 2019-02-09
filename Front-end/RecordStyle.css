@@ -8,6 +8,10 @@ body {
     padding: 20px;
 }
 
+#deleteButton {
+    float: right;
+}
+
 
 /*Used for the insertRecord sheet to space out number inputs at the bottom*/
 #rep, #mistakes, #testTime {

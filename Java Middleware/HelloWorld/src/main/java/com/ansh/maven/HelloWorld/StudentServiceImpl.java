@@ -52,22 +52,50 @@ public class StudentServiceImpl implements StudentService{
 			return Integer.parseInt(gradeString.replaceAll("\\D+",""));
 	}
 
+	
+	// NOTE: Anything that modifies data in the database will do nothing if the user is accessing the demo database: 1 will be returned
+	
 	// Adds a student to the database
 	@Override
 	public int addStudent(StudentMaster student) {
+		if (!HelloController.isLoggedIn())
+			return 1;
+		
 		return studentDao.addStudent(student);
 	}
 	
 	// Updates student information in the database
 	@Override
 	public int updateStudent(Student student) {
+		if (!HelloController.isLoggedIn())
+			return 1;
+		
 		return studentDao.updateStudent(student) + studentDao.updateLastUsed(student.getStudentId());
 	}
 
+<<<<<<< HEAD
 	@Override
 	public int removeStudent(int StudentId) {
 		// TODO Auto-generated method stub
 		return studentDao.removeStudent(StudentId);
+=======
+	// Removes a student and their records from the database
+	@Override
+	public int removeStudent(int studentId) {
+		if (!HelloController.isLoggedIn())
+			return 1;
+		
+		return studentDao.removeStudent(studentId);
+	}
+	
+	// Shifts all grades up or down
+	@Override
+	public int shiftGrades(boolean isInc) {
+		if (!HelloController.isLoggedIn())
+			return 1;
+		
+		return studentDao.shiftGrades(isInc);
+>>>>>>> master
 	}
 	
 }

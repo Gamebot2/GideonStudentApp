@@ -19,8 +19,9 @@ gideonApp.controller('editStudentCtrl', ($scope, $http, $window) => {
 
 	// Form submission
 	$scope.updateStudent = () => {
-		if (!Verify.check())
+		if (!Verify.check()) {
 			return;
+		}
 
 		// Updates the student with an HTTP post call
 		try {
@@ -31,15 +32,29 @@ gideonApp.controller('editStudentCtrl', ($scope, $http, $window) => {
 					"Content-Type": "application/json",
 					"Accept": "application/json"
 				},
-				data: JSON.stringify($scope.student),
+				data: JSON.stringify($scope.student)
 			})
-			.then(response => {
-				if (Verify.successIf(response.data == 0, "Successfully updated."))
+			.then((response) => {
+				if (Verify.successIf(response.data >= 0, "Successfully updated.")) {
 					window.location.href = "StudentList.html"; // return back to the list if the update was successful
+				}
 			})
 			.catch(Verify.error);
 		} catch (err) {
 			Verify.error(err);
 		}
-	}
+	};
+
+
+	// Delete button
+	$scope.removeStudent = () => {
+		if (confirm(`Are you sure you want to delete ${$scope.student.client} and all of their records? This cannot be undone!`)) {
+			$http.get(`${URL}removeStudent?Id=${$scope.student.studentId}`)
+			.then((response) => {
+				if (Verify.successIf(response.data >= 0, "Deleted.")) {
+					window.location.href = "StudentList.html"; // return back to the list if the delete was successful
+				}
+			});
+		}
+	};
 });

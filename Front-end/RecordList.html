@@ -28,8 +28,12 @@
 		<link rel="stylesheet" type="text/css" href="SiteStyle.css">
 		<link rel="stylesheet" type="text/css" href="ListStyle.css">
 	</head>
-	<body>
-		<div ng-app="gideonApp" ng-controller="recordListCtrl">
+	<body ng-app="gideonApp">
+		<div ng-controller="header">
+			<div ng-include="'Header.html'"></div>
+		</div>
+		
+		<div ng-controller="recordListCtrl">
 		<!--Selection buttons in the header to move to insert and update pages-->
 			<div id="header">
 				<md-button class="md-accent md-raised" id="listBtn" onclick="location.href='StudentList.html'">Student List</md-button>
@@ -99,22 +103,31 @@
 							Category: {{record.category}}<br>
 							Subcategory: {{record.subcategory}}<br>
 							Rep: {{record.rep}}<br><br>
+<<<<<<< HEAD
 							<md-button class="md-accent md-raised" id="accordionButton" ng-click="progressChartButton(record)">Progress Chart</md-button>
 							<br><br><br>
+=======
+>>>>>>> master
 						</div>
 						<div class="column" style="width:50%">
 							End Date: {{record.endDateDisplay}}<br>
 							Test Time: {{record.testTime}}<br>
 							Mistakes: {{record.mistakes}}<br><br>
+<<<<<<< HEAD
 							<md-button class="md-accent md-raised" id="accordionButton" ng-click="editRecordButton(record)">Edit Record</md-button>
 							<br><br><br>
+=======
+>>>>>>> master
 						</div>
 					</div>
+					<br>
+					<button type="button" class="hoverable" id="accordionButton" ng-click="progressChartButton(record)">Progress Chart</button>
+					<button type="button" class="hoverable" id="accordionButton" ng-click="editRecordButton(record)">Edit Record</button>
 				</div>
 			</div>
 		</div>
 
-		<!--Footer exists to make selecting the last student on the list way less annoying-->
+		<!--Footer exists to make selecting the last record on the list way less annoying-->
 		<div id="footer">&nbsp;</div>
 	</body>
 </html>

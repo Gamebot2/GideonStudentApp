@@ -2,18 +2,24 @@
 * {
 	box-sizing: border-box; /*ensures all elements pad on the inside*/
 }
+html {
+	min-height: 100%;
+}
 body {
+	background: linear-gradient(to bottom, #FFD700, #FFA500) no-repeat bottom;
 	font-family: 'Roboto', sans-serif;
 	color: black;
+	margin: 0px;
 }
-#header {
-	top: 0;
+#siteHeader {
+	background-color: black;
+	color: white;
+	display: block;
 	width: 100%;
-	overflow: auto;
+	padding: 10px;
 }
-#footer {
-	bottom: 0;
-	margin-top: 250px;
+#siteHeader div {
+	display: inline;
 }
 h1, h3 {
 	text-align: center;
@@ -139,6 +145,14 @@ button[invis] {
 button[invis]:hover {
 	background-color: rgba(0, 0, 0, 0.15);
 	color: black;
+}
+button[warn] {
+	background-color: #FF5A5A;
+	color: white;
+}
+button[warn]:hover {
+	background-color: #C51A1A;
+	color: white;
 }
 
 #rippleContainer {

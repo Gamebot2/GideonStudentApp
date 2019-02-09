@@ -19,9 +19,9 @@
   		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
-		<script src="momentbymonth.js"></script>
 		<script src="verify.js"></script>
 		<script src="gideonApp.js"></script>
+		<script src="momentbymonth.js"></script>
 		<script src="chartCtrl.js"></script>
 		<script src="ripple.js"></script>
 
@@ -32,9 +32,13 @@
 		<link rel="stylesheet" type="text/css" href="SiteStyle.css">
 		<link rel="stylesheet" type="text/css" href="LineChart.css">
 	</head>
-	<body>
+	<body ng-app="gideonApp">
+		<div ng-controller="header">
+			<div ng-include="'Header.html'"></div>
+		</div>
+
 		<!--Containing essentially a form for selected chart specifications-->
-		<div class="exterior" ng-app="gideonApp" ng-controller="chartCtrl">
+		<div class="exterior" ng-controller="chartCtrl">
 			<div id="expandableContainer" ng-class="{'collapsedContent':!expanded, 'expandedContent':expanded}">
 				<button invis class="hoverable" id="backButton" ng-click="backButton()">Back</button>
 				<form name="form">

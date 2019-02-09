@@ -29,9 +29,14 @@
 		<link rel="stylesheet" type="text/css" href="SiteStyle.css">
 		<link rel="stylesheet" type="text/css" href="RecordStyle.css">
 	</head>
-	<body>		
-		<div class="exterior" ng-app="gideonApp" ng-controller="editRecordCtrl">
+	<body ng-app="gideonApp">
+		<div ng-controller="header">
+			<div ng-include="'Header.html'"></div>
+		</div>
+
+		<div class="exterior" ng-controller="editRecordCtrl">
 			<button invis class="hoverable" id="backButton" onclick="location.href='RecordList.html'">Back to Record List</button>
+			<button warn class="hoverable" id="deleteButton" ng-click="removeRecord()">Delete Record</button>
 
 			<h1>Edit Record</h1>
 			<!--Form for updating records that are already in the system-->

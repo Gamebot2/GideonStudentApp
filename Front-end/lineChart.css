@@ -1,4 +1,8 @@
 /*General CSS*/
+html {
+	min-height: 100%;
+}
+
 body {
 	background: linear-gradient(to bottom, #FFD700, #FFA500 50%, #FFA500 100%) no-repeat bottom;
 	background-size: 100%;

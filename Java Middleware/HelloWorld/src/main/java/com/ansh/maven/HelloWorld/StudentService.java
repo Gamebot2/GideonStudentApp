@@ -13,5 +13,10 @@ public interface StudentService {
 	List<String> getCategories(int StudentId);
 	int addStudent(StudentMaster student);
 	int updateStudent(Student student);
+<<<<<<< HEAD
 	int removeStudent(int StudentId);
+=======
+	int removeStudent(int studentId);
+	int shiftGrades(boolean isInc);
+>>>>>>> master
 }

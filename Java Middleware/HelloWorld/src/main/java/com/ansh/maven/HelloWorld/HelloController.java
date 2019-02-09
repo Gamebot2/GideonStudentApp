@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
 	
-	public final String webOrigin = "http://localhost:8081";
-	
 	@Autowired
 	BookService bookService;
 	
@@ -24,8 +22,75 @@ public class HelloController {
 	@Autowired
 	RecordService recordService;
 	
+	@Autowired
+	UserService userService;
+	
+	static User currentUser = null;
+	
+	public static boolean isLoggedIn() {
+		return currentUser != null && currentUser.getTerminated() == 0;
+	}
+	static void setUser(User user) {
+		currentUser = user;
+	}
+	
+	public static String setTargetTable(String sql) {
+		return isLoggedIn() ? sql.replaceAll("demo", "") : sql;
+	}
+	
+	@CrossOrigin
+	@RequestMapping("/login")
+	public int login(@RequestParam("user") String user, @RequestParam("pass") String pass) {
+		System.out.println(user + " attempted login");
+		User result = userService.getLogIn(user, pass);
+		
+		setUser(result);
+		return isLoggedIn() ? 0 : -1;
+	}
+	
+	@CrossOrigin
+	@RequestMapping("/logout")
+	public int logout() {
+		System.out.println("Logged out");
+		setUser(null);
+		return 0;
+	}
+	
+	@CrossOrigin
+	@RequestMapping("/getLoggedIn")
+	public boolean getLoggedIn() {
+		System.out.println("Fetched login: current status is " + isLoggedIn());
+		return isLoggedIn();
+	}
+	
+	@CrossOrigin
+	@RequestMapping("/getUser")
+	public List<String> getUser() {
+		// Note: this method returns a list because for some reason, you can't return a string using $http because AngularJS thinks it's JSON
+		System.out.println("Fetched user");
+		List<String> output = new ArrayList<String>();
+		output.add(isLoggedIn() ? currentUser.getUsername() : "");
+		return output;
+	}
+	
+	@CrossOrigin
+	@RequestMapping("/register")
+	public int register(@RequestParam("user") String user, @RequestParam("pass") String pass) {
+		// this method doesn't do anything, haha. users must be registered directly into the database
+		return 1337;
+	}
+	
+	@CrossOrigin
+	@RequestMapping("/terminateAccount")
+	public int terminateAccount() {
+		if (!isLoggedIn())
+			return -1;
+		System.out.println("Terminated account of " + currentUser.getUsername());
+		return userService.terminateAccount(currentUser.getUsername());
+	}
+	
 	//Returns all books in the book database
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/books")
 	public List<Book> getAllBooks() {
 		System.out.println("Method getAllBooks() called");
@@ -33,7 +98,7 @@ public class HelloController {
 	}
 	
 	//Returns a specific book by name
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/book")
 	public Book getBookByName(@RequestParam("Category") String category, @RequestParam("Subcategory") String subcategory, @RequestParam("Title") String title) {
 		System.out.printf("Method getBookByName() called for category %s, subcategory %s, and title %s\n", category, subcategory, title);
@@ -41,7 +106,7 @@ public class HelloController {
 	}
 	
 	//Returns all categories of books
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/categories")
 	public List<String> getAllCategories() {
 		System.out.println("Method getAllCategories() called");
@@ -49,7 +114,7 @@ public class HelloController {
 	}
 	
 	//Returns all subcategories given a specific category
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/subcategories")
 	public List<String> getSubcategories(@RequestParam("Category") String category) {
 		System.out.println("Method getSubcategories() called for category " + category);
@@ -57,7 +122,7 @@ public class HelloController {
 	}
 	
 	//Returns all titles given a specific subcategory
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/titles")
 	public List<String> getTitles(@RequestParam("Subcategory") String subcategory) {
 		System.out.println("Method getTitles() called for subcategory " + subcategory);
@@ -65,14 +130,14 @@ public class HelloController {
 	}
 	
 	//Returns all books, ordered in sequence, in a category
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/booksInCategory")
 	public List<Book> getBooksInCategory(@RequestParam("Category") String category) {
 		System.out.println("Method getBooksInCategory() called for category " + category);
 		return bookService.getBooksInCategory(category);
 	}
 	
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/booksInSubcategory")
 	public List<Book> getBookInSubcategory(@RequestParam("Category") String category, @RequestParam("Subcategory") String subcategory) {
 		System.out.printf("Method getBooksInSubcategotry() called for category %s, subcategory %s\n", category, subcategory);
@@ -80,7 +145,7 @@ public class HelloController {
 	}
 	
 	//Returns all students in the student database
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/students")
 	public List<Student> getAllStudents() {
 		System.out.println("Method getAllStudents() called");
@@ -88,7 +153,7 @@ public class HelloController {
 	}
 	
 	//Returns all data for a student given the student's ID
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/student")
 	public Student getStudentById(@RequestParam("Id") int StudentId) {
 		System.out.println("Method getStudentById() called for Student ID " + StudentId);
@@ -96,14 +161,14 @@ public class HelloController {
 	}
 	
 	//Returns students ordered by recently used for the list display, with a specified limit (0 corresponds to no limit)
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/listStudents")
 	public List<Student> getStudentsForList(@RequestParam("withData") boolean withData, @RequestParam("limit") int limit) {
 		System.out.println("Method getStudentsForList() called " + (withData ? "with data " : "") + " with a limit of " + limit);
 		return studentService.getStudentsForList(withData, limit);
 	}
 	
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/studentIdsWithRecords")
 	public List<Integer> getStudentIdsWithRecords() {
 		System.out.println("Method getStudentIdsWithRecords() called");
@@ -111,7 +176,7 @@ public class HelloController {
 	}
 	
 	//Returns all categories that a student is working in
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/categoriesByStudent")
 	public List<String> getCategories(@RequestParam("Id") int StudentId) {
 		System.out.println("Method getCategories() called for Student ID " + StudentId);
@@ -119,7 +184,7 @@ public class HelloController {
 	}
 	
 	//Returns grade of the student as an integer value
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/gradeOfStudent")
 	public int getGrade(@RequestParam("Id") int StudentId) {
 		System.out.println("Method getGrade() called for Student ID " + StudentId);
@@ -127,35 +192,59 @@ public class HelloController {
 	}
 	
 	//Adds a new student to the students database
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/addStudent")
 	public int addStudent(@RequestBody(required=false) StudentMaster student) {
 		System.out.println("Method addStudent() called" );
-		int a;
 		try {
-			a = studentService.addStudent(student);
+			return studentService.addStudent(student);
 		} catch (java.lang.RuntimeException e) {
 			System.out.println("Method addStudent() failed:");
 			e.printStackTrace();
-			a = -1;
+			return -1;
 		}
-		return a;
 	}
 	
 	//Edits student data in the students database
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/updateStudent")
 	public int updateStudent(@RequestBody(required=false) Student student) {
 		System.out.println("Method updateStudent() called");
-		int a;
 		try {
-			a = studentService.updateStudent(student);
+			return studentService.updateStudent(student);
 		} catch (java.lang.RuntimeException e) {
 			System.out.println("Method updateStudent() failed:");
 			e.printStackTrace();
-			a = -1;
+			return -1;
 		}
-		return a;
+	}
+	
+	//Deletes a student given an ID with which to delete
+	@CrossOrigin
+	@RequestMapping("/removeStudent")
+	public int removeStudent(@RequestParam("Id") int id) {
+		System.out.println("Method removeStudent() called on id " + id);
+		try {
+			return studentService.removeStudent(id);
+		} catch (java.lang.RuntimeException e) {
+			System.out.println("Method removeStudent() failed:");
+			e.printStackTrace();
+			return -1;
+		}
+	}
+	
+	//Shifts all grades up or down
+	@CrossOrigin
+	@RequestMapping("/shiftGrades")
+	public int shiftGrades(@RequestParam("isIncrementing") boolean isInc) {
+		System.out.println("Method shiftGrades() called with intent to " + (isInc ? "increment" : "decrement"));
+		try {
+			return studentService.shiftGrades(isInc);
+		} catch (java.lang.RuntimeException e) {
+			System.out.println("Method shiftGrades() failed:");
+			e.printStackTrace();
+			return -1;
+		}
 	}
 	
 	//Deletes a student given the ID with which to delete
@@ -167,7 +256,7 @@ public class HelloController {
 	}
 	
 	//Returns all records in the record database
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/records")
 	public List<Record> getAllRecords() {
 		System.out.println("Method getAllRecords() called");
@@ -175,7 +264,7 @@ public class HelloController {
 	}
 	
 	//Returns all records in the record database that do not have end dates
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/incompleteRecords")
 	public List<Record> getIncompleteRecords() {
 		System.out.println("Method getIncompleteRecords() called");
@@ -183,7 +272,7 @@ public class HelloController {
 	}
 	
 	//Returns all records for a given student and a given category with time and repetition constraints (NOTE: includes one record before/after the start time, useful for graphing)
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/recordsForChart")
 	public List<Record> getRecordsForChart(@RequestParam("StudentId") int StudentId, @RequestParam("Category") String category, @RequestParam("Months") int months, @RequestParam("Until") int until, @RequestParam("Reps") String whichReps) {
 		System.out.printf("Method getRecordsById() called for Student ID %d, category %s, month number %d, and until %d, for rep number %s\n", StudentId, category, months, until, whichReps);
@@ -191,7 +280,7 @@ public class HelloController {
 	}
 	
 	//Returns all records for a given student and a given category
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/recordsById")
 	public List<Record> getAllRecordsById(@RequestParam("StudentId") int StudentId) {
 		System.out.println("Method getRecordsById() called for Student ID " + StudentId);
@@ -199,40 +288,50 @@ public class HelloController {
 	}
 	
 	//Adds a new record to the database
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/addRecord")
 	public int addRecord(@RequestBody(required=false) Master master) {
 		System.out.println("Method addRecord() called");
-		int a;
 		try {
-			a = recordService.addRecord(master);
+			return recordService.addRecord(master);
 		} catch (java.lang.RuntimeException e) {
 			System.out.println("Method addRecord() failed:");
 			e.printStackTrace();
-			a = -1;
+			return -1;
 		}
-		return a;
 	}
 	
 	//Updates an existing record in the database
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/updateRecord")
 	public int updateRecord(@RequestBody(required=false) Record record) {
 		System.out.println("Method updateRecord() called");
-		int a; 
 		try {
-			a = recordService.updateRecord(record);
+			return recordService.updateRecord(record);
 		} catch (java.lang.RuntimeException e) {
 			System.out.println("Method updateRecord() failed:");
 			e.printStackTrace();
-			a = -1;
+			return -1;
 		}
-		return a;
+	}
+	
+	//Deletes a record given an ID with which to delete
+	@CrossOrigin
+	@RequestMapping("/removeRecord")
+	public int removeRecord(@RequestParam("Id") int id) {
+		System.out.println("Method removeRecord() called on id " + id);
+		try {
+			return recordService.removeRecord(id);
+		} catch (java.lang.RuntimeException e) {
+			System.out.println("Method removeRecord() failed:");
+			e.printStackTrace();
+			return -1;
+		}
 	}
 	
 
 	//Gathers international goal line
-	@CrossOrigin(origins = webOrigin)
+	@CrossOrigin
 	@RequestMapping("/internationalData")
 	public List<Data> getInternationalData(@RequestParam("Category") String category) {
 		System.out.println("Method getInternationalData() called for category " + category);

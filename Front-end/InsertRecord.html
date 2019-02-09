@@ -29,8 +29,12 @@
 		<link rel="stylesheet" type="text/css" href="SiteStyle.css">
 		<link rel="stylesheet" type="text/css" href="RecordStyle.css">
 	</head>
-	<body>
-		<div class="exterior" ng-app="gideonApp" ng-controller="insertRecordCtrl">
+	<body ng-app="gideonApp">
+		<div ng-controller="header">
+			<div ng-include="'Header.html'"></div>
+		</div>
+
+		<div class="exterior" ng-controller="insertRecordCtrl">
 			<button invis class="hoverable" id="backButton" onclick="location.href='RecordList.html'">Back to Record List</button>
 
 			<h1>Insert Record</h1>

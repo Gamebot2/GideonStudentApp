@@ -6,6 +6,7 @@ import java.util.*;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Repository;
 public class RecordDaoImpl implements RecordDao{
 
 	@Autowired
+	@Qualifier("gideon")
 	private JdbcTemplate jdbcTemplate;
 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -22,7 +24,8 @@ public class RecordDaoImpl implements RecordDao{
 	//Retrieves all records from every student in the database
 	@Override
 	public List<Record> getAllRecords() {
-		String sql = "SELECT * FROM records_joined";
+		String sql = "SELECT * FROM demorecords_joined";
+		sql = HelloController.setTargetTable(sql);
 		RowMapper<Record> rowMapper = new RecordRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
@@ -30,7 +33,8 @@ public class RecordDaoImpl implements RecordDao{
 	//Returns all records that have start dates, but do not have end dates
 	@Override
 	public List<Record> getIncompleteRecords() {
-		String sql = "SELECT * FROM records_joined WHERE EndDate IS NULL";
+		String sql = "SELECT * FROM demorecords_joined WHERE EndDate IS NULL";
+		sql = HelloController.setTargetTable(sql);
 		RowMapper<Record> rowMapper = new RecordRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
 	}
@@ -38,7 +42,8 @@ public class RecordDaoImpl implements RecordDao{
 	//Returns all records for a certain student and a certain category
 	@Override
 	public List<Record> getAllRecordsById(int StudentId) {
-		String sql = "SELECT * FROM records_joined WHERE StudentId = ?";
+		String sql = "SELECT * FROM demorecords_joined WHERE StudentId = ?";
+		sql = HelloController.setTargetTable(sql);
 		RowMapper<Record> rowMapper = new RecordRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper, StudentId);
 	}
@@ -46,7 +51,8 @@ public class RecordDaoImpl implements RecordDao{
 	// Returns records for a student within a certain range, plus or minus one record, with a specific category and rep count
 	@Override
 	public List<Record> getRecordsForChart(int StudentId, String category, int months, int until, String whichReps) {
-		String sql = "SELECT * FROM records_joined WHERE StudentId = ? AND Category = ? # AND StartDate IS NOT NULL ORDER BY StartDate ASC";
+		String sql = "SELECT * FROM demorecords_joined WHERE StudentId = ? AND Category = ? # AND StartDate IS NOT NULL ORDER BY StartDate ASC";
+		sql = HelloController.setTargetTable(sql);
 		RowMapper<Record> rowMapper = new RecordRowMapper();
 		
 		if(whichReps.equalsIgnoreCase("All")) {		// Content of query depends on repetition selection
@@ -57,12 +63,24 @@ public class RecordDaoImpl implements RecordDao{
 			return this.jdbcTemplate.query(sql, rowMapper, StudentId, category, whichReps);
 		}
 	}
+	
+	// Gathers international goal line
+	@Override
+	public List<Data> getInternationalData(String category) {
+		String sql = "SELECT * FROM demointernationaldata_joined WHERE Category = ?";
+		sql = HelloController.setTargetTable(sql);
+		RowMapper<Data> rowMapperD = new DataRowMapper();
+		return this.jdbcTemplate.query(sql, rowMapperD, category);
+	}
+	
+	
+	
 
 	//Adds a new record to the record database with all of the following information, formats the appropriate SQL string
 	@Override
 	public int addRecord(Master master, Book book) {
-		String sql = "INSERT INTO records (StudentId, BookId, StartDate, EndDate, Rep, Test, TestTime, Mistakes, Notes) VALUES (?, ?, ?, null, ?, ?, null, null, ?)";
-
+		String sql = "INSERT INTO demorecords (StudentId, BookId, StartDate, EndDate, Rep, Test, TestTime, Mistakes, Notes) VALUES (?, ?, ?, null, ?, ?, null, null, ?)";
+		sql = HelloController.setTargetTable(sql);
 		String formatted = dateFormat.format(master.getStartDate());
 		this.jdbcTemplate.update(sql, master.getId(), book.getBookId(), formatted, master.getRep(), book.getTest(), master.getNotes());
 		return 0;
@@ -71,19 +89,18 @@ public class RecordDaoImpl implements RecordDao{
 	//Updates an already existing record
 	@Override
 	public int updateRecord(Record record, Book book) {
-		String sql = "UPDATE records SET StudentId = ?, BookId = ?, StartDate = ?, EndDate = ?, Rep = ?, TestTime = ?, Mistakes = ?, Notes = ? WHERE RecordId = ?";
+		String sql = "UPDATE demorecords SET StudentId = ?, BookId = ?, StartDate = ?, EndDate = ?, Rep = ?, TestTime = ?, Mistakes = ?, Notes = ? WHERE RecordId = ?";
+		sql = HelloController.setTargetTable(sql);
 		this.jdbcTemplate.update(sql, record.getStudentId(), book.getBookId(), record.getStartDate(), record.getEndDate(), record.getRep(), record.getTestTime(), record.getMistakes(), record.getNotes(), record.getRecordId());
 		return 0;
 	}
 	
-	
-	
-	// Gathers international goal line
+	// Removes a record from the database with an id
 	@Override
-	public List<Data> getInternationalData(String category) {
-		String sql = "SELECT * FROM internationaldata_joined WHERE Category = ?";
-		RowMapper<Data> rowMapperD = new DataRowMapper();
-		return this.jdbcTemplate.query(sql, rowMapperD, category);
+	public int removeRecord(int id) {
+		String sql = "DELETE FROM demorecords WHERE RecordId = ?";
+		sql = HelloController.setTargetTable(sql);
+		return this.jdbcTemplate.update(sql, id);
 	}
 	
 }

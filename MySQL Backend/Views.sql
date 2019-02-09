@@ -1,4 +1,4 @@
-CREATE VIEW `records_joined` AS
+CREATE VIEW `demorecords_joined` AS
 	SELECT 
 		r.RecordId,
         r.StudentId,
@@ -15,12 +15,12 @@ CREATE VIEW `records_joined` AS
         b.Subcategory,
         b.Title,
         b.SequenceLarge
-    FROM records r
-	JOIN students s ON r.StudentId = s.StudentId
-	JOIN books b ON r.BookId = b.BookId
+    FROM demorecords r
+	JOIN demostudents s ON r.StudentId = s.StudentId
+	JOIN demobooks b ON r.BookId = b.BookId
 	ORDER BY r.StartDate DESC;
 
-CREATE VIEW `students_s` AS
+CREATE VIEW `demostudents_s` AS
 	SELECT
 		s.StudentId,
         s.Client,
@@ -33,37 +33,37 @@ CREATE VIEW `students_s` AS
         s.Grade,
         s.Gender,
         s.LastUsed
-	FROM students s;
+	FROM demostudents s;
 
-CREATE VIEW `students_withdata` AS
+CREATE VIEW `demostudents_withdata` AS
 	SELECT
 		*
-	FROM students_s s
+	FROM demostudents_s s
     WHERE s.StudentId IN (
 		SELECT DISTINCT
 			StudentId
-		FROM records r
+		FROM demorecords r
     );
     
-CREATE VIEW `internationaldata_joined` AS
+CREATE VIEW `demointernationaldata_joined` AS
 	SELECT
 		i.DataId,
         i.Category, 
         i.BookId,
         i.Grade,
         b.SequenceLarge
-	FROM internationaldata i
-	JOIN books b ON i.BookId = b.BookId
+	FROM demointernationaldata i
+	JOIN demobooks b ON i.BookId = b.BookId
 	ORDER BY b.SequenceLarge;
     
-CREATE VIEW `books_sequences` AS
+CREATE VIEW `demobooks_sequences` AS
 	SELECT
 		CASE
 			WHEN BookId < 376 THEN Subcategory
 			ELSE CONCAT(Category, " ", GradeLevel)
 		END AS sequenceName,
 		COUNT(*) AS sequenceLength
-	FROM books
+	FROM demobooks
 	GROUP BY 1
 	ORDER BY BookId;
 
@@ -76,5 +76,13 @@ CREATE PROCEDURE `delete_student` (IN Id INT(11))
 BEGIN
 	DELETE FROM records WHERE RecordId > 0 AND StudentId = Id;
 	DELETE FROM students WHERE StudentId = Id;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE `delete_demostudent` (IN Id INT(11))
+BEGIN
+	DELETE FROM demorecords WHERE RecordId > 0 AND StudentId = Id;
+	DELETE FROM demostudents WHERE StudentId = Id;
 END //
 DELIMITER ;
