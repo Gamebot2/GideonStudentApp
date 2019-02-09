@@ -108,7 +108,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 				leastBook = Math.min(record.sequenceLarge, leastBook);
 
 				let x = Dates.dateToMonthIndex(Dates.stringToDateObject(record.startDate));
-				if (dataLookup[x] === null) {
+				if (dataLookup[x] === undefined) {
 					dataLookup[x] = [];
 				}
 				dataLookup[x].push(record);
