@@ -110,16 +110,7 @@ public class StudentDaoImpl implements StudentDao {
 		this.jdbcTemplate.update(sql, dateFormat.format(new Date()), id);
 		return 0;
 	}
-
-<<<<<<< HEAD
-	@Override
-	public int removeStudent(int StudentId) {
-		// TODO Auto-generated method stub
-		String sql = "DELETE FROM students WHERE StudentId = " + StudentId;
-		this.jdbcTemplate.update(sql);
-		return 0;
-	}
-=======
+	
 	// Deletes a student and their records using a procedure call
 	@Override
 	public int removeStudent(int studentId) {
@@ -139,6 +130,4 @@ public class StudentDaoImpl implements StudentDao {
 		
 		return this.jdbcTemplate.update(sql);
 	}
-	
->>>>>>> master
 }

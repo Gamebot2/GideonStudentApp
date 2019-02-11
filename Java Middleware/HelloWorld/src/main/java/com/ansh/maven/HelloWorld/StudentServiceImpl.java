@@ -72,13 +72,6 @@ public class StudentServiceImpl implements StudentService{
 		
 		return studentDao.updateStudent(student) + studentDao.updateLastUsed(student.getStudentId());
 	}
-
-<<<<<<< HEAD
-	@Override
-	public int removeStudent(int StudentId) {
-		// TODO Auto-generated method stub
-		return studentDao.removeStudent(StudentId);
-=======
 	// Removes a student and their records from the database
 	@Override
 	public int removeStudent(int studentId) {
@@ -95,7 +88,6 @@ public class StudentServiceImpl implements StudentService{
 			return 1;
 		
 		return studentDao.shiftGrades(isInc);
->>>>>>> master
 	}
 	
 }

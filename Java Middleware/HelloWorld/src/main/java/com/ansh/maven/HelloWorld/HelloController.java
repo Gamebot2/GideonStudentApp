@@ -247,14 +247,6 @@ public class HelloController {
 		}
 	}
 	
-	//Deletes a student given the ID with which to delete
-	@CrossOrigin(origins = webOrigin)
-	@RequestMapping("/removeStudents")
-	public int removeStudent(@RequestParam("Id") int id) {
-		System.out.println("Remove student called");
-		return studentService.removeStudent(id);
-	}
-	
 	//Returns all records in the record database
 	@CrossOrigin
 	@RequestMapping("/records")
