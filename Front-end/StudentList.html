@@ -37,8 +37,8 @@
 		<div ng-controller="listCtrl">
 			<!--Selection buttons in the header to move to insert and update pages-->
 			<div id="header">
-				<md-button class="md-accent md-raised" id="listBtn"   onclick="location.href='RecordList.html'">Record List</md-button>
-				<md-button class="md-accent md-raised" id="insertBtn" onclick="location.href='InsertStudent.html'">Insert Student</md-button>
+				<md-button md-no-ink class="md-accent md-raised" id="listBtn"   onclick="location.href='RecordList.html'">Record List</md-button>
+				<md-button md-no-ink class="md-accent md-raised" id="insertBtn" onclick="location.href='InsertStudent.html'">Insert Student</md-button>
 			</div>
 			<br/>
 
@@ -57,9 +57,10 @@
 			</div>
 
 			<!--Toggle for viewing only students with data, meant for testing-->
-			<md-button md-no-ink class="md-raised" id="dataToggleBtn" ng-click="toggleData()">
-				{{toggleButtonText}}
-			</md-button>
+			<div>
+				<h3>Display Only Students With Records</h3>
+				<md-switch class="md-primary" ng-model="dataSwitch" aria-label="Display Only Students with Records" ng-change="toggleData()"></md-switch>
+			</div>
 			<br><br>
 
 			<!--Header of table-->
@@ -88,9 +89,9 @@
 					Address: {{student.address}}<br>
 					Phone: {{student.phone}}<br>
 					Current Passes: {{student.currentPasses}}<br><br>
-					<md-button class="md-accent md-raised" id="accordionButton" ng-click="editStudentButton(student)">Edit Student</md-button>
-					<md-button class="md-accent md-raised" id="accordionButton" ng-click="lineChartButton(student)" ng-show="studentIdsWithData.has(student.studentId)">Progress Chart</md-button>
-					<md-button class="md-accent md-raised" id="accordionButton" ng-click="preloadRecordsList(student)" ng-show="studentIdsWithData.has(student.studentId)">Record List</md-button>
+					<md-button md-no-ink class="md-accent md-raised" id="accordionButton" ng-click="editStudentButton(student)">Edit Student</md-button>
+					<md-button md-no-ink class="md-accent md-raised" id="accordionButton" ng-click="lineChartButton(student)" ng-show="studentIdsWithData.has(student.studentId)">Progress Chart</md-button>
+					<md-button md-no-ink class="md-accent md-raised" id="accordionButton" ng-click="preloadRecordsList(student)" ng-show="studentIdsWithData.has(student.studentId)">Record List</md-button>
 				</div>
 			</div>
 		</div>

@@ -27,7 +27,7 @@ h1, h3 {
 }
 
 
-/*Animation CSS*/
+/*Animation CSS
 @keyframes enter {
 	from{opacity: 0;}
 	to{opacity: 1;}
@@ -43,7 +43,7 @@ h1, h3 {
 *.ng-leave, *.ng-hide {
 	animation-name: exit;
 	animation-duration: 0.5s;
-}
+}*/
 
 
 
@@ -62,6 +62,7 @@ select[black], input[black], textarea[black] {
 	border: none;
 	border-bottom: solid 2px black;
 	border-radius: 0px;
+	color: black;
 	outline: none;
 }
 select[big], input[big], textarea[big], button[big] {
@@ -79,6 +80,15 @@ input[white]:focus, select[white]:focus, textarea[white]:focus {
 
 select {
 	cursor: pointer;
+}
+md-select {
+	color: black;
+}
+md-switch {
+	position: absolute;
+	left: 50%;
+	transform: translate(-50%, 0%);
+	margin: 0;
 }
 
 
@@ -138,21 +148,21 @@ button:hover, .md-button:hover {
 	background-color: #ffa801;
 	color: white;
 }
-button[invis] {
+button[invis], .md-button[invis] {
 	background: none;
 	margin: 0px;
 	padding: 8px;
 	box-shadow: none;
 }
-button[invis]:hover {
+button[invis]:hover, .md-button[invis]:hover {
 	background-color: rgba(0, 0, 0, 0.15);
 	color: black;
 }
-button[warn] {
+button[warn], .md-button[warn] {
 	background-color: #FF5A5A;
 	color: white;
 }
-button[warn]:hover {
+button[warn]:hover, .md-button[warn]:hover {
 	background-color: #C51A1A;
 	color: white;
 }

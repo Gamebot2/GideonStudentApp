@@ -40,11 +40,11 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 	}.init();
 	let currentSortBy = "";
 
-	let dataSwitch = true;
+	$scope.dataSwitch = false;
 	let refreshStudents = () => {
 		let temp = $scope.allStudents;
 
-		if (dataSwitch) {
+		if ($scope.dataSwitch) {
 			temp = temp.filter((student) => $scope.studentIdsWithData.has(student.studentId));
 		}
 		if (currentSortBy != "default") {
@@ -70,11 +70,8 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 	
 	// TOGGLE DATA FILTER
 	$scope.toggleData = () => {
-		dataSwitch = !dataSwitch;
-		$scope.toggleButtonText = dataSwitch ? "Display All Students" : "Display Students With Records";
 		refreshStudents();
 	};
-	$scope.toggleData();
 
 	// GET SET OF STUDENTS WHO HAVE DATA
 	$http.get(`${URL}studentIdsWithRecords`)

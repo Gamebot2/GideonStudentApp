@@ -36,8 +36,8 @@
 		<div ng-controller="recordListCtrl">
 		<!--Selection buttons in the header to move to insert and update pages-->
 			<div id="header">
-				<md-button class="md-accent md-raised" id="listBtn" onclick="location.href='StudentList.html'">Student List</md-button>
-				<md-button class="md-accent md-raised" id="insertBtn" ng-click="insertRecordButton()">Insert Record</md-button>
+				<md-button md-no-ink class="md-accent md-raised" id="listBtn" onclick="location.href='StudentList.html'">Student List</md-button>
+				<md-button md-no-ink class="md-accent md-raised" id="insertBtn" ng-click="insertRecordButton()">Insert Record</md-button>
 			</div>
 			<br/>
 
@@ -103,26 +103,15 @@
 							Category: {{record.category}}<br>
 							Subcategory: {{record.subcategory}}<br>
 							Rep: {{record.rep}}<br><br>
-<<<<<<< HEAD
-							<md-button class="md-accent md-raised" id="accordionButton" ng-click="progressChartButton(record)">Progress Chart</md-button>
-							<br><br><br>
-=======
->>>>>>> master
 						</div>
 						<div class="column" style="width:50%">
 							End Date: {{record.endDateDisplay}}<br>
 							Test Time: {{record.testTime}}<br>
 							Mistakes: {{record.mistakes}}<br><br>
-<<<<<<< HEAD
-							<md-button class="md-accent md-raised" id="accordionButton" ng-click="editRecordButton(record)">Edit Record</md-button>
-							<br><br><br>
-=======
->>>>>>> master
 						</div>
 					</div>
-					<br>
-					<button type="button" class="hoverable" id="accordionButton" ng-click="progressChartButton(record)">Progress Chart</button>
-					<button type="button" class="hoverable" id="accordionButton" ng-click="editRecordButton(record)">Edit Record</button>
+					<md-button md-no-ink class="md-accent md-raised" id="accordionButton" ng-click="progressChartButton(record)">Progress Chart</md-button>
+					<md-button md-no-ink class="md-accent md-raised" id="accordionButton" ng-click="editRecordButton(record)">Edit Record</md-button>
 				</div>
 			</div>
 		</div>

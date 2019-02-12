@@ -3,14 +3,14 @@
  * A site-wide JS file that creates some cool animations for things. Right now it only contains the ripple effect when you press a button.
  *
  * NOTES:
- * - There is a timeout to allow document items to load. The first thing after that should be console logs, to ensure that the timeout time is OK.
+ * - This script will be obsolate if and when we figure out how to fix the CSS of AngularJS Material's ink ripples
  */
 
 
-let buttons = document.getElementsByTagName('button');
-
-setTimeout(() => {	// for some reason, getElementsByTagName takes absolutely forever to load, so this is a manual timeout to wait for all the buttons to come in
-	console.log("Number of buttons detected: " + buttons.length);
+// Button check function
+let setRippleEvent = () => {
+	let buttons = document.getElementsByTagName('button');
+	console.log("Number of buttons: " + buttons.length);
 
 	Array.prototype.forEach.call(buttons, (b) => {
 		// ripple event
@@ -27,7 +27,14 @@ setTimeout(() => {	// for some reason, getElementsByTagName takes absolutely for
 
 			// remove container after a set period
 			setTimeout(() => button.removeChild(rippleContainer), 1000);
+
+			// if a button is pressed, check for more buttons
+			setRippleEvent();
 		};
 	});
-}, 1000);
+}
+// First function call happens quickly but not immediately
+setTimeout(setRippleEvent, 1000);
 
+// Function repeats slowly and periodically afterward
+setInterval(setRippleEvent, 5000);
