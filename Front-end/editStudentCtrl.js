@@ -16,6 +16,9 @@ gideonApp.controller('editStudentCtrl', ($scope, $http, $window) => {
 
 	$scope.student = JSON.parse($window.localStorage.getItem(0));
 
+	$scope.grades = ["PreK (-1)", "Kinder (0)", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"];
+	$scope.genders = ["Male", "Female"];
+
 
 	// Form submission
 	$scope.updateStudent = () => {

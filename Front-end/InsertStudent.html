@@ -15,7 +15,7 @@
   		<script src="verify.js"></script>
   		<script src="gideonApp.js"></script>
   		<script src="insertStudentCtrl.js"></script>
-		<script src="ripple.js"></script>
+		<!--script src="ripple.js"></script-->
 
 		<link rel="manifest" href="/site.webmanifest">
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -33,62 +33,51 @@
 		<div ng-controller="header">
 			<div ng-include="'Header.html'"></div>
 		</div>
+
 		
 		<div class="exterior" ng-controller="insertStudentCtrl">
-			<button invis class="hoverable" id="backButton" onclick="location.href='StudentList.html'">Back to Student List</button>
+			<md-button invis class="hoverable" id="backButton" onclick="location.href='StudentList.html'">Back to Student List</md-button>
 
 			<h1>Insert Student</h1>
 			<!--Form used for adding a new student into the database-->
 			<form name="form">
 				<!--Simple text box for instructors to enter the new student's full name-->
-				<label for="student">Full Name</label><br>
-					<div class="inputWrapperBig">
-						<input white big type="text" name="student" id="nameBox" ng-model="student.client" required>
-						<div class="invalidContainer" ng-class="{'invalid':form.student.$touched && form.student.$invalid}"></div>
+				<md-input-container class="inputWrapperBig">
+					<label>Full Name</label>
+					<input md-select-on-focus id="nameBox" name="student" type="text" ng-model="student.client" required>
+					<div ng-messages="form.student.$error">
+						<div ng-message="required">Name is required.</div>
 					</div>
-					<span class="errorText" ng-show="form.student.$touched && form.student.$invalid">Name is required.</span>
-				<br><br>
+				</md-input-container>
+				<br>
 
 				<!--Simple selection field for instructors to enter the new student's grade-->
-				<label for="grade">Grade</label><br>
-					<!--<input type="text" name="grade" id="gradeBox" ng-model="Grade" required><br><br>-->
-					<div class="inputWrapperBig">
-						<select white big name="grade" id="gradeBox" ng-model="student.grade" required ng-class="{'invalid':form.grade.$touched && form.grade.$invalid}">
-							<option value="PreK (-1)">PreK</option>
-							<option value="Kinder (0)">Kinder</option>
-							<option value="1st">1st</option>
-							<option value="2nd">2nd</option>
-							<option value="3rd">3rd</option>
-							<option value="4th">4th</option>
-							<option value="5th">5th</option>
-							<option value="6th">6th</option>
-							<option value="7th">7th</option>
-							<option value="8th">8th</option>
-							<option value="9th">9th</option>
-							<option value="10th">10th</option>
-							<option value="11th">11th</option>
-							<option value="12th">12th</option>
-						</select>
-						<div class="invalidContainer" ng-class="{'invalid':form.grade.$touched && form.grade.$invalid}"></div>
+				<md-input-container class="inputWrapperBig">
+					<label>Grade</label>
+					<md-select id="gradeBox" name="grade" ng-model="student.grade" required>
+						<md-option ng-repeat="g in grades" value="{{g}}">{{g.split(' ')[0]}}</md-option>
+					</md-select>
+					<div ng-messages="form.grade.$error">
+						<div ng-message="required">Grade is required.</div>
 					</div>
-					<span class="errorText" ng-show="form.grade.$touched && form.grade.$invalid">Grade is required.</span>
+				</md-input-container>
 				<br><br>
 
 				<!--Simple selection field for instructors to enter the new student's gender-->
-				<label for="gender">Gender</label><br>
-					<div class="inputWrapperBig">
-						<select white big name="gender" id="genderBox" ng-model="student.gender" required ng-class="{'invalid':form.gender.$touched && form.gender.$invalid}">
-							<option value="Male">Male</option>
-							<option value="Female">Female</option>
-						</select>
-						<div class="invalidContainer" ng-class="{'invalid':form.gender.$touched && form.gender.$invalid}"></div>
+				<md-input-container class="inputWrapperBig">
+					<label>Gender</label>
+					<md-select id="genderBox" name="gender" ng-model="student.gender" required>
+						<md-option ng-repeat="g in genders" value="{{g}}">{{g}}</md-option>
+					</md-select>
+					<div ng-messages="form.gender.$error">
+						<div ng-message="required">Gender is required.</div>
 					</div>
-					<span class="errorText" ng-show="form.gender.$touched && form.gender.$invalid">Gender is required.</span>
+				</md-input-container>
 				<br><br>
 
 				
 				<!--Submit button: runs the insertStudent function-->
-				<button big ng-click="createStudent()">Submit</button>
+				<md-button big class="md-accent md-raised" ng-click="createStudent()">Submit</md-button>
 			</form>
 			<br><br>
 			<span ng-class="{'errorText':formStatus.id == 0, 'successText':formStatus.id == 1}">{{formStatus.text}}</span>
