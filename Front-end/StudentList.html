@@ -14,7 +14,7 @@
   		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.js"></script>
   		<script src="gideonApp.js"></script>
   		<script src="listCtrl.js"></script>
-		<script src="ripple.js"></script>
+		<!--script src="ripple.js"></script-->
 
 		<link rel="manifest" href="/site.webmanifest">
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -37,8 +37,8 @@
 		<div ng-controller="listCtrl">
 			<!--Selection buttons in the header to move to insert and update pages-->
 			<div id="header">
-				<md-button md-no-ink class="md-accent md-raised" id="listBtn"   onclick="location.href='RecordList.html'">Record List</md-button>
-				<md-button md-no-ink class="md-accent md-raised" id="insertBtn" onclick="location.href='InsertStudent.html'">Insert Student</md-button>
+				<md-button class="md-accent md-raised" id="listBtn"   onclick="location.href='RecordList.html'">Record List</md-button>
+				<md-button class="md-accent md-raised" id="insertBtn" onclick="location.href='InsertStudent.html'">Insert Student</md-button>
 			</div>
 			<br/>
 
@@ -78,7 +78,7 @@
 					<div class="column" style="width:100%">{{student.client}}</div>
 				</div>
 				<!--Primary information for a student in the list, done in columns-->
-				<div class="columnContainer" id="tableContainer" ng-hide="student.client=='Loading'" ng-click="manageExpansion(student.studentId)">
+				<div class="columnContainer" md-ink-ripple="#000000" id="tableContainer" ng-hide="student.client=='Loading'" ng-click="manageExpansion(student.studentId)">
 					<div class="column" style="width:30%">{{student.client}}&nbsp;</div>
 					<div class="column" style="width:57.5%">{{student.email}}&nbsp;</div>
 					<div class="column" style="width:12.5%">{{student.grade.split(" ")[0]}}&nbsp;</div>
@@ -89,9 +89,9 @@
 					Address: {{student.address}}<br>
 					Phone: {{student.phone}}<br>
 					Current Passes: {{student.currentPasses}}<br><br>
-					<md-button md-no-ink class="md-accent md-raised" id="accordionButton" ng-click="editStudentButton(student)">Edit Student</md-button>
-					<md-button md-no-ink class="md-accent md-raised" id="accordionButton" ng-click="lineChartButton(student)" ng-show="studentIdsWithData.has(student.studentId)">Progress Chart</md-button>
-					<md-button md-no-ink class="md-accent md-raised" id="accordionButton" ng-click="preloadRecordsList(student)" ng-show="studentIdsWithData.has(student.studentId)">Record List</md-button>
+					<md-button class="md-accent md-raised" id="accordionButton" ng-click="editStudentButton(student)">Edit Student</md-button>
+					<md-button class="md-accent md-raised" id="accordionButton" ng-click="lineChartButton(student)" ng-show="studentIdsWithData.has(student.studentId)">Progress Chart</md-button>
+					<md-button class="md-accent md-raised" id="accordionButton" ng-click="preloadRecordsList(student)" ng-show="studentIdsWithData.has(student.studentId)">Record List</md-button>
 				</div>
 			</div>
 		</div>

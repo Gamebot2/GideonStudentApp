@@ -65,7 +65,7 @@ select[black], input[black], textarea[black] {
 	color: black;
 	outline: none;
 }
-select[big], input[big], textarea[big], button[big] {
+select[big], md-select[big], input[big], textarea[big], button[big] {
 	display: inline-block;
 	width: 100%;
 	padding: 12px 20px;
@@ -129,7 +129,7 @@ md-switch {
 
 
 /*Button CSS, including ripple and press effects*/
-button, .md-button {
+button {
 	background-color: gold;
 	color: black;
 	position: relative;
@@ -140,13 +140,11 @@ button, .md-button {
 	transition-duration: .4s;
 	border: none;
 	border-radius: 4px;
-	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15), 3px 3px 10px rgba(0, 0, 0, 0.1);
-	text-transform: none;
-	line-height: normal;
+	/*box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15), 3px 3px 10px rgba(0, 0, 0, 0.1);*/
 }
-button:hover, .md-button:hover {
+button:hover {
 	background-color: #ffa801;
-	color: white;
+	/*color: white;*/
 }
 button[invis], .md-button[invis] {
 	background: none;
@@ -165,6 +163,17 @@ button[warn], .md-button[warn] {
 button[warn]:hover, .md-button[warn]:hover {
 	background-color: #C51A1A;
 	color: white;
+}
+.md-button {
+	margin: 0px;
+	padding: 8px;
+	text-transform: none;
+	line-height: normal;
+}
+.md-button.md-raised {
+	margin: 0px 4px;
+	padding: 16px 32px;
+	font-size: 16px;
 }
 
 #rippleContainer {
@@ -220,7 +229,7 @@ button[warn]:hover, .md-button[warn]:hover {
 	overflow-y: hidden;
 	word-wrap: break-word;
 	padding: 0px 10px;
-	transition: all ease-in-out 0.5s;
+	transition: all cubic-bezier(0.67, 0, 0.36, 1) 0.5s;
 }
 .collapsedContent {
 	height: 0px;

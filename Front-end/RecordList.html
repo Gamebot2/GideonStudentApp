@@ -14,7 +14,7 @@
   		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
   		<script src="gideonApp.js"></script>
   		<script src="recordListCtrl.js"></script>
-		<script src="ripple.js"></script>
+		<!--script src="ripple.js"></script-->
 
 		<link rel="manifest" href="/site.webmanifest">
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -36,8 +36,8 @@
 		<div ng-controller="recordListCtrl">
 		<!--Selection buttons in the header to move to insert and update pages-->
 			<div id="header">
-				<md-button md-no-ink class="md-accent md-raised" id="listBtn" onclick="location.href='StudentList.html'">Student List</md-button>
-				<md-button md-no-ink class="md-accent md-raised" id="insertBtn" ng-click="insertRecordButton()">Insert Record</md-button>
+				<md-button class="md-accent md-raised" id="listBtn" onclick="location.href='StudentList.html'">Student List</md-button>
+				<md-button class="md-accent md-raised" id="insertBtn" ng-click="insertRecordButton()">Insert Record</md-button>
 			</div>
 			<br/>
 
@@ -91,7 +91,7 @@
 					<div class="column" style="width:100%">{{record.bookTitle}}</div>
 				</div>
 				<!--Primary information for a student in the list, done in columns-->
-				<div class="columnContainer" id="tableContainer" ng-hide="record.bookTitle=='Loading'" ng-click="manageExpansion(record.recordId)">
+				<div class="columnContainer" md-ink-ripple="#000000" id="tableContainer" ng-hide="record.bookTitle=='Loading'" ng-click="manageExpansion(record.recordId)">
 					<div class="column" style="width:30%">{{record.name}}&nbsp;</div>
 					<div class="column" style="width:40%">{{record.displayTitle}}&nbsp;</div>
 					<div class="column" style="width:30%">{{record.startDateDisplay}}&nbsp;</div>
@@ -110,8 +110,8 @@
 							Mistakes: {{record.mistakes}}<br><br>
 						</div>
 					</div>
-					<md-button md-no-ink class="md-accent md-raised" id="accordionButton" ng-click="progressChartButton(record)">Progress Chart</md-button>
-					<md-button md-no-ink class="md-accent md-raised" id="accordionButton" ng-click="editRecordButton(record)">Edit Record</md-button>
+					<md-button class="md-accent md-raised" id="accordionButton" ng-click="progressChartButton(record)">Progress Chart</md-button>
+					<md-button class="md-accent md-raised" id="accordionButton" ng-click="editRecordButton(record)">Edit Record</md-button>
 				</div>
 			</div>
 		</div>

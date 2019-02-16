@@ -11,7 +11,7 @@
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
-  		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
   		<script src="verify.js"></script>
   		<script src="gideonApp.js"></script>
   		<script src="editStudentCtrl.js"></script>
@@ -25,7 +25,7 @@
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 		<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
-		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
+		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.css">
 		<link rel="stylesheet" type="text/css" href="SiteStyle.css">
 		<link rel="stylesheet" type="text/css" href="RecordStyle.css">
 	</head>
@@ -35,8 +35,8 @@
 		</div>
 
 		<div class="exterior" ng-controller="editStudentCtrl">
-			<md-button invis class="hoverable" id="backButton" onclick="location.href='StudentList.html'">Back to Student List</md-button>
-			<md-button ng-class="md-raised" warn class="hoverable" id="deleteButton" ng-click="removeStudent()">Delete Student</md-button>
+			<md-button id="backButton" onclick="location.href='StudentList.html'">Back to Student List</md-button>
+			<md-button class="md-raised md-warn" id="deleteButton" ng-click="removeStudent()">Delete Student</md-button>
 
 			<h1>Edit {{student.client}}</h1>
 			<!--Form used for editing a student in the database-->
@@ -57,7 +57,7 @@
 					<div class="twoColumn">
 						<md-input-container class="inputWrapperBig">
 							<label>Email</label>
-							<input md-select-on-focus type="text" ng-model="student.email">
+							<input md-select-on-focus type="email" ng-model="student.email">
 						</md-input-container>
 					</div>
 				</div><br>
@@ -68,7 +68,7 @@
 						<md-input-container class="inputWrapperBig">
 							<label>Grade</label>
 							<md-select id="gradeBox" name="grade" ng-model="student.grade" required>
-								<md-option ng-repeat="g in grades" value="{{g}}">{{g.split(' ')[0]}}</md-option>
+								<md-option ng-repeat="g in grades" mg-value="g">{{g.split(' ')[0]}}</md-option>
 							</md-select>
 							<div ng-messages="form.grade.$error">
 								<div ng-message="required">Grade is required.</div>
@@ -89,7 +89,7 @@
 						<md-input-container class="inputWrapperBig">
 							<label>Gender</label>
 							<md-select id="genderBox" name="gender" ng-model="student.gender" required>
-								<md-option ng-repeat="g in genders" value="{{g}}">{{g}}</md-option>
+								<md-option ng-repeat="g in genders" ng-value="g">{{g}}</md-option>
 							</md-select>
 							<div ng-messages="form.gender.$error">
 								<div ng-message="required">Gender is required.</div>
@@ -102,7 +102,7 @@
 					<!--Address input, no required format-->
 					<div class="twoColumn">
 						<md-input-container class="inputWrapperBig">
-							<label>Phone</label>
+							<label>Address</label>
 							<input md-select-on-focus type="text" ng-model="student.address">
 						</md-input-container>
 					</div>
@@ -117,7 +117,7 @@
 				</div><br><br>
 
 				<!--Submit button to perform the update-->
-				<md-button big ng-class="md-accent md-raised" ng-click="updateStudent()">Submit</md-button>
+				<md-button big class="md-accent md-raised" ng-click="updateStudent()">Submit</md-button>
 			</form>
 			<br><br>
 			<span ng-class="{'errorText':formStatus.id == 0, 'successText':formStatus.id == 1}">{{formStatus.text}}</span>
