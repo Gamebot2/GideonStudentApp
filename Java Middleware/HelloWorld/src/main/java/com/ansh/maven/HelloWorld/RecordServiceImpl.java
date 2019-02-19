@@ -83,7 +83,7 @@ public class RecordServiceImpl implements RecordService{
 			return 1;
 		
 		Book book = bookDao.getBookByName(master.getCategory(), master.getSubcategory(), master.getTitle());
-		return recordDao.addRecord(master, book) + studentDao.updateLastUsed(master.getId());
+		return recordDao.addRecord(master, book) + studentDao.updateLastUsed(master.getStudentId());
 	}
 
 	// Updates a record in the database with an end date

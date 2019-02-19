@@ -21,7 +21,7 @@ public class RecordRowMapper implements RowMapper<Record>{
 		record.setTestTime(row.getInt("TestTime"));
 		record.setSequenceLarge(row.getInt("SequenceLarge"));
 		record.setName(row.getString("Client"));
-		record.setBookTitle(row.getString("Title"));
+		record.setTitle(row.getString("Title"));
 		record.setSubcategory(row.getString("Subcategory"));
 		record.setCategory(row.getString("Category"));
 		record.setNotes(row.getString("Notes"));

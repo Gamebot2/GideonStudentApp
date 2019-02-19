@@ -14,7 +14,7 @@
   		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
   		<script src="verify.js"></script>
   		<script src="gideonApp.js"></script>
-  		<script src="insertRecordCtrl.js"></script>
+  		<script src="updateRecordCtrl.js"></script>
 		<!--script src="ripple.js"></script-->
 
 		<link rel="manifest" href="/site.webmanifest">
@@ -34,7 +34,7 @@
 			<div ng-include="'Header.html'"></div>
 		</div>
 
-		<div class="exterior" ng-controller="insertRecordCtrl">
+		<div class="exterior" ng-controller="updateRecordCtrl">
 			<md-button id="backButton" onclick="location.href='RecordList.html'">Back to Record List</md-button>
 
 			<h1>Insert Record</h1>
@@ -79,7 +79,7 @@
 				<md-input-container class="md-block">
 					<label>Book Title</label>
 					<md-select id="title" name="title" ng-model="record.title" required>
-						<md-option ng-repeat="z in titles" ng-value="z" ng-disabled="z.display.startsWith('Select')">{{z.display}}</option>
+						<md-option ng-repeat="z in titles" ng-value="z.title" ng-disabled="z.display.startsWith('Select')">{{z.display}}</option>
 					</md-select>
 					<div ng-messages="form.category.$error">
 						<div ng-message="required">All book details are required.</div>
@@ -90,7 +90,7 @@
 				<!--Simple datePicker for instructors to enter the startDate-->
 				<md-input-container class="md-block">
 					<label>Start Date</label>
-					<md-datepicker class="inputWrapperBig" name="startDate" id="dateSelect" ng-model="record.startDate" required></md-datepicker>
+					<md-datepicker name="startDate" id="dateSelect" ng-model="record.startDate" required></md-datepicker>
 					<div ng-messages="form.startDate.$error">
 						<div ng-message="required">Start date is required.</div>
 						<div ng-message="valid">This date is invalid.</div>
@@ -117,7 +117,7 @@
 				<br>
 				
 				<!--Submit button: runs the insertTask function-->
-				<md-button big class="md-accent md-raised" ng-click="createRecord()">Submit</md-button>
+				<md-button big class="md-accent md-raised" ng-click="insertRecord()">Submit</md-button>
 			</form>
 			<br><br>
 			<span ng-class="{'errorText':formStatus.id == 0, 'successText':formStatus.id == 1}">{{formStatus.text}}</span>

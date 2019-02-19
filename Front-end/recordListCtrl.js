@@ -12,7 +12,7 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 
 	// INITIALIZE RECORDS
 	let allRecords = [{
-		bookTitle: "Loading"
+		title: "Loading"
 	}];
 	$scope.records = allRecords;
 
@@ -80,14 +80,14 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 
 				switch (record.category) {
 					case "Calculation":
-						record.displayTitle = record.bookTitle;
+						record.displayTitle = record.title;
 						break;
 					case "Word Problems":
 					case "Grammar":
-						record.displayTitle = record.category + " " + record.bookTitle;
+						record.displayTitle = record.category + " " + record.title;
 						break;
 					case "Comprehension":
-						record.displayTitle = record.subcategory + " " + record.bookTitle;
+						record.displayTitle = record.subcategory + " " + record.title;
 						break;
 				}
 

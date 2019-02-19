@@ -82,7 +82,7 @@ public class RecordDaoImpl implements RecordDao{
 		String sql = "INSERT INTO demorecords (StudentId, BookId, StartDate, EndDate, Rep, Test, TestTime, Mistakes, Notes) VALUES (?, ?, ?, null, ?, ?, null, null, ?)";
 		sql = HelloController.setTargetTable(sql);
 		String formatted = dateFormat.format(master.getStartDate());
-		this.jdbcTemplate.update(sql, master.getId(), book.getBookId(), formatted, master.getRep(), book.getTest(), master.getNotes());
+		this.jdbcTemplate.update(sql, master.getStudentId(), book.getBookId(), formatted, master.getRep(), book.getTest(), master.getNotes());
 		return 0;
 	}
 

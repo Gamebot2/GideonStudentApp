@@ -27,7 +27,7 @@ h1, h3 {
 }
 
 
-/*Animation CSS
+/*Animation CSS*/
 @keyframes enter {
 	from{opacity: 0;}
 	to{opacity: 1;}
@@ -36,14 +36,14 @@ h1, h3 {
 	from{opacity: 1;}
 	to{opacity: 0;}
 }
-* {
+*.ng-enter, *.ng-show {
 	animation-name: enter;
 	animation-duration: 1s;
 }
 *.ng-leave, *.ng-hide {
 	animation-name: exit;
 	animation-duration: 0.5s;
-}*/
+}
 
 
 
