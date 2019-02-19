@@ -21,8 +21,6 @@ gideonApp.controller('updateStudentCtrl', ($scope, $http, $window) => {
 		$scope.student = JSON.parse($window.localStorage.getItem(0));
 	}
 
-	console.log($scope.student.grade);
-
 	// Form submission
 	updateStudent = (command) => {
 		if (!Verify.check()) {
