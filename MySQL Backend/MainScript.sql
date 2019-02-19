@@ -37,9 +37,7 @@ CALL `delete_student` (68);
 -- put whatever here
 DELETE FROM records WHERE StudentId = 66 AND BookId IN (SELECT BookId FROM books WHERE Category = "Comprehension");
 
-ALTER TABLE records ADD COLUMN `Notes` VARCHAR(1023) DEFAULT NULL;
-UPDATE records SET Notes = "This statement is a test to see if the notes section is actually working with decently long sentences with plenty of characters, because here at Gideon (or here at any institution really) we believe in thorough testing that includes lots of ways that something could possibly have a security breach </div></div>" WHERE StudentId = 66;
-
+SELECT * FROM records_joined WHERE Client = "Test Ing Student";
 
 
 
