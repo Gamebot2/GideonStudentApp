@@ -1,52 +1,52 @@
 /*
- * EDIT STUDENT CONTROLLER
- * Contains the functions and variables used in EditStudent.html
+ * UPDATE STUDENT CONTROLLER
+ * Contains the functions and variables used in InsertStudent.html and EditStudent.html
  * 
  * NOTES:
  * - The variable "gideonApp" is defined in gideonApp.js. That file must be included prior to this one in html.
  * - The variable "Verify" is defined in verify.js. That file must be included prior to this one in html.
- * - The application expects there to be a student JSON string in storage slot 0. Make sure this exists before opening EditStudent.html.
+ * - For EditStudent, the application expects there to be a student JSON string in storage slot 0. Make sure this exists before opening the page.
  */
 
 
-gideonApp.controller('editStudentCtrl', ($scope, $http, $window) => {
+gideonApp.controller('updateStudentCtrl', ($scope, $http, $window) => {
 	
 	// initialize Verify
 	Verify.setScope($scope);
 
-	$scope.student = JSON.parse($window.localStorage.getItem(0));
-
 	$scope.grades = ["PreK (-1)", "Kinder (0)", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"];
 	$scope.genders = ["Male", "Female"];
 
+	if (window.location.href.includes("Edit")) {
+		$scope.student = JSON.parse($window.localStorage.getItem(0));
+	}
+
+	console.log($scope.student.grade);
 
 	// Form submission
-	$scope.updateStudent = () => {
+	updateStudent = (command) => {
 		if (!Verify.check()) {
 			return;
 		}
 
 		// Updates the student with an HTTP post call
-		try {
-			$http({
-				url: `${URL}updateStudent`,
-				method: 'POST',
-				headers: {
-					"Content-Type": "application/json",
-					"Accept": "application/json"
-				},
-				data: JSON.stringify($scope.student)
-			})
-			.then((response) => {
-				if (Verify.successIf(response.data >= 0, "Successfully updated.")) {
-					window.location.href = "StudentList.html"; // return back to the list if the update was successful
-				}
-			})
-			.catch(Verify.error);
-		} catch (err) {
-			Verify.error(err);
-		}
+		$http({
+			url: `${URL}${command}`,
+			method: 'POST',
+			headers: {
+				"Content-Type": "application/json",
+				"Accept": "application/json"
+			},
+			data: JSON.stringify($scope.student)
+		})
+		.then((response) => {
+			Verify.successIf(response.data >= 0, `Successfully updated ${$scope.student.client}`);
+		})
+		.catch(Verify.error);
 	};
+	
+	$scope.insertStudent = () => updateStudent("addStudent");
+	$scope.editStudent = () => updateStudent("updateStudent");
 
 
 	// Delete button
