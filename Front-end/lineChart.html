@@ -15,7 +15,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.min.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-aria.min.js"></script>
   		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-messages.min.js"></script>
-  		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
   		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
@@ -23,12 +23,12 @@
 		<script src="gideonApp.js"></script>
 		<script src="momentbymonth.js"></script>
 		<script src="chartCtrl.js"></script>
-		<script src="ripple.js"></script>
+		<!--script src="ripple.js"></script-->
 
 		<link rel="manifest" href="/site.webmanifest">
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.css">
 		<link rel="stylesheet" type="text/css" href="SiteStyle.css">
 		<link rel="stylesheet" type="text/css" href="LineChart.css">
 	</head>
@@ -40,25 +40,63 @@
 		<!--Containing essentially a form for selected chart specifications-->
 		<div class="exterior" ng-controller="chartCtrl">
 			<div id="expandableContainer" ng-class="{'collapsedContent':!expanded, 'expandedContent':expanded}">
-				<button invis class="hoverable" id="backButton" ng-click="backButton()">Back</button>
+				<md-button id="backButton" ng-click="backButton()">Back</md-button>
 				<form name="form">
 				<h1>Progress Chart for {{studentName}}</h1>
 				<br>
 				<div class="columnContainer">
 					<!--Allows user to select specific category to graph based on what student has-->
-					<div class="threeColumn">
-					<label for="category">Category</label><br>
-						<div class="inputWrapperBig">
-							<select white big id="category" name="category" ng-model="selectedCategory" required ng-options="y disable when y.startsWith('No data') for y in categoriesOfStudent" ng-change="didUpdateCategory()"></select>
-							<div class="invalidContainer" ng-class="{'invalid':form.category.$touched && form.category.$invalid}"></div>
-						</div>
-						<span class="errorText" ng-show="form.category.$touched && form.category.$invalid">Category is required.</span>
-						<br>
+					<div class="twoColumn">
+						<md-input-container class="md-block">
+							<label>Category</label>
+							<md-select id="category" name="category" ng-model="selectedCategory" ng-change="didUpdateCategory()" required>
+								<md-option ng-repeat="c in categoriesOfStudent" ng-value="c" ng-disabled="c.startsWith('No data')">{{c}}</md-option>
+							</md-select>
+							<div ng-messages="form.category.$error">
+								<div ng-message="required">Category is required.</div>
+							</div>
+						</md-input-container>
 					</div>
-				
-					<!--Allows user to select month specificatons for the graph up to 5 years ago-->
-					<div class="threeColumn">
- 					<label for="months">Time Range</label><br>
+
+					<!--Allows user to select which specific repetitions to display-->
+					<div class="twoColumn">
+						<md-input-container class="md-block">
+							<label>Included Repetitions</label>
+							<md-select id="repNumbers" name="repNumbers" ng-model="selectedRep" required>
+								<md-option ng-repeat="r in repOptions" ng-value="r" ng-disabled="r.startsWith('Select')">{{r}}</md-option>
+							</md-select>
+							<div ng-messages="form.repNumbers.$error">
+								<div ng-message="required">Repetition selection is required.</div>
+							</div>
+						</md-input-container>
+					</div>
+				</div><br>
+
+				<!--Allows user to select month specificatons for the graph up to 5 years ago-->
+				<div class="columnContainer">
+					<div class="column" style="width:100%; padding:0 20px;">
+						<md-slider-container class="md-block">
+							<span style="max-width:25%">Months lower bound</span>
+							<md-slider md-invert id="months" name="months" ng-model="months" step="1" min="0" max="30" required aria-label="Lower bound"></md-slider>
+							<md-input-container style="max-width:25%">
+								<input type="number" ng-model="months" aria-label="Lower bound" aria-controls="months">
+							</md-input-container>
+						</md-slider-container>
+						<md-slider-container class="md-block">
+							<span style="max-width:25%">Months upper bound</span>
+							<md-slider md-invert id="months2" name="months2" ng-model="months2" step="1" min="0" max="30" required aria-label="Upper bound"></md-slider>
+							<md-input-container>
+								<input type="number" ng-model="months2" aria-label="Upper bound" aria-controls="months2">
+							</md-input-container>
+						</md-slider-container>
+						<md-slider-container class="md-block" ng-show="months2===0">
+							<span style="max-width:25%">Project into the future: </span>
+							<md-slider id="monthsF" name="monthsF" ng-model="monthsF" min="0" max="12" aria-label="Future projection"></md-slider>
+							<md-input-container>
+								<input type="number" ng-model="monthsF" aria-label="Upper bound" aria-controls="monthsF">
+							</md-input-container>
+						</md-slider-container>
+					<!--label for="months">Time Range</label><br>
 						<div class="inputWrapperBig">
 							<input white type="number" id="months" name="months" value="12" ng-model="months" min="1" max="60" required>
 							months ago to
@@ -75,38 +113,28 @@
 						<span class="errorText" ng-show="form.months.$touched && form.months2.$touched && (form.months.$error.number || form.months2.$error.number || form.monthsF.$error.number)">Month values must be numbers.</span>
 						<span class="errorText" ng-show="form.months.$touched && form.months2.$touched && (form.months.$error.min || form.months.$error.max || form.months2.$error.min || form.months2.$error.max)">Month values must be between 0 and 60, and the second value must be earlier than the first.</span>
 						<span class="errorText" ng-show="form.months.$touched && form.months2.$touched && form.monthsF.$error.max">You can only project the graph one year into the future.</span>
- 					</div>
-
-					<!--Allows user to select which specific repetitions to display-->
-					<div class="threeColumn">
-					<label for="reptitions">Included repetitions</label><br>
-						<div class="inputWrapperBig">
-							<select white big id="repNumbers" name="repNumbers" ng-model="selectedRep" required ng-options="x disable when x.startsWith('Select') for x in repOptions"></select>
-							<div class="invalidContainer" ng-class="{'invalid':form.repNumbers.$touched && form.repNumbers.$invalid}"></div>
-						</div>
-						<span class="errorText" ng-show="form.repNumbers.$touched && form.repNumbers.$invalid">Repetitions are required.</span>
-						<br>
+					--> 
 					</div>
-				</div><br>
+				</div>
 
 				<!--Button to generate chart and submit all data-->
-				<button big type="submit" ng-click="generateChart()">Generate Chart</button>
+				<md-button big class="md-accent md-raised" type="submit" ng-click="generateChart()">Generate Chart</md-button>
 				</form>
+
+				<!--Error message in case no data is retrieved-->
+				<span ng-class="{'errorText':formStatus.id == 0, 'successText':formStatus.id == 1}">{{formStatus.text}}</span>
+				<br>			
 			</div>
-
-			<!--Error message in case no data is retrieved-->
-			<span ng-class="{'errorText':formStatus.id == 0, 'successText':formStatus.id == 1}">{{formStatus.text}}</span>
-			<br>			
-
-			
-			<div id="logoContainer" ng-class="{'logoOff':!logoDisplay, 'logoOn':logoDisplay}" ng-show="formStatus.id == 1" ng-click="expanded=!expanded">
+				
+			<md-whiteframe class="md-whiteframe-6dp" id="logoContainer" ng-class="{'logoOff':!logoDisplay, 'logoOn':logoDisplay}" ng-show="formStatus.id == 1" ng-click="expanded=!expanded">
 				<img id="logo" src="img/gideon-logo-white.png" alt="show/hide form">
 				<div id="logoTint"></div>
-			</div>
+			</md-whiteframe>
 
 			<!--HTML element for the generated chart-->
-			<div id="chartspecs" ng-show="formStatus.id == 1">
+			<div id="chartspecs" ng-show="formStatus.id === 1">
 				<canvas id="lineChart" ng-hide="errorMessage"></canvas>
+				<md-button big class="md-accent md-raised" type="submit" ng-click="">Print Chart</md-button>
 			</div>
 		</div>
 

@@ -1,11 +1,8 @@
 /*General CSS*/
-html {
-	min-height: 100%;
-}
-
 body {
 	background: linear-gradient(to bottom, #FFD700, #FFA500 50%, #FFA500 100%) no-repeat bottom;
-	background-size: 100%;
+	background-attachment: fixed;
+	min-height: 1000%;
 }
 
 .exterior {
@@ -15,7 +12,7 @@ body {
 }
 
 .expandedContent {
-	height: 400px;
+	height: 600px;
 	margin: 0px;
 }
 
@@ -54,6 +51,7 @@ canvas {
 	max-height: 80px;
 	width: auto;
 	height: auto;
+	vertical-align: middle;
 }
 
 .logoOff {
@@ -66,7 +64,6 @@ canvas {
 #logoContainer {
 	position: relative;
 	cursor: pointer;
-	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15), 3px 3px 10px rgba(0, 0, 0, 0.1);
 }
 #logoTint {
 	position: absolute;
