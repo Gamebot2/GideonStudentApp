@@ -12,14 +12,9 @@ body {
 	margin: 0px;
 }
 #siteHeader {
-	background-color: black;
 	color: white;
-	display: block;
-	width: 100%;
-	padding: 10px;
-}
-#siteHeader div {
-	display: inline;
+	font-size: 16px;
+	min-height: 50px;
 }
 h1, h3 {
 	text-align: center;

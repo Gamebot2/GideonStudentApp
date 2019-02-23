@@ -1,13 +1,14 @@
-<div id = "siteHeader">
-    <div ng-show="loggedIn">Logged in as {{currentUsername}}</div>
-    <div ng-show="!loggedIn">Viewing sample data as Guest - some functionality may be disabled</div>
+<md-toolbar id = "siteHeader">
+    <div class="md-toolbar-tools">
+        <h2 flex ng-truncate ng-show="loggedIn">Logged in as {{currentUsername}}</h2>
+        <h2 flex ng-truncate ng-show="!loggedIn">Viewing sample data as Guest - some functionality may be disabled</h2>
+        
+        <div ng-show="!loggedIn" style="cursor: pointer;" ng-click="goTo('Demo.html')">More Details</div>
+        <div ng-show="loggedIn"  style="cursor: pointer;" ng-click="goTo('Admin.html')">Admin Settings</div>
 
-    <div ng-show="!loggedIn"  style="padding: 0px 10px;">|</div>
-    <div ng-show="!loggedIn"  style="cursor: pointer;" ng-click="goTo('Demo.html')">More Details</div>
+        <div style="padding: 0px 10px;">|</div>
 
-    <div ng-show="loggedIn"  style="float: right; cursor: pointer;" ng-click="logout()">Logout</div>
-    <div ng-show="!loggedIn" style="float: right; cursor: pointer;" ng-click="login()">Login</div>
-
-    <div ng-show="loggedIn"  style="float: right; padding: 0px 10px;">|</div>
-    <div ng-show="loggedIn"  style="float: right; cursor: pointer;" ng-click="goTo('Admin.html')">Admin Settings</div>
-</div>
+        <div ng-show="loggedIn"  style="cursor: pointer;" ng-click="logout()">Logout</div>
+        <div ng-show="!loggedIn" style="cursor: pointer;" ng-click="login()">Login</div>
+    </div>
+</md-toolbar>
