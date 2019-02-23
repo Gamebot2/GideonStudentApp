@@ -74,28 +74,38 @@
 
 				<!--Allows user to select month specificatons for the graph up to 5 years ago-->
 				<div class="columnContainer">
-					<div class="column" style="width:100%; padding:0 20px;">
-						<md-slider-container class="md-block">
-							<span style="max-width:25%">Months lower bound</span>
-							<md-slider md-invert id="months" name="months" ng-model="months" step="1" min="0" max="30" required aria-label="Lower bound"></md-slider>
-							<md-input-container style="max-width:25%">
-								<input type="number" ng-model="months" aria-label="Lower bound" aria-controls="months">
-							</md-input-container>
-						</md-slider-container>
-						<md-slider-container class="md-block">
-							<span style="max-width:25%">Months upper bound</span>
-							<md-slider md-invert id="months2" name="months2" ng-model="months2" step="1" min="0" max="30" required aria-label="Upper bound"></md-slider>
-							<md-input-container>
-								<input type="number" ng-model="months2" aria-label="Upper bound" aria-controls="months2">
-							</md-input-container>
-						</md-slider-container>
-						<md-slider-container class="md-block" ng-show="months2===0">
-							<span style="max-width:25%">Project into the future: </span>
-							<md-slider id="monthsF" name="monthsF" ng-model="monthsF" min="0" max="12" aria-label="Future projection"></md-slider>
-							<md-input-container>
-								<input type="number" ng-model="monthsF" aria-label="Upper bound" aria-controls="monthsF">
-							</md-input-container>
-						</md-slider-container>
+					<div class="threeColumn">
+						<md-input-container class="md-block">
+							<label>Months lower bound</label>
+							<input type="number" id="months" name="months" ng-model="months" value="12" min="1" max="60" required>
+							<div ng-messages="form.months.$error">
+								<div ng-message="required">All range values are required.</div>
+								<div ng-message="number">Lower bound must be a number.</div>
+								<div ng-message-exp="['min', 'max']">Lower bound must be between 1 and 60.</div>
+							</div>
+						</md-input-container>
+					</div>
+					<div class="threeColumn">
+						<md-input-container class="md-block">
+							<label>Months upper bound</label>
+							<input type="number" id="months2" name="months2" ng-model="months2" value="12" min="0" max="{{months-1}}" required>
+							<div ng-messages="form.months2.$error">
+								<div ng-message="required">All range values are required.</div>
+								<div ng-message="number">Upper bound must be a number.</div>
+								<div ng-message-exp="['min', 'max']">Upper bound must be positive and less than the lower bound.</div>
+							</div>
+						</md-input-container>
+					</div>
+					<div class="threeColumn">
+						<md-input-container class="md-block" ng-show="months2===0">
+							<label>Future projection</label>
+							<input type="number" id="monthsF" name="monthsF" ng-model="monthsF" min="0" max="12">
+							<div ng-messages="form.monthsF.$error">
+								<div ng-message="number">Future bound must be a number.</div>
+								<div ng-message-exp="['min', 'max']">Future bound must be between 0 and 12.</div>
+							</div>
+						</md-input-container>
+					</div>
 					<!--label for="months">Time Range</label><br>
 						<div class="inputWrapperBig">
 							<input white type="number" id="months" name="months" value="12" ng-model="months" min="1" max="60" required>
@@ -114,12 +124,14 @@
 						<span class="errorText" ng-show="form.months.$touched && form.months2.$touched && (form.months.$error.min || form.months.$error.max || form.months2.$error.min || form.months2.$error.max)">Month values must be between 0 and 60, and the second value must be earlier than the first.</span>
 						<span class="errorText" ng-show="form.months.$touched && form.months2.$touched && form.monthsF.$error.max">You can only project the graph one year into the future.</span>
 					--> 
-					</div>
 				</div>
 
 				<!--Button to generate chart and submit all data-->
 				<md-button big class="md-accent md-raised" type="submit" ng-click="generateChart()">Generate Chart</md-button>
 				</form>
+
+				<br>
+				<!--md-button big class="md-accent md-raised" ng-show="formStatus.id===1" ng-click="">Print Chart</md-button-->
 
 				<!--Error message in case no data is retrieved-->
 				<span ng-class="{'errorText':formStatus.id == 0, 'successText':formStatus.id == 1}">{{formStatus.text}}</span>
@@ -132,9 +144,8 @@
 			</md-whiteframe>
 
 			<!--HTML element for the generated chart-->
-			<div id="chartspecs" ng-show="formStatus.id === 1">
+			<div id="chartspecs" ng-show="formStatus.id===1">
 				<canvas id="lineChart" ng-hide="errorMessage"></canvas>
-				<md-button big class="md-accent md-raised" type="submit" ng-click="">Print Chart</md-button>
 			</div>
 		</div>
 

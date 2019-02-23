@@ -12,11 +12,12 @@ body {
 }
 
 .expandedContent {
-	height: 600px;
+	height: 400px;
 	margin: 0px;
 }
 
 .collapsedContent {
+	/*height: 400px;*/
 	margin: 0px;
 }
 
