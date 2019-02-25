@@ -509,10 +509,4 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 			Verify.error(err);
 		}
 	};
-
-
-
-	$scope.backButton = () => {
-		$window.history.back();
-	};
 });

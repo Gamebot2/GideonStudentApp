@@ -1,14 +1,33 @@
 <md-toolbar id = "siteHeader">
     <div class="md-toolbar-tools">
+        <md-button md-ink-ripple="#FFFFFF" class="icon" aria-label="Back" ng-click="back()">
+            <md-tooltip>Back</md-tooltip>
+            <img src="img/BackIcon.png"></img>
+        </md-button>
+
+        <div style="padding: 0px 2px;">&nbsp;</div>
+
         <h2 flex ng-truncate ng-show="loggedIn">Logged in as {{currentUsername}}</h2>
-        <h2 flex ng-truncate ng-show="!loggedIn">Viewing sample data as Guest - some functionality may be disabled</h2>
+        <h2 flex ng-truncate ng-show="!loggedIn">Viewing sample data as Guest</h2>
         
-        <div ng-show="!loggedIn" style="cursor: pointer;" ng-click="goTo('Demo.html')">More Details</div>
-        <div ng-show="loggedIn"  style="cursor: pointer;" ng-click="goTo('Admin.html')">Admin Settings</div>
+        <md-button ng-show="!loggedIn" md-ink-ripple="#FFFFFF" class="icon" aria-label="About Demo Mode" ng-click="goTo('Demo.html')">
+            <md-tooltip>About Demo Mode</md-tooltip>
+            <img src="img/MoreIcon.png"></img>
+        </md-button>
+        <md-button ng-show="loggedIn"  md-ink-ripple="#FFFFFF" class="icon" aria-label="Admin Settings" ng-click="goTo('Admin.html')">
+            <md-tooltip>Admin Settings</md-tooltip>
+            <img src="img/SettingsIcon.png"></img>
+        </md-button>
 
-        <div style="padding: 0px 10px;">|</div>
+        <div style="padding: 0px 2px;">&nbsp;</div>
 
-        <div ng-show="loggedIn"  style="cursor: pointer;" ng-click="logout()">Logout</div>
-        <div ng-show="!loggedIn" style="cursor: pointer;" ng-click="login()">Login</div>
+        <md-button ng-show="!loggedIn" md-ink-ripple="#FFFFFF" class="icon" aria-label="Login" ng-click="login()">
+            <md-tooltip>Login</md-tooltip>
+            <img src="img/LoginIcon.png"></img>
+        </md-button>
+        <md-button ng-show="loggedIn"  md-ink-ripple="#FFFFFF" class="icon" aria-label="Logout" ng-click="logout()">
+            <md-tooltip>Logout</md-tooltip>
+            <img src="img/LogoutIcon.png"></img>
+        </md-button>
     </div>
 </md-toolbar>

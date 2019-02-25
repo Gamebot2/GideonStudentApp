@@ -35,9 +35,10 @@
 		</div>
 
 		<div class="exterior" ng-controller="updateRecordCtrl">
-			<md-button id="backButton" onclick="location.href='RecordList.html'">Back to Record List</md-button>
-			<md-button class="md-raised md-warn" id="deleteButton" ng-click="removeRecord()">Delete Record</md-button>
-
+			<div class="deleteButtonContainer">
+				<md-button class="md-raised md-warn" id="deleteButton" ng-click="removeRecord()">Delete Record</md-button>
+			</div>
+			
 			<h1>Edit Record</h1>
 			<!--Form for updating records that are already in the system-->
 			<form name="form">
@@ -164,12 +165,13 @@
 						</md-input-container>
 					</div>
 				</div>
-				<br><br>
 
-				<md-input-container>
-					<label>Notes</label>
-					<textarea rows="3" name="notes" id="notes" ng-model="record.notes"></textarea>
-				</md-input-container>
+				<div class="columnContainer" id="editSingleRow">
+					<md-input-container>
+						<label>Notes</label>
+						<textarea rows="3" name="notes" id="notes" ng-model="record.notes"></textarea>
+					</md-input-container>
+				</div>
 				<br>
 
 				<!--Submits form data-->

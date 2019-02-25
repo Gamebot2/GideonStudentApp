@@ -44,6 +44,10 @@ gideonApp.controller('header', ($scope, $http) => {
         $scope.loggedIn = loggedIn;
     });
 
+    $scope.back = () => {
+        window.history.back();
+    }
+
     $scope.login = () => {
         window.location.href = "index.html";
     };

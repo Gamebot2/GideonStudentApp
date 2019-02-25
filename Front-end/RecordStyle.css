@@ -8,8 +8,9 @@ body {
     padding: 20px;
 }
 
-#deleteButton {
-    float: right;
+.deleteButtonContainer {
+    display: flex;
+    flex-direction: row-reverse;
 }
 
 

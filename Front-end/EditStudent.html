@@ -35,9 +35,10 @@
 		</div>
 
 		<div class="exterior" ng-controller="updateStudentCtrl">
-			<md-button id="backButton" onclick="location.href='StudentList.html'">Back to Student List</md-button>
-			<md-button class="md-raised md-warn" id="deleteButton" ng-click="removeStudent()">Delete Student</md-button>
-
+			<div class="deleteButtonContainer">
+				<md-button class="md-raised md-warn" id="deleteButton" ng-click="removeStudent()">Delete Student</md-button>
+			</div>
+			
 			<h1>Edit {{student.client}}</h1>
 			<!--Form used for editing a student in the database-->
 			<form name="form">

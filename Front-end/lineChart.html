@@ -40,7 +40,6 @@
 		<!--Containing essentially a form for selected chart specifications-->
 		<div class="exterior" ng-controller="chartCtrl">
 			<div id="expandableContainer" ng-class="{'collapsedContent':!expanded, 'expandedContent':expanded}">
-				<md-button id="backButton" ng-click="backButton()">Back</md-button>
 				<form name="form">
 				<h1>Progress Chart for {{studentName}}</h1>
 				<br>
@@ -139,6 +138,7 @@
 			</div>
 				
 			<md-whiteframe class="md-whiteframe-6dp" id="logoContainer" ng-class="{'logoOff':!logoDisplay, 'logoOn':logoDisplay}" ng-show="formStatus.id == 1" ng-click="expanded=!expanded">
+				<md-tooltip>Open Form</md-tooltip>
 				<img id="logo" src="img/gideon-logo-white.png" alt="show/hide form">
 				<div id="logoTint"></div>
 			</md-whiteframe>

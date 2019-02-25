@@ -11,11 +11,11 @@ gideonApp.controller('adminCtrl', ($scope, $http, $window) => {
     $scope.loggedIn = false;
     $http.get(`${URL}getLoggedIn`).then((response) => {
         $scope.loggedIn = response.data;
-    });
 
-    $scope.backButton = () => {
-		$window.history.back();
-	};
+        if (!$scope.loggedIn) {
+            window.location.href = "Demo.html";
+        }
+    });
 
     $scope.shiftGrades = (isInc) => {
         if (confirm(`This action can potentially be unstable and should only be used when absolutely necessary. Are you sure you want to change all students' grades?`)) {

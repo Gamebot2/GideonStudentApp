@@ -11,14 +11,24 @@ body {
 	color: black;
 	margin: 0px;
 }
+h1, h3 {
+	text-align: center;
+	font-weight: normal;
+}
+
+
+/*Header CSS*/
 #siteHeader {
 	color: white;
 	font-size: 16px;
 	min-height: 50px;
 }
-h1, h3 {
-	text-align: center;
-	font-weight: normal;
+#siteHeader .md-button.icon {
+	min-width: 50px;
+}
+#siteHeader .md-button.icon img {
+	max-width: 25px;
+	max-height: 25px;
 }
 
 
