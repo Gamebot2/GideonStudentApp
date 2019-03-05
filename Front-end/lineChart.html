@@ -39,7 +39,7 @@
 
 		<!--Containing essentially a form for selected chart specifications-->
 		<div class="exterior" ng-controller="chartCtrl">
-			<div id="expandableContainer" ng-class="{'collapsedContent':!expanded, 'expandedContent':expanded}">
+			<div>
 				<form name="form">
 				<h1>Progress Chart for {{studentName}}</h1>
 				<br>
@@ -105,47 +105,22 @@
 							</div>
 						</md-input-container>
 					</div>
-					<!--label for="months">Time Range</label><br>
-						<div class="inputWrapperBig">
-							<input white type="number" id="months" name="months" value="12" ng-model="months" min="1" max="60" required>
-							months ago to
-							<input white type="number" id="months2" name="months2" value="12" ng-model="months2" min="0" max="{{months-1}}" required>
-							months ago
-							<div ng-show="months2==0">
-								Project into the future by: 
-								<input white type="number" id="monthsF" name="monthsF" value="12" ng-model="monthsF" max="12"> months
-							</div>
-							<div class="invalidContainer" ng-class="{'invalid':form.months.$touched && form.months2.$touched && (form.months.$invalid || form.months2.$invalid || form.monthsF.$invalid)}"></div>
-						</div>
-						<br><br>
-						<span class="errorText" ng-show="form.months.$touched && form.months2.$touched && (form.months.$error.required || form.months2.$error.required)">Months are required.</span>
-						<span class="errorText" ng-show="form.months.$touched && form.months2.$touched && (form.months.$error.number || form.months2.$error.number || form.monthsF.$error.number)">Month values must be numbers.</span>
-						<span class="errorText" ng-show="form.months.$touched && form.months2.$touched && (form.months.$error.min || form.months.$error.max || form.months2.$error.min || form.months2.$error.max)">Month values must be between 0 and 60, and the second value must be earlier than the first.</span>
-						<span class="errorText" ng-show="form.months.$touched && form.months2.$touched && form.monthsF.$error.max">You can only project the graph one year into the future.</span>
-					--> 
 				</div>
 
 				<!--Button to generate chart and submit all data-->
 				<md-button big class="md-accent md-raised" type="submit" ng-click="generateChart()">Generate Chart</md-button>
 				</form>
-
 				<br>
-				<!--md-button big class="md-accent md-raised" ng-show="formStatus.id===1" ng-click="">Print Chart</md-button-->
 
 				<!--Error message in case no data is retrieved-->
 				<span ng-class="{'errorText':formStatus.id == 0, 'successText':formStatus.id == 1}">{{formStatus.text}}</span>
 				<br>			
 			</div>
-				
-			<md-whiteframe class="md-whiteframe-6dp" id="logoContainer" ng-class="{'logoOff':!logoDisplay, 'logoOn':logoDisplay}" ng-show="formStatus.id == 1" ng-click="expanded=!expanded">
-				<md-tooltip>Open Form</md-tooltip>
-				<img id="logo" src="img/gideon-logo-white.png" alt="show/hide form">
-				<div id="logoTint"></div>
-			</md-whiteframe>
 
 			<!--HTML element for the generated chart-->
 			<div id="chartspecs" ng-show="formStatus.id===1">
-				<canvas id="lineChart" ng-hide="errorMessage"></canvas>
+				<canvas id="lineChart"></canvas>
+				<md-button big class="md-accent md-raised" ng-click="printChart()">Print Chart</md-button>
 			</div>
 		</div>
 

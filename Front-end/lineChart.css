@@ -1,8 +1,11 @@
 /*General CSS*/
-body {
+html {
 	background: linear-gradient(to bottom, #FFD700, #FFA500 50%, #FFA500 100%) no-repeat bottom;
-	background-attachment: fixed;
-	min-height: 1000%;
+	height: auto;
+}
+
+body {
+	height: 100%;
 }
 
 .exterior {
