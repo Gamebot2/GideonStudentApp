@@ -71,20 +71,12 @@ let Dates = {
 		this.monthsAgoToMonthIndex = (months) => this.dateToMonthIndex(this.dateSubtract(this.now, months));
 
 		// Variables
-		if (loggedIn) {
-			let n = moment();
-			this.now = {
-				month: n.month(),
-				year: n.year(),
-				date: (n.date() - 1) / n.daysInMonth()
-			};
-		} else {
-			this.now = {
-				month: 2,
-				year: 2019,
-				date: 0
-			};
-		}
+		let n = moment();
+		this.now = {
+			month: n.month(),
+			year: n.year(),
+			date: (n.date() - 1) / n.daysInMonth()
+		};
 
 		this.zeroDate = this.setZeroDate(0);
 

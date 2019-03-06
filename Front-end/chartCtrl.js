@@ -46,6 +46,15 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 		Dates.zeroDate = chartData.Dates.zeroDate;
 
 
+		// Set Dates to a default value if viewing sample data
+		if (!loggedIn) {
+			Dates.now = {
+				month: 2,
+				year: 2019,
+				date: 0
+			};
+		}
+
 		let lowestDate   = Dates.monthsAgoToMonthIndex(months); 	// x-axis bounds
 		let highestDate  = Dates.monthsAgoToMonthIndex(until);
 		let greatestBook = 0; 											// y-axis bounds
