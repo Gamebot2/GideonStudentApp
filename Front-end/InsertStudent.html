@@ -39,42 +39,9 @@
 			<h1>Insert Student</h1>
 			<!--Form used for adding a new student into the database-->
 			<form name="form">
-				<!--Simple text box for instructors to enter the new student's full name-->
-				<md-input-container class="inputWrapperBig">
-					<label>Full Name</label>
-					<input md-select-on-focus id="nameBox" name="student" type="text" ng-model="student.client" required>
-					<div ng-messages="form.student.$error">
-						<div ng-message="required">Name is required.</div>
-					</div>
-				</md-input-container>
-				<br>
+				<div ng-include="'UpdateStudent.html'"></div>
 
-				<!--Simple selection field for instructors to enter the new student's grade-->
-				<md-input-container class="inputWrapperBig">
-					<label>Grade</label>
-					<md-select id="gradeBox" name="grade" ng-model="student.grade" required>
-						<md-option ng-repeat="g in grades" ng-value="g">{{g.split(' ')[0]}}</md-option>
-					</md-select>
-					<div ng-messages="form.grade.$error">
-						<div ng-message="required">Grade is required.</div>
-					</div>
-				</md-input-container>
-				<br><br>
-
-				<!--Simple selection field for instructors to enter the new student's gender-->
-				<md-input-container class="inputWrapperBig">
-					<label>Gender</label>
-					<md-select id="genderBox" name="gender" ng-model="student.gender" required>
-						<md-option ng-repeat="g in genders" ng-value="g">{{g}}</md-option>
-					</md-select>
-					<div ng-messages="form.gender.$error">
-						<div ng-message="required">Gender is required.</div>
-					</div>
-				</md-input-container>
-				<br><br>
-
-				
-				<!--Submit button: runs the insertStudent function-->
+				<!--Submit button to perform the update-->
 				<md-button big class="md-accent md-raised" ng-click="insertStudent()">Submit</md-button>
 			</form>
 			<br><br>

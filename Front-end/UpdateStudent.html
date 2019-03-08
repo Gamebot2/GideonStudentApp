@@ -1,0 +1,77 @@
+<div class="columnContainer" id="editRow">
+    <!--Name input, required field-->
+    <div class="twoColumn">
+        <md-input-container class="inputWrapperBig">
+            <label>Full Name</label>
+            <input md-select-on-focus type="text" name="client" ng-model="student.client" required>
+            <div ng-messages="form.client.$error">
+                <div ng-message="required">Name is required.</div>
+            </div>
+        </md-input-container>
+    </div>
+
+    <!--Email input, no required format-->
+    <div class="twoColumn">
+        <md-input-container class="inputWrapperBig">
+            <label>Email</label>
+            <input md-select-on-focus type="email" ng-model="student.email">
+            <div ng-messages="form.email.$error">
+                <div ng-message="valid">This must be a valid email.</div>
+            </div>
+        </md-input-container>
+    </div>
+</div><br>
+
+<div class="columnContainer" id="editRow">
+    <!--Grade selection-->
+    <div class="threeColumn">
+        <md-input-container class="inputWrapperBig">
+            <label>Grade</label>
+            <md-select id="gradeBox" name="grade" ng-model="student.grade" required>
+                <md-option ng-repeat="g in grades" ng-value="g">{{g.split(' ')[0]}}</md-option>
+            </md-select>
+            <div ng-messages="form.grade.$error">
+                <div ng-message="required">Grade is required.</div>
+            </div>
+        </md-input-container>
+    </div>
+
+    <!--Phone input, no required format-->
+    <div class="threeColumn">
+        <md-input-container class="inputWrapperBig">
+            <label>Phone</label>
+            <input md-select-on-focus type="text" ng-model="student.phone">
+        </md-input-container>
+    </div>
+
+    <!--Gender selection-->
+    <div class="threeColumn">
+        <md-input-container class="inputWrapperBig">
+            <label>Gender</label>
+            <md-select id="genderBox" name="gender" ng-model="student.gender" required>
+                <md-option ng-repeat="g in genders" ng-value="g">{{g}}</md-option>
+            </md-select>
+            <div ng-messages="form.gender.$error">
+                <div ng-message="required">Gender is required.</div>
+            </div>
+        </md-input-container>
+    </div>
+</div><br>
+
+<div class="columnContainer" id="editRow">
+    <!--Address input, no required format-->
+    <div class="twoColumn">
+        <md-input-container class="inputWrapperBig">
+            <label>Address</label>
+            <input md-select-on-focus type="text" ng-model="student.address">
+        </md-input-container>
+    </div>
+
+    <!--Current passes input-->
+    <div class="twoColumn">
+        <md-input-container class="inputWrapperBig">
+            <label>Current Passes</label>
+            <input md-select-on-focus type="text" ng-model="student.currentPasses">
+        </md-input-container>
+    </div>
+</div><br><br>

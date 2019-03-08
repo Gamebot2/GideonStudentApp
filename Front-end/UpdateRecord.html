@@ -1,0 +1,115 @@
+<div class="columnContainer" id="editRow">
+   <!--Displays all possible book categories-->
+    <div class="threeColumn">
+        <md-input-container class="md-block">
+            <label>Book Category</label>
+            <md-select id="category" name="category" ng-model="record.category" ng-change="getSubcategories()" required>
+                <md-option ng-repeat="x in categories" ng-value="x">{{x}}</md-option>
+            </md-select>
+            <div ng-messages="form.category.$error">
+                <div ng-message="required">All book details are required.</div>
+            </div>
+        </md-input-container>
+    </div>
+
+    <!--Displays all subcategories for a selected category-->
+    <div class="threeColumn">
+        <md-input-container class="md-block">
+            <label>Book Subcategory</label>
+            <md-select id="subcategory" name="subcategory" ng-model="record.subcategory" ng-change="getTitles()" required>
+                <md-option ng-repeat="y in subcategories" ng-value="y" ng-disabled="y.startsWith('Select')">{{y}}</option>
+            </md-select>
+            <div ng-messages="form.subcategory.$error">
+                <div ng-message="required">All book details are required.</div>
+            </div>
+        </md-input-container>
+    </div>
+
+    <!--Displays all book titles for a given subcategory-->
+    <div class="threeColumn">
+        <md-input-container class="md-block">
+            <label>Book Title</label>
+            <md-select id="title" name="title" ng-model="record.title" ng-change="didSetBook()" required>
+                <md-option ng-repeat="z in titles" ng-value="z.title" ng-disabled="z.display.startsWith('Select')">{{z.display}}</option>
+            </md-select>
+            <div ng-messages="form.category.$error">
+                <div ng-message="required">All book details are required.</div>
+            </div>
+        </md-input-container>
+    </div>
+</div>
+<br><br>
+
+<div class="columnContainer" id="editRow">
+    <!--Simple datePicker for instructors to enter the startDate-->
+    <div class="twoColumn">
+        <md-input-container class="md-block">
+            <label>Start Date</label>
+            <md-datepicker name="startDate" id="dateSelect" ng-model="record.startDate" required></md-datepicker>
+            <div ng-messages="form.startDate.$error">
+                <div ng-message="required">Start date is required.</div>
+                <div ng-message="valid">This date is invalid.</div>
+            </div>
+        </md-input-container>
+    </div>
+
+    <!--Allows user to enter the ending date-->
+    <div class="twoColumn">
+        <md-input-container class="md-block">
+            <label>End Date</label>
+            <md-datepicker name="endDate" id="dateSelect" md-min-date="record.startDate" ng-model="record.endDate"></md-datepicker>
+            <div ng-messages="form.startDate.$error">
+                <div ng-message="mindate">The end date must come after the start date.</div>
+                <div ng-message="valid">This date is invalid.</div>
+            </div>
+        </md-input-container>
+    </div>
+</div>
+<br><br>
+
+<div class="columnContainer" id="editSingleRow">
+    <!--Simple number picker for instructors to enter the repetition number-->
+    <div id="rep">
+        <md-input-container>
+            <label>Repetition</label>
+            <input type="number" name="reps" min="1" max="5" ng-model="record.rep" required>
+            <div ng-messages="form.reps.$error">
+                <div ng-message="required">Repetition number is required.</div>
+                <div ng-message="number">Repetition must be a number.</div>
+                <div ng-message-exp="['min', 'max']">Repetition number must be between 1 and 5.</div>
+            </div>
+        </md-input-container>
+    </div>
+
+    <!--Simple number picker for instructors to enter the test time-->
+    <div id="testTime" ng-show="record.test">
+        <md-input-container>
+            <label>Test Time</label>
+            <input type="number" name="testTime" min="0" max="1000" ng-model="record.testTime">
+            <div ng-messages="form.testTime.$error">
+                <div ng-message="number">Test time must be a number.</div>
+                <div ng-message-exp="['min', 'max']">Test time must be between 0 and 1000.</div>
+            </div>
+        </md-input-container>
+    </div>
+
+    <!--Simple number picker for instructors to enter the number of mistakes-->	
+    <div id="mistakes" ng-show="record.test">
+        <md-input-container>
+            <label>Mistakes</label>
+            <input type="number" name="mistakes" min="0" max="1000" ng-model="record.mistakes">
+            <div ng-messages="form.mistakes.$error">
+                <div ng-message="number">Mistakes must be a number.</div>
+                <div ng-message-exp="['min', 'max']">Mistakes must be between 0 and 1000.</div>
+            </div>
+        </md-input-container>
+    </div>
+</div>
+
+<div class="columnContainer" id="editSingleRow">
+    <md-input-container>
+        <label>Notes</label>
+        <textarea rows="3" name="notes" id="notes" ng-model="record.notes"></textarea>
+    </md-input-container>
+</div>
+<br>

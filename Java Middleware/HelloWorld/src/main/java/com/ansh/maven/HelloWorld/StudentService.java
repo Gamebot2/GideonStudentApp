@@ -11,8 +11,7 @@ public interface StudentService {
 	List<Student> getStudentsForList(boolean withData, int limit);
 	List<Integer> getStudentIdsWithRecords();
 	List<String> getCategories(int StudentId);
-	int addStudent(StudentMaster student);
-	int updateStudent(Student student);
+	int updateStudent(Student student, boolean isNew);
 	int removeStudent(int studentId);
 	int shiftGrades(boolean isInc);
 }

@@ -193,13 +193,13 @@ public class HelloController {
 	
 	//Adds a new student to the students database
 	@CrossOrigin
-	@RequestMapping("/addStudent")
-	public int addStudent(@RequestBody(required=false) StudentMaster student) {
-		System.out.println("Method addStudent() called" );
+	@RequestMapping("/insertStudent")
+	public int insertStudent(@RequestBody(required=false) Student student) {
+		System.out.println("Method insertStudent() called" );
 		try {
-			return studentService.addStudent(student);
+			return studentService.updateStudent(student, true);
 		} catch (java.lang.RuntimeException e) {
-			System.out.println("Method addStudent() failed:");
+			System.out.println("Method insertStudent() failed:");
 			e.printStackTrace();
 			return -1;
 		}
@@ -207,13 +207,13 @@ public class HelloController {
 	
 	//Edits student data in the students database
 	@CrossOrigin
-	@RequestMapping("/updateStudent")
-	public int updateStudent(@RequestBody(required=false) Student student) {
-		System.out.println("Method updateStudent() called");
+	@RequestMapping("/editStudent")
+	public int editStudent(@RequestBody(required=false) Student student) {
+		System.out.println("Method editStudent() called");
 		try {
-			return studentService.updateStudent(student);
+			return studentService.updateStudent(student, false);
 		} catch (java.lang.RuntimeException e) {
-			System.out.println("Method updateStudent() failed:");
+			System.out.println("Method editStudent() failed:");
 			e.printStackTrace();
 			return -1;
 		}
@@ -281,13 +281,13 @@ public class HelloController {
 	
 	//Adds a new record to the database
 	@CrossOrigin
-	@RequestMapping("/addRecord")
-	public int addRecord(@RequestBody(required=false) Master master) {
-		System.out.println("Method addRecord() called");
+	@RequestMapping("/insertRecord")
+	public int insertRecord(@RequestBody(required=false) Record record) {
+		System.out.println("Method insertRecord() called");
 		try {
-			return recordService.addRecord(master);
+			return recordService.updateRecord(record, true);
 		} catch (java.lang.RuntimeException e) {
-			System.out.println("Method addRecord() failed:");
+			System.out.println("Method insertRecord() failed:");
 			e.printStackTrace();
 			return -1;
 		}
@@ -295,13 +295,13 @@ public class HelloController {
 	
 	//Updates an existing record in the database
 	@CrossOrigin
-	@RequestMapping("/updateRecord")
-	public int updateRecord(@RequestBody(required=false) Record record) {
-		System.out.println("Method updateRecord() called");
+	@RequestMapping("/editRecord")
+	public int editRecord(@RequestBody(required=false) Record record) {
+		System.out.println("Method editRecord() called");
 		try {
-			return recordService.updateRecord(record);
+			return recordService.updateRecord(record, false);
 		} catch (java.lang.RuntimeException e) {
-			System.out.println("Method updateRecord() failed:");
+			System.out.println("Method editRecord() failed:");
 			e.printStackTrace();
 			return -1;
 		}

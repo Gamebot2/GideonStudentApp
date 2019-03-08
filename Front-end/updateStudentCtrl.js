@@ -19,6 +19,8 @@ gideonApp.controller('updateStudentCtrl', ($scope, $http, $window) => {
 
 	if (window.location.href.includes("Edit")) {
 		$scope.student = JSON.parse($window.localStorage.getItem(0));
+	} else {
+		$scope.student = {};
 	}
 
 	// Form submission
@@ -29,7 +31,7 @@ gideonApp.controller('updateStudentCtrl', ($scope, $http, $window) => {
 
 		// Updates the student with an HTTP post call
 		$http({
-			url: `${URL}${command}`,
+			url: `${URL}${command}Student`,
 			method: 'POST',
 			headers: {
 				"Content-Type": "application/json",
@@ -38,13 +40,13 @@ gideonApp.controller('updateStudentCtrl', ($scope, $http, $window) => {
 			data: JSON.stringify($scope.student)
 		})
 		.then((response) => {
-			Verify.successIf(response.data >= 0, `Successfully updated ${$scope.student.client}`);
+			Verify.successIf(response.data >= 0, `Successfully ${command}ed ${$scope.student.client}`);
 		})
 		.catch(Verify.error);
 	};
 	
-	$scope.insertStudent = () => updateStudent("addStudent");
-	$scope.editStudent = () => updateStudent("updateStudent");
+	$scope.insertStudent = () => updateStudent("insert");
+	$scope.editStudent = () => updateStudent("edit");
 
 
 	// Delete button

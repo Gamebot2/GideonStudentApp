@@ -38,81 +38,27 @@
 			<h1>Insert Record</h1>
 			<!--Form used for adding a new record for an existing student into the database-->
 			<form name="form">
-				<!--Displays list of all current students upon selection, with a custom filter-->
-				<md-autocomplete class="md-block" required md-require-match id="clientSelect" md-floating-label="Student" md-input-name="client" md-selected-item="client" md-search-text="clientSearch" md-items="item in filterStudents(clientSearch)" md-item-text="item.name">
-					<md-item-template>
-						<span md-highlight-text="clientSearch">{{item.name}}</span>
-					</md-item-template>
-					<div ng-messages="form.client.$error">
-						<div ng-message="required">Student is required.</div>
-						<div ng-message="md-require-match">Please select an existing student.</div>
+				<!--This part of the form is still here because, unfortunately, AngularJS is too fragile and md-autocomplete will not work in an ng-include-->
+				<div class="columnContainer" id="editSingleRow">
+					<div class="column" style="width:100%">
+					<!--Displays list of all current students upon selection, with a custom filter-->
+						<md-autocomplete class="md-block" required md-require-match id="clientSelect" md-floating-label="Student" md-input-name="client" md-selected-item="client" md-search-text="clientSearch" md-items="item in filterStudents(clientSearch)" md-item-text="item.name">
+							<md-item-template>
+								<span md-highlight-text="clientSearch">{{item.name}}</span>
+							</md-item-template>
+							<md-not-found>
+								No student found.
+							</md-not-found>
+							<div ng-messages="form.client.$error">
+								<div ng-message="required">Student is required.</div>
+								<div ng-message="md-require-match">Please select an existing student.</div>
+							</div>
+						</md-autocomplete>
 					</div>
-				</md-autocomplete> 
+				</div>
+				<br><br>
 
-				  <!--Displays all possible book categories-->
-				<md-input-container class="md-block">
-					<label>Book Category</label>
-					<md-select id="category" name="category" ng-model="record.category" ng-change="getSubcategories()" required>
-						<md-option ng-repeat="x in categories" ng-value="x">{{x}}</md-option>
-					</md-select>
-					<div ng-messages="form.category.$error">
-						<div ng-message="required">All book details are required.</div>
-					</div>
-				</md-input-container>
-				<br>
-
-				<!--Displays all subcategories for a selected category-->
-				<md-input-container class="md-block">
-					<label>Book Subcategory</label>
-					<md-select id="subcategory" name="subcategory" ng-model="record.subcategory" ng-change="getTitles()" required>
-						<md-option ng-repeat="y in subcategories" ng-value="y" ng-disabled="y.startsWith('Select')">{{y}}</option>
-					</md-select>
-					<div ng-messages="form.subcategory.$error">
-						<div ng-message="required">All book details are required.</div>
-					</div>
-				</md-input-container>
-				<br>
-
-				<!--Displays all book titles for a given subcategory-->
-				<md-input-container class="md-block">
-					<label>Book Title</label>
-					<md-select id="title" name="title" ng-model="record.title" required>
-						<md-option ng-repeat="z in titles" ng-value="z.title" ng-disabled="z.display.startsWith('Select')">{{z.display}}</option>
-					</md-select>
-					<div ng-messages="form.category.$error">
-						<div ng-message="required">All book details are required.</div>
-					</div>
-				</md-input-container>
-				<br>
-
-				<!--Simple datePicker for instructors to enter the startDate-->
-				<md-input-container class="md-block">
-					<label>Start Date</label>
-					<md-datepicker name="startDate" id="dateSelect" ng-model="record.startDate" required></md-datepicker>
-					<div ng-messages="form.startDate.$error">
-						<div ng-message="required">Start date is required.</div>
-						<div ng-message="valid">This date is invalid.</div>
-					</div>
-				</md-input-container>
-
-				<!--Simple number picker for instructors to enter the repetition number-->
-				<md-input-container>
-					<label>Repetition</label>
-					<input type="number" name="reps" min="1" max="5" ng-model="record.rep" required>
-					<div ng-messages="form.reps.$error">
-						<div ng-message="required">Repetition number is required.</div>
-						<div ng-message="number">Repetition must be a number.</div>
-						<div ng-message-exp="['min', 'max']">Repetition number must be between 1 and 5.</div>
-					</div>
-				</md-input-container>
-				<br>
-
-				<!--Simple textarea for jotting down quick notes-->
-				<md-input-container>
-					<label>Notes</label>
-					<textarea rows="3" name="notes" id="notes" ng-model="record.notes"></textarea>
-				</md-input-container>
-				<br>
+				<div ng-include="'UpdateRecord.html'"></div>
 				
 				<!--Submit button: runs the insertTask function-->
 				<md-button big class="md-accent md-raised" ng-click="insertRecord()">Submit</md-button>

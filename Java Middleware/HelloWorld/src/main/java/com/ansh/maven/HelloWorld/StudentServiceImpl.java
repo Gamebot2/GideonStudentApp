@@ -55,22 +55,13 @@ public class StudentServiceImpl implements StudentService{
 	
 	// NOTE: Anything that modifies data in the database will do nothing if the user is accessing the demo database: 1 will be returned
 	
-	// Adds a student to the database
-	@Override
-	public int addStudent(StudentMaster student) {
-		if (!HelloController.isLoggedIn())
-			return 1;
-		
-		return studentDao.addStudent(student);
-	}
-	
 	// Updates student information in the database
 	@Override
-	public int updateStudent(Student student) {
+	public int updateStudent(Student student, boolean isNew) {
 		if (!HelloController.isLoggedIn())
 			return 1;
 		
-		return studentDao.updateStudent(student) + studentDao.updateLastUsed(student.getStudentId());
+		return studentDao.updateStudent(student, isNew) + (isNew ? 0 : studentDao.updateLastUsed(student.getStudentId()));
 	}
 	// Removes a student and their records from the database
 	@Override

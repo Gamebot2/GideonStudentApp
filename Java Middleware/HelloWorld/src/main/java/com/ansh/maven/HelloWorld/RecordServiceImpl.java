@@ -76,24 +76,14 @@ public class RecordServiceImpl implements RecordService{
 
 	// NOTE: Anything that modifies data in the database will do nothing if the user is accessing the demo database: 1 will be returned
 
-	// Adds a record to the database
-	@Override
-	public int addRecord(Master master) {
-		if (!HelloController.isLoggedIn())
-			return 1;
-		
-		Book book = bookDao.getBookByName(master.getCategory(), master.getSubcategory(), master.getTitle());
-		return recordDao.addRecord(master, book) + studentDao.updateLastUsed(master.getStudentId());
-	}
-
 	// Updates a record in the database with an end date
 	@Override
-	public int updateRecord(Record record) {
+	public int updateRecord(Record record, boolean isNew) {
 		if (!HelloController.isLoggedIn())
 			return 1;
 		
-		Book book = bookDao.getBookById(record.getBookId());
-		return recordDao.updateRecord(record, book) + studentDao.updateLastUsed(record.getStudentId());
+		Book book = bookDao.getBookByName(record.getCategory(), record.getSubcategory(), record.getTitle());
+		return recordDao.updateRecord(record, book, isNew) + studentDao.updateLastUsed(record.getStudentId());
 	}
 	
 	// Removes a record from the database with an id

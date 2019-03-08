@@ -19,7 +19,6 @@ gideonApp.controller('updateRecordCtrl', ($scope, $http, $window) => {
 		let makeDate = (date) => date ? new Date(date.replace(/-/g,"/")) : date;
 
 		$scope.record = JSON.parse($window.localStorage.getItem(0));
-		console.log($scope.record);
 		$scope.record.startDate = makeDate($scope.record.startDate);
 		$scope.record.endDate = makeDate($scope.record.endDate);
 	}
@@ -36,9 +35,7 @@ gideonApp.controller('updateRecordCtrl', ($scope, $http, $window) => {
 	}
 
 	$scope.filterStudents = (filterText) =>
-		filterText
-			? $scope.names.filter((s) => s.name.toLowerCase().split(" ").some((n) => n.startsWith(filterText.toLowerCase())))
-			: $scope.names;
+		filterText ? $scope.names.filter((s) => s.name.toLowerCase().includes(filterText.toLowerCase())) : $scope.names;
 
 	// Returns a list of all students for easy name selection	
 	$http.get(`${URL}students`)
@@ -128,7 +125,7 @@ gideonApp.controller('updateRecordCtrl', ($scope, $http, $window) => {
 
 		// Updates the record with an HTTP post call
 		$http({
-			url: `${URL}${command}`,
+			url: `${URL}${command}Record`,
 			method: 'POST',
 			headers: {
 				"Content-Type": "application/json",
@@ -137,13 +134,13 @@ gideonApp.controller('updateRecordCtrl', ($scope, $http, $window) => {
 			data: JSON.stringify($scope.record)
 		})
 		.then((response) => {
-			Verify.successIf(response.data >= 0, `Successfully updated record for ${$scope.client.name}`);
+			Verify.successIf(response.data >= 0, `Successfully ${command}ed record for ${$scope.client.name}`);
 			$window.localStorage.setItem(5, $scope.client.id);
 		})
 		.catch(Verify.error);
 	};
-	$scope.insertRecord = () => updateRecord("addRecord");
-	$scope.editRecord = () => updateRecord("updateRecord");
+	$scope.insertRecord = () => updateRecord("insert");
+	$scope.editRecord = () => updateRecord("edit");
 
 
 	// Delete button

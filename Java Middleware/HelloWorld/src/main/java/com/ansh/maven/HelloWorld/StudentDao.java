@@ -9,8 +9,7 @@ public interface StudentDao {
 	List<Integer> getStudentIdsWithRecords();
 	String getGrade(int StudentId);
 	List<String> getCategories(int StudentId);
-	int addStudent(StudentMaster student);
-	int updateStudent(Student s);
+	int updateStudent(Student student, boolean isNew);
 	int updateLastUsed(int id);
 	int removeStudent(int studentId);
 	int shiftGrades(boolean isInc);

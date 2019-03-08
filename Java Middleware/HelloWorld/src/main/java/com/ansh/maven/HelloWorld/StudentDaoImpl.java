@@ -82,22 +82,20 @@ public class StudentDaoImpl implements StudentDao {
 	}
 	
 	
-
-	// Adds a student to the database
-	@Override
-	public int addStudent(StudentMaster student) {
-		String sql = "INSERT INTO demostudents (Client, FirstName, LastName, Grade, Gender, LastUsed) VALUES (?, ?, ?, ?, ?, ?);";
-		sql = HelloController.setTargetTable(sql);
-		this.jdbcTemplate.update(sql, student.getClient(), student.getFirstName(), student.getLastName(), student.getGrade(), student.getGender(), dateFormat.format(new Date()));
-		return 0;
-	}
 	
 	// Updates student information in the database
 	@Override
-	public int updateStudent(Student s) {
-		String sql = "UPDATE demostudents SET Client = ?, Email = ?, Phone = ?, Address = ?, Grade = ?, Gender = ?, CurrentPasses = ? WHERE StudentId = ?";
-		sql = HelloController.setTargetTable(sql);
-		this.jdbcTemplate.update(sql, s.getClient(), s.getEmail(), s.getPhone(), s.getAddress(), s.getGrade(), s.getGender(), s.getCurrentPasses(), s.getStudentId());
+	public int updateStudent(Student student, boolean isNew) {
+		if (isNew) {
+			String sql = "INSERT INTO demostudents (Client, Email, Phone, Address, Grade, Gender, CurrentPasses, LastUsed) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+			sql = HelloController.setTargetTable(sql);
+			this.jdbcTemplate.update(sql, student.getClient(), student.getEmail(), student.getPhone(), student.getAddress(), student.getGrade(), student.getGender(), student.getCurrentPasses(), dateFormat.format(new Date()));
+		}
+		else {
+			String sql = "UPDATE demostudents SET Client = ?, Email = ?, Phone = ?, Address = ?, Grade = ?, Gender = ?, CurrentPasses = ? WHERE StudentId = ?";
+			sql = HelloController.setTargetTable(sql);
+			this.jdbcTemplate.update(sql, student.getClient(), student.getEmail(), student.getPhone(), student.getAddress(), student.getGrade(), student.getGender(), student.getCurrentPasses(), student.getStudentId());
+		}
 		return 0;
 	}
 	
