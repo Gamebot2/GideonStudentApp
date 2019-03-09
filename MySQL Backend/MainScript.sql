@@ -36,9 +36,10 @@ CALL `delete_student` (68);
 
 -- put whatever here
 DELETE FROM records WHERE StudentId = 66 AND BookId IN (SELECT BookId FROM books WHERE Category = "Comprehension");
-
 SELECT * FROM records_joined WHERE Client = "Test Ing Student";
 
+UPDATE books SET Category = "Math" WHERE Category = "Calculation" AND BookId >= 0;
+UPDATE books SET Category = "Reading" WHERE Category = "Comprehension" AND BookId >= 0;
 
 
 

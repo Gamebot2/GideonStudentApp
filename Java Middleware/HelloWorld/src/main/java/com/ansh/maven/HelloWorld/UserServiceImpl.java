@@ -15,6 +15,11 @@ public class UserServiceImpl implements UserService {
 	public User getLogIn(String user, String pass) {
 		return userDao.getLogIn(user, pass);
 	}
+	
+	@Override
+	public boolean checkIfTerminated(String user) {
+		return userDao.checkIfTerminated(user);
+	}
 
 	@Override
 	public int terminateAccount(String username) {

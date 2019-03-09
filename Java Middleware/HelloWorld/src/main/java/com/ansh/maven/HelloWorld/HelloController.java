@@ -57,9 +57,22 @@ public class HelloController {
 	}
 	
 	@CrossOrigin
+	@RequestMapping("/checkIfTerminated")
+	public int checkIfTerminated() {
+		if (isLoggedIn() && userService.checkIfTerminated(currentUser.getUsername())) {
+			logout();
+			System.out.println("Account has terminated! Logged out.");
+			return 1;
+		}
+		return isLoggedIn() ? 0 : 1;
+	}
+	
+	@CrossOrigin
 	@RequestMapping("/getLoggedIn")
 	public boolean getLoggedIn() {
 		System.out.println("Fetched login: current status is " + isLoggedIn());
+		checkIfTerminated();
+		
 		return isLoggedIn();
 	}
 	

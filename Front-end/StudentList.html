@@ -63,9 +63,30 @@
 			<!--Header of table-->
 			<div id="tableContent">
 				<div class="columnContainer" id="tableHeaderContainer">
-					<div class="column" ng-click="getSortBy('name')" style="width:30%">Name</div>
-					<div class="column" ng-click="getSortBy('email')" style="width:57.5%">Email</div>
-					<div class="column" ng-click="getSortBy('grade')" style="width:12.5%">Grade</div>
+					<div class="column" sort ng-click="setSortBy('name')" style="width:30%">
+						<span>
+							Name
+							<img icon src="img/NoneIcon.png" ng-hide="getSortBy().includes('name')"></img>
+							<img icon src="img/DownIcon.png" ng-show="getSortBy() === 'name'"></img>
+							<img icon src="img/UpIcon.png"   ng-show="getSortBy() === 'namedesc'"></img>
+						</span>
+					</div>
+					<div class="column" sort ng-click="setSortBy('email')" style="width:57.5%">
+						<div>
+							Email
+							<img icon src="img/NoneIcon.png" ng-hide="getSortBy().includes('email')"></img>
+							<img icon src="img/DownIcon.png" ng-show="getSortBy() === 'email'"></img>
+							<img icon src="img/UpIcon.png"   ng-show="getSortBy() === 'emaildesc'"></img>
+						</div>
+					</div>
+					<div class="column" sort ng-click="setSortBy('grade')" style="width:12.5%">
+						<div>
+							Grade
+							<img icon src="img/NoneIcon.png" ng-hide="getSortBy().includes('grade')"></img>
+							<img icon src="img/DownIcon.png" ng-show="getSortBy() === 'grade'"></img>
+							<img icon src="img/UpIcon.png"   ng-show="getSortBy() === 'gradedesc'"></img>
+						</div>
+					</div>
 				</div>
 			</div>
 			<!--Main content of table-->

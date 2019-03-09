@@ -42,6 +42,17 @@ gideonApp.controller('header', ($scope, $http) => {
         
         $scope.currentUsername = currentUsername;
         $scope.loggedIn = loggedIn;
+
+        // Termination checking loop
+        if (loggedIn) {
+            setInterval(() => {
+                $http.get(`${URL}checkIfTerminated`).then((response) => {
+                    if (response.data > 0)
+                        window.location.reload(true);
+                    console.log("account still alive");
+                })
+            }, 10000);
+        }
     });
 
     $scope.back = () => {

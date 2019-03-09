@@ -78,9 +78,9 @@
 			<!--Header of table-->
 			<div id="tableContent">
 				<div class="columnContainer" id="tableHeaderContainer">
-					<div class="column" style="width:30%">Student</div>
-					<div class="column" style="width:40%">Book</div>
-					<div class="column" style="width:30%">Date</div>
+					<div class="column" style="width:25%">Student</div>
+					<div class="column" style="width:50%">Book</div>
+					<div class="column" style="width:25%">Date</div>
 				</div>
 			</div>
 
@@ -92,9 +92,9 @@
 				</div>
 				<!--Primary information for a student in the list, done in columns-->
 				<div class="columnContainer" md-ink-ripple="#000000" id="tableContainer" ng-hide="record.bookTitle=='Loading'" ng-click="manageExpansion(record.recordId)">
-					<div class="column" style="width:30%">{{record.name}}&nbsp;</div>
-					<div class="column" style="width:40%">{{record.displayTitle}}&nbsp;</div>
-					<div class="column" style="width:30%">{{record.startDateDisplay}}&nbsp;</div>
+					<div class="column" style="width:25%">{{record.name}}&nbsp;</div>
+					<div class="column" style="width:50%">{{record.displayTitle}}&nbsp;</div>
+					<div class="column" style="width:25%">{{record.startDateDisplay}}&nbsp;</div>
 				</div>
 				<!--Additional information and buttons hidden in an accordion-->
 				<div id="expandableContainer" ng-class="{'collapsedContent':record.recordId!=expandedRecordId, 'expandedContent':record.recordId==expandedRecordId}">

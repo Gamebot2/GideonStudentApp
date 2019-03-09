@@ -217,7 +217,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 			titleTooltip(tooltipItem, data) {
 				let s = allBooks[tooltipItem[0].yLabel-1];
 				if (s) {
-					if (["Calculation", "Comprehension"].includes(selectedCategory)) {
+					if (["Math", "Reading"].includes(selectedCategory)) {
 						return `${s.subcategory} - ${s.title}`;
 					}
 					else {
@@ -464,7 +464,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 		$scope.didUpdateCategory = () => {
 			// Update repetition count for the form
 			$scope.repOptions = ["All", "1", "2"];
-			if (["Calculation","Comprehension"].includes($scope.selectedCategory)) {
+			if (["Math","Reading"].includes($scope.selectedCategory)) {
 				$scope.repOptions.push("3", "4", "5");
 			}
 

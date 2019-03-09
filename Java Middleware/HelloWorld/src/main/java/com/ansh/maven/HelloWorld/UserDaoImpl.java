@@ -47,6 +47,15 @@ public class UserDaoImpl implements UserDao {
 	}
 	
 	@Override
+	public boolean checkIfTerminated(String user) {
+		init();
+
+		String sql = "SELECT " + termColumn + " FROM " + title + " WHERE " + userColumn + " = ?";
+		int terminated = jdbcTemplate.queryForObject(sql, Integer.class, user);
+		return terminated > 0;
+	}
+	
+	@Override
 	public int terminateAccount(String username) {
 		init();
 		

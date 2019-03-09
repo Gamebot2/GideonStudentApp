@@ -42,7 +42,7 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 
 	$scope.dataSwitch = false;
 	let refreshStudents = () => {
-		let temp = $scope.allStudents;
+		let temp = $scope.allStudents.slice();
 
 		if ($scope.dataSwitch) {
 			temp = temp.filter((student) => $scope.studentIdsWithData.has(student.studentId));
@@ -55,7 +55,7 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 	};
 
 	// CHANGE SORT METHOD
-	$scope.getSortBy = (sortBy) => {
+	$scope.setSortBy = (sortBy) => {
 		if (currentSortBy.startsWith(sortBy)) {
 			sortBy += "desc";
 		}
@@ -66,7 +66,8 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 
 		refreshStudents();
 	}
-	$scope.getSortBy("default");
+	$scope.getSortBy = () => currentSortBy;
+	$scope.setSortBy("default");
 	
 	// TOGGLE DATA FILTER
 	$scope.toggleData = () => {

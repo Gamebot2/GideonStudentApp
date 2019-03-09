@@ -79,15 +79,14 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 				record.endDateDisplay = record.endDate ? new Date(record.endDate.split("-").join("/")).toLocaleDateString() : "In Progress";
 
 				switch (record.category) {
-					case "Calculation":
+					case "Math":
 						record.displayTitle = record.title;
 						break;
-					case "Word Problems":
-					case "Grammar":
-						record.displayTitle = record.category + " " + record.title;
-						break;
-					case "Comprehension":
+					case "Reading":
 						record.displayTitle = record.subcategory + " " + record.title;
+						break;
+					default:
+						record.displayTitle = record.category + " " + record.title;
 						break;
 				}
 

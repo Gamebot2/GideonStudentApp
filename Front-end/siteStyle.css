@@ -31,7 +31,6 @@ h1, h3 {
 	max-height: 25px;
 }
 
-
 /*Animation CSS*/
 @keyframes enter {
 	from{opacity: 0;}
@@ -243,4 +242,14 @@ button[warn]:hover, .md-button[warn]:hover {
 .expandedContent {
 	height: 200px; 		/*NOTE: RE-SPECIFY THE CONTAINER HEIGHT FOR EACH INSTANCE OF EXPANDABLE CONTENT*/
 	margin: 15px 10px;
+}
+
+
+
+
+img[icon] {
+	position: absolute;
+	max-height: 100%;
+	width: auto;
+	padding: 0px 10px;
 }
