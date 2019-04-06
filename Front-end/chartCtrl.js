@@ -47,7 +47,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 
 
 		// Set Dates to a default value if viewing sample data
-		if (!loggedIn) {
+		if (!onPrint && !loggedIn) {
 			Dates.now = {
 				month: 2,
 				year: 2019,
@@ -210,7 +210,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 					}
 
 					let middle = Math.trunc(s.sequenceLength / 2) + 1;
-					return s.sequence === middle ? s.sequenceName : " "; // space is returned for everything else to spawn grid lines
+					return s.sequence === middle ? s.sequenceName.toUpperCase() : " "; // space is returned for everything else to spawn grid lines
 				}
 			},
 			// callback for the tooltip: displaying book titles
@@ -255,7 +255,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 		//// GLOBAL SPECS ////
 		Chart.defaults.global.defaultFontSize = 16;
 		Chart.defaults.global.defaultFontColor = '#000';
-		Chart.defaults.global.elements.line.borderWidth = 3;
+		Chart.defaults.global.elements.line.borderWidth = 5;
 
 
 		//// CHART SPECIFICATIONS ////
@@ -272,17 +272,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 						pointRadius: 3,
 						pointHoverRadius: 4,
 						pointBorderWidth: 0
-					}, /*{
-						label: "Best Fit Line",
-						data: bestFit,
-						backgroundColor: "rgba(0, 0, 255, 0.4)",
-						borderColor: "rgba(0, 0, 255, 0.4)",
-						fill: false,
-						borderDash: [5],
-						lineTension: 0,
-						pointRadius: 0,
-						hidden: true		// line of best fit not necessary
-					},*/{
+					}, {
 						label: "IGL",
 						data: igl,
 						backgroundColor: "rgba(46, 204, 113, 0.75)",
@@ -291,7 +281,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 						cubicInterpolationMode: 'monotone',
 						pointRadius: 0
 					}, {
-						label: "Now",
+						label: "Today",
 						data: now,
 						backgroundColor: "rgba(0, 0, 0, 0.2)",
 						borderColor: "rgba(0, 0, 0, 0.2)",
@@ -380,8 +370,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 						color: yAxisGridLineIsMajor.map((o) => `rgba(0, 0, 0, ${o ? 0.5 : 0.1})`)
 					},
 					scaleLabel: {
-						display: true,
-						labelString: selectedCategory
+						display: false
 					},
 					ticks: {
 						stepSize: 1,
@@ -410,7 +399,7 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 				title: {
 					display: true,
 					fontSize: 24,
-					text: studentName
+					text: " "	// the title is a single empty space in order to give the chart more space above it
 				},
 				legend: {
 					position: 'top'
@@ -558,6 +547,9 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 	let loadPrintPage = () => {
 		try {
 			let chartData = JSON.parse($window.localStorage.getItem(2));
+			$scope.studentName = chartData.studentName;
+			$scope.selectedCategory = chartData.selectedCategory;
+
 			gen(chartData);
 			setTimeout(window.print, 1000);
 		}

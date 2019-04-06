@@ -45,7 +45,7 @@ gideonApp.controller('updateRecordCtrl', ($scope, $http, $window) => {
 				name: student.client, // names contain ids to make sure every name is distinct - the name will be displayed but the id will be used
 				id: student.studentId
 			};
-			if (option.id === $scope.record.studentId) { // sets the object as the current one if it is the student which the record refers to
+			if (option.id === $scope.record.studentId || option.id === $scope.selectedStudentId) { // sets the object as the current one if it is the student which the record refers to
 				$scope.client = option;
 			}
 			return option;

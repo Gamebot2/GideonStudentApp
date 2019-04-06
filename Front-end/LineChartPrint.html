@@ -29,8 +29,13 @@
 		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.css">
         <link rel="stylesheet" type="text/css" href="SiteStyle.css">
 	</head>
-	<body ng-app="gideonApp" ng-controller="chartCtrl" style="background:none;">
-        <img id="logo" src="img/gideon-logo.png" alt="show/hide form" style="max-width:160px; max-height:80px;">
-        <canvas id="lineChart" style="max-width:1000px;"></canvas>
+	<body ng-app="gideonApp" ng-controller="chartCtrl" style="background:none; max-width:1000px;">
+		<img id="logo" src="img/gideon-logo.png" alt="show/hide form" style="position:absolute; margin:20px 40px; max-width:160px; max-height:80px;">
+		<div style="position:absolute; right:0; margin:15px 0px; text-align:right;">
+			{{studentName}}<br>
+			{{selectedCategory.toUpperCase()}}<br><br>
+			<strong>STUDENT PROGRESS GOAL</strong>
+		</div>
+        <canvas id="lineChart"></canvas>
     </body>
 </html>
