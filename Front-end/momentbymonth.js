@@ -19,16 +19,16 @@ Math.modN = (x, n) => (x % n + n) % n;
 let Dates = {
 	// INIT FUNCTION: creates the object
 	init() {
-		// function that figures out when this "Augest of Kindergarten" month is
+		// Sets the date corresponding to August of Kindergarten given the student's current grade level
 		this.setZeroDate = (currentGrade) => {
 			this.zeroDate = {
 				month: 7,
-				year: this.now.year - currentGrade - (this.now.month < 7 ? 1 : 0), // subtract an extra 1 from the year if it is currently before august
+				year: this.now.year - currentGrade - (this.now.month < 7 ? 1 : 0), // Subtract an extra 1 from the year if it is currently before August
 				date: 0
 			};
 		};
 
-		// function that returns a date object a certain number of months after another one of those objects (note: object loses floating point day)
+		// Returns a date object a certain number of months after another one of those objects (note: object loses floating point day)
 		this.dateAdd = (originalDate, addition) => {
 			let numeral = (originalDate.year * 12 + originalDate.month) + addition;
 			return {
@@ -38,10 +38,10 @@ let Dates = {
 			};
 		};
 
-		// function that returns a date object a certain number of months prior to another one of those objects (note: object loses floating point day)
+		// Returns a date object a certain number of months prior to another one of those objects (note: object loses floating point day)
 		this.dateSubtract = (originalDate, subtraction) => this.dateAdd(originalDate, -subtraction);
 
-		// function that returns the month difference between two date objects
+		// Returns the difference between two date objects, in months
 		this.dateCompare = (date1, date2) => (date1.year - date2.year) * 12 + (date1.month - date2.month) + (date1.date - date2.date);
 
 		// Converts a Date string or DateTime string into a date object
@@ -58,6 +58,7 @@ let Dates = {
 		this.indexToDateObject = (index) => {
 			let theDate = this.dateAdd(this.zeroDate, Math.floor(index));
 
+			// Gets the date float (date index / month length)
 			let daysInMonth = moment(`${theDate.year} ${theDate.month + 1}`, "YYYY MM").daysInMonth();
 			theDate.date = Math.round(Math.modN(index, 1) * daysInMonth) + 1;
 

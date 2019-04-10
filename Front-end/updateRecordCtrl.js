@@ -12,10 +12,11 @@
 
 gideonApp.controller('updateRecordCtrl', ($scope, $http, $window) => {
 
-	// initialize Verify
+	// Initialize Verify
 	Verify.setScope($scope);
 
 	if (window.location.href.includes("Edit")) {
+		// Load all the edit content: grabs a record from the local storage and converts date strings to Date objects
 		let makeDate = (date) => date ? new Date(date.replace(/-/g,"/")) : date;
 
 		$scope.record = JSON.parse($window.localStorage.getItem(0));
@@ -23,6 +24,7 @@ gideonApp.controller('updateRecordCtrl', ($scope, $http, $window) => {
 		$scope.record.endDate = makeDate($scope.record.endDate);
 	}
 	else {
+		// Load all the insert content: create a new record and figure out who was selected
 		$scope.record = {};
 		$scope.selectedStudentId = parseInt($window.localStorage.getItem(5));
 
@@ -34,62 +36,74 @@ gideonApp.controller('updateRecordCtrl', ($scope, $http, $window) => {
 		}];
 	}
 
+	// Filters the full list of students for md-autocomplete
 	$scope.filterStudents = (filterText) =>
 		filterText ? $scope.names.filter((s) => s.name.toLowerCase().includes(filterText.toLowerCase())) : $scope.names;
 
-	// Returns a list of all students for easy name selection	
+	// Gets a list of all students for easy name selection	
 	$http.get(`${URL}students`)
 	.then((response) => {
 		$scope.names = response.data.map((student) => {
+			// Options contain ids to make sure every name is distinct - the name will be displayed but the id will be used
 			let option = { 
-				name: student.client, // names contain ids to make sure every name is distinct - the name will be displayed but the id will be used
+				name: student.client,
 				id: student.studentId
 			};
-			if (option.id === $scope.record.studentId || option.id === $scope.selectedStudentId) { // sets the object as the current one if it is the student which the record refers to
+			if (option.id === $scope.record.studentId || option.id === $scope.selectedStudentId) {
+				// Sets the object as the current one if it is the student which the record refers to
 				$scope.client = option;
 			}
 			return option;
 		});
 	});
 
+	// Gets the categories
 	$http.get(`${URL}categories`)
 	.then((response) => {
 		$scope.categories = response.data;
 	});
 
-	//Returns a list of subcategories based on the selected category
+	// Returns a list of subcategories based on the selected category
 	$scope.getSubcategories = () => {
 		if ($scope.record.category) {
+			// If a category has been set, get all of the subcategories in that category
 			$http.get(`${URL}subcategories?Category=${$scope.record.category}`)
 			.then((response) => {
 				$scope.subcategories = response.data;
+				// Sets the subcategory to the previously selected option when found, for the edit page
 				$scope.record.subcategory = $scope.subcategories.find(c => c === $scope.record.subcategory) || null;
 
 				$scope.getTitles();
 			});
 		}
 		else {
+			// If a category has not been selected, create disabled options indicating to do that first
 			$scope.subcategories = ["Select a category first"];
 			$scope.record.subcategory = null;
 			$scope.getTitles();
 		}
 	};
 
-	//Returns a list of titles based on the selected subCategory
+	// Returns a list of titles based on the selected subcategory
 	$scope.getTitles = () => {
 		if ($scope.record.subcategory) {
+			// If a subcategory has been set, get all of the titles in that subcategory
 			$http.get(`${URL}titles?Subcategory=${$scope.record.subcategory}`)
 			.then((response) => {
 				$scope.titles = response.data.map((title, index) => ({
 					title: title,
 					display: `${index + 1}: ${title}`
 				}));
+				
+				// Sets the title to the previously selected option when found, for the edit page
 				let targetObj = $scope.titles.find(t => t.title === $scope.record.title);
 				$scope.record.title = targetObj ? targetObj.title : null;
+				
 				$scope.didSetBook();
 			});
 		}
 		else {
+			// If a subcategory has not been selected, create disabled options indicating to do that first
 			$scope.titles = [{
 				title: "Select a subcategory first",
 				display: "Select a subcategory first"
@@ -99,7 +113,7 @@ gideonApp.controller('updateRecordCtrl', ($scope, $http, $window) => {
 		}
 	};
 
-	//Gathers book information (specifically, the test) for a newly selected title
+	// Gathers actual book information for a newly selected title
 	$scope.didSetBook = () => {
 		if ($scope.record.title) {
 			$http.get(`${URL}book?Category=${$scope.record.category}&Subcategory=${$scope.record.subcategory}&Title=${$scope.record.title}`)
@@ -149,7 +163,8 @@ gideonApp.controller('updateRecordCtrl', ($scope, $http, $window) => {
 			$http.get(`${URL}removeRecord?Id=${$scope.record.recordId}`)
 			.then((response) => {
 				if (Verify.successIf(response.data >= 0, "Deleted.")) {
-					window.location.href = "RecordList.html"; // return back to the list if the delete was successful
+					// Return back to the list if the delete was successful
+					window.location.href = "RecordList.html";
 				}
 			});
 		}

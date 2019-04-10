@@ -21,7 +21,7 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 	// SORTING FUNCTIONS CONTAINER (uses some magic)
 	var sortingModes = {
 		init() {
-			this["nullsort"] = (s, t, comp) => { // nullsort conducts a custom sorting method on strings but brings all null or empty strings to the bottom, stablely
+			this["nullsort"] = (s, t, comp) => { // Nullsort conducts a custom stable sorting method on strings which moves all null or empty strings to the bottom
 				if (!s && !t) return 0;
 				else if (!s)  return 1;
 				else if (!t)  return -1;
@@ -44,9 +44,11 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 	let refreshStudents = () => {
 		let temp = $scope.allStudents.slice();
 
+		// When displaying only students with records, use the student set to filter the full array
 		if ($scope.dataSwitch) {
 			temp = temp.filter((student) => $scope.studentIdsWithData.has(student.studentId));
 		}
+		// Apply a sorting function
 		if (currentSortBy != "default") {
 			temp = temp.sort(sortingModes[currentSortBy]);
 		}
@@ -56,9 +58,11 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 
 	// CHANGE SORT METHOD
 	$scope.setSortBy = (sortBy) => {
+		// If the user is already using this sort, switch to descending
 		if (currentSortBy.startsWith(sortBy)) {
 			sortBy += "desc";
 		}
+		// If the user was already on descending, turn off the sort
 		if (currentSortBy == sortBy) {
 			sortBy = "default";
 		}
@@ -74,13 +78,14 @@ gideonApp.controller('listCtrl', ($scope, $http, $window) => {
 		refreshStudents();
 	};
 
-	// GET SET OF STUDENTS WHO HAVE DATA
+	// Get set of students who have data
 	$http.get(`${URL}studentIdsWithRecords`)
 	.then((response) => {
 		$scope.studentIdsWithData = new Set(response.data);
 		refreshStudents();
 	});
 
+	// Get full list of all students (with a limit that at the moment does nothing)
 	let getStudents = (lim) => {
 		$http.get(`${URL}listStudents?withData=false&limit=${lim}`)
 		.then((response) => {

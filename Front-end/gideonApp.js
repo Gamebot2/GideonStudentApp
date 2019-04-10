@@ -7,6 +7,7 @@
  */
 
 
+// Contains links to online and local instances of the application
 const URLs = {
     online: "http://gideon-records.us-east-1.elasticbeanstalk.com/",
     local: "http://localhost:5000/"
@@ -15,6 +16,7 @@ const URL = URLs.local;
 
 
 gideonApp = angular.module('gideonApp', ['ngMaterial', 'ngMessages']).config(($mdThemingProvider) => {
+    // Set the colors of the website for ngMaterial
     $mdThemingProvider.definePalette('black', $mdThemingProvider.extendPalette('grey', {
         '500': '#000000'
     }));
@@ -31,22 +33,27 @@ gideonApp = angular.module('gideonApp', ['ngMaterial', 'ngMessages']).config(($m
 });
 
 
+
 let currentUsername = "";
 let loggedIn = false;
 
+// The header goes on nearly every page, so its controller is here
 gideonApp.controller('header', ($scope, $http) => {
     
+    // Get the login status of the current user
     $http.get(`${URL}getUser`).then((response) => {
         currentUsername = response.data[0];
         loggedIn = (response.data != "");
         
         $scope.currentUsername = currentUsername;
         $scope.loggedIn = loggedIn;
+        
 
-        // Termination checking loop
         if (loggedIn) {
+            // Every 10 seconds, check if the currently logged in user has terminated
             setInterval(() => {
                 $http.get(`${URL}checkIfTerminated`).then((response) => {
+                    // If the account has been compromised, force a reload
                     if (response.data > 0)
                         window.location.reload(true);
                     console.log("account still alive");
@@ -55,14 +62,17 @@ gideonApp.controller('header', ($scope, $http) => {
         }
     });
 
+    // Back button
     $scope.back = () => {
         window.history.back();
     }
 
+    // Login button
     $scope.login = () => {
         window.location.href = "index.html";
     };
 
+    // Logout button
     $scope.logout = () => {
 		$http.get(`${URL}logout`)
 		.then(_ => {
@@ -70,6 +80,7 @@ gideonApp.controller('header', ($scope, $http) => {
 		});
     };
 
+    // Generic webpage load
     $scope.goTo = (href) => {
         window.location.href = href;
     };

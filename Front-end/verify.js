@@ -13,8 +13,10 @@
 
 let Verify = {
 
+	// The current $scope
 	scope: {},
 
+	// Default verification outputs
 	genericInvalid: {
 		id: 0,
 		text: "Invalid Form"
@@ -32,30 +34,36 @@ let Verify = {
 		text: ""
 	},
 
-	// All other methods are defined in here to force the usage of setScope() before any other method
+	// Sets the scope and then creates the core functionality of the object
 	setScope($scope) {
 		this.scope = $scope;
 
+		// Sets the verification text to either processing or invalid depending on the status of the scope's form and returns the form's validity
 		this.check = () => {
 			this.scope.formStatus = this.scope.form.$invalid ? this.genericInvalid : this.genericProcessing;
 			return !this.scope.form.$invalid;
 		};
 
+		// Writes an error to the console and to the verification text
 		this.error = (err) => {
 			console.error(err);
 			this.scope.formStatus = this.genericError;
 		};
 
+		// Sets the verification text to a custom error if a negative condition is met and returns that condition
 		this.errorIf = (condition, customText) => {
 			if (condition) {
+				let errorText = customText ? `Error: ${customText}` : "Error";
+
 				this.scope.formStatus = {
 					id: 0,
-					text: `Error: ${customText}`
+					text: errorText
 				};
 			}
 			return condition;
 		};
 
+		// Writes a custom success blurb to the verification text
 		this.success = (customText) => {
 			this.scope.formStatus = {
 				id: 1,
@@ -63,22 +71,18 @@ let Verify = {
 			};
 		};
 
+		// Sets the verification text to a custom success blurb if a position condition is met and returns that condition
 		this.successIf = (condition, customText) => {
 			if (condition) {
-				this.scope.formStatus = {
-					id: 1,
-					text: customText
-				};
+				this.success(customText);
 			}
 			else {
-				this.scope.formStatus = {
-					id: 0,
-					text: "Error"
-				};
+				this.errorIf(!condition);
 			}
 			return condition;
 		};
 
+		// Sets the verification text to empty
 		this.remove = () => {
 			this.scope.formStatus = this.genericEmpty;
 		};

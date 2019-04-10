@@ -1,9 +1,9 @@
 /*
  * RIPPLE
- * A site-wide JS file that creates some cool animations for things. Right now it only contains the ripple effect when you press a button.
+ * A now unused JS file which created ripple effects when buttons were pressed. Now AngularJS Material does this just fine :)
  *
  * NOTES:
- * - This script will be obsolate if and when we figure out how to fix the CSS of AngularJS Material's ink ripples
+ * - Script is deprecated
  */
 
 

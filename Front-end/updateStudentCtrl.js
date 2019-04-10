@@ -11,13 +11,15 @@
 
 gideonApp.controller('updateStudentCtrl', ($scope, $http, $window) => {
 	
-	// initialize Verify
+	// Initialize Verify
 	Verify.setScope($scope);
 
+	// Arrays of all grade and gender options
 	$scope.grades = ["PreK (-1)", "Kinder (0)", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"];
 	$scope.genders = ["Male", "Female"];
 
 	if (window.location.href.includes("Edit")) {
+		// Load a student from the local storage if on the edit page
 		$scope.student = JSON.parse($window.localStorage.getItem(0));
 	} else {
 		$scope.student = {};
@@ -55,7 +57,8 @@ gideonApp.controller('updateStudentCtrl', ($scope, $http, $window) => {
 			$http.get(`${URL}removeStudent?Id=${$scope.student.studentId}`)
 			.then((response) => {
 				if (Verify.successIf(response.data >= 0, "Deleted.")) {
-					window.location.href = "StudentList.html"; // return back to the list if the delete was successful
+					// Return back to the list if the delete was successful
+					window.location.href = "StudentList.html";
 				}
 			});
 		}

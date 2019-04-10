@@ -9,9 +9,10 @@
 
 gideonApp.controller('homeCtrl', ($scope, $http) => {
 
-	// initialize Verify
+	// Initialize Verify
 	Verify.setScope($scope);
 
+	// Attempt a login
 	$scope.login = () => {
 		$http.get(`${URL}login?user=${$scope.username}&pass=${$scope.password}`)
 		.then((response) => {
@@ -21,15 +22,18 @@ gideonApp.controller('homeCtrl', ($scope, $http) => {
 		});
 	};
 
+	// Proceed as a guest
 	$scope.guest = () => {
 		$http.get(`${URL}logout`)
 		.then((response) => {
+			// Check for an error - do not proceed if the user is unable to logout!
 			if (!Verify.errorIf(response.data < 0, "Error")) {
 				window.location.href = "StudentList.html";
 			}
 		});
 	};
 
+	// UNUSED FUNCTION: register
 	$scope.register = () => {
 		$http.get(`${URL}register?user=${$scope.username}&pass=${$scope.password}`);
 	};
