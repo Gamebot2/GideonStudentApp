@@ -129,7 +129,7 @@ gideonApp.controller('recordListCtrl', ($scope, $http, $window) => {
 		$scope.students = response.data.map((student) => ({name: student.client, id: student.studentId})).sort((a, b) => a.name.localeCompare(b.name));
 
 		// If the student filter isn't a student in the list, default to the first student
-		if ($scope.studentFilter != 0 && $scope.students.every((student) => student.studentId != $scope.studentFilter)) {
+		if ($scope.studentFilter != 0 && $scope.students.every((student) => student.id != $scope.studentFilter)) {
 			$scope.studentFilter = 0;
 		}
 		if ($scope.studentFilter === 0) {

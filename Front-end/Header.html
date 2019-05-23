@@ -10,7 +10,7 @@
     File expects SiteStyle.css to be in effect.
 -->
 
-<md-toolbar id = "siteHeader">
+<md-toolbar id="siteHeader">
     <div class="md-toolbar-tools">
         <md-button md-ink-ripple="#FFFFFF" class="icon" aria-label="Back" ng-click="back()">
             <md-tooltip>Back</md-tooltip>
@@ -21,6 +21,13 @@
 
         <h2 flex ng-truncate ng-show="loggedIn">Logged in as {{currentUsername}}</h2>
         <h2 flex ng-truncate ng-show="!loggedIn">Viewing sample data as Guest</h2>
+
+        <md-button md-ink-ripple="#FFFFFF" class="icon" aria-label="Report A Bug" ng-click="report()">
+            <md-tooltip>Report A Bug</md-tooltip>
+            <img src="img/ReportIcon.png"></img>
+        </md-button>
+
+        <div style="padding: 0px 2px;">&nbsp;</div>
         
         <md-button ng-show="!loggedIn" md-ink-ripple="#FFFFFF" class="icon" aria-label="About Demo Mode" ng-click="goTo('Demo.html')">
             <md-tooltip>About Demo Mode</md-tooltip>

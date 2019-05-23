@@ -84,4 +84,9 @@ gideonApp.controller('header', ($scope, $http) => {
     $scope.goTo = (href) => {
         window.location.href = href;
     };
+
+    // Report button
+    $scope.report = () => {
+        window.open("https://github.com/Gamebot3/GideonStudentApp/issues");
+    }
 });
