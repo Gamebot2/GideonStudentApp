@@ -145,6 +145,26 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 			greatestBook = Math.clamp(greatestBook, Math.trunc(metrics.getY(highestDate)), allBooks.length);
 		}
 
+		//// IGL LINE: an arbitrary goal line which is fixed for each category ////
+		let iglSegInd = -1;
+		let midDate = (highestDate + lowestDate) / 2;
+		igl = iglRaw.map((data) => { 
+			let xVal = parseInt(data.grade.replace(/\D+/g, "")) * 12; // extracts number from grade string and multiplies by 12 to create a month index
+			if (midDate > xVal) {
+				iglSegInd++;
+			}
+
+			return {
+				x: xVal,
+				y: data.sequenceLarge
+			}
+		});
+
+		// move greatestBook upward (if possible) to fit the IGL
+		iglSegInd = Math.max(iglSegInd, 0);
+		let newGreatestBook = Math.trunc((igl[iglSegInd+1].y - igl[iglSegInd].y) / (igl[iglSegInd+1].x - igl[iglSegInd].x) * (midDate - igl[iglSegInd].x) + igl[iglSegInd].y);
+		greatestBook = Math.clamp(greatestBook, newGreatestBook, allBooks.length);
+
 		//// FINALIZE Y-AXIS BOUNDS: Stretch out the bounds to include all grid lines within a sequence ////
 		// The goal is to make the bottom and top books have an inner sequence value of 1
 		let seq = allBooks[leastBook-1];
@@ -158,13 +178,6 @@ gideonApp.controller('chartCtrl', ($scope, $http, $window) => {
 		for (seq = greatestBook; seq >= leastBook; seq--) {
 			yAxisGridLineIsMajor.push(allBooks[seq-1].sequence === 1 ? 1 : 0);
 		}
-
-
-		//// IGL LINE: an arbitrary goal line which is fixed for each category ////
-		igl = iglRaw.map((data) => ({
-			x: parseInt(data.grade.replace(/\D+/g, "")) * 12,  // extracts number from grade string and multiplies by 12 to create a month index
-			y: data.sequenceLarge
-		}));
 		
 
 		//// NOW LINE: a vertical black line to indicate the current date ////

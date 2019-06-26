@@ -7,6 +7,6 @@
  */
 
 
-gideonApp.controller('demoCtrl', ($scope, $http, $window) => {
+gideonApp.controller('demoCtrl', ($scope, $http) => {
 
 });

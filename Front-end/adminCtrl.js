@@ -7,7 +7,7 @@
  */
 
 
-gideonApp.controller('adminCtrl', ($scope, $http, $window) => {
+gideonApp.controller('adminCtrl', ($scope, $http) => {
     // Check if the user is currently logged in
     $scope.loggedIn = false;
     $http.get(`${URL}getLoggedIn`).then((response) => {

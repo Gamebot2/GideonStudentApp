@@ -71,7 +71,7 @@ gideonApp.controller('updateRecordCtrl', ($scope, $http, $window) => {
 			.then((response) => {
 				$scope.subcategories = response.data;
 				// Sets the subcategory to the previously selected option when found, for the edit page
-				$scope.record.subcategory = $scope.subcategories.find(c => c === $scope.record.subcategory) || null;
+				$scope.record.subcategory = $scope.subcategories.find((c) => c === $scope.record.subcategory) || null;
 
 				$scope.getTitles();
 			});

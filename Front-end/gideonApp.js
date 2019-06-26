@@ -54,8 +54,9 @@ gideonApp.controller('header', ($scope, $http) => {
             setInterval(() => {
                 $http.get(`${URL}checkIfTerminated`).then((response) => {
                     // If the account has been compromised, force a reload
-                    if (response.data > 0)
+                    if (response.data > 0) {
                         window.location.reload(true);
+                    }
                     console.log("account still alive");
                 })
             }, 10000);
