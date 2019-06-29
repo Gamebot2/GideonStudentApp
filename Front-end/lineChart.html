@@ -119,6 +119,15 @@
 			<!--HTML element for the generated chart-->
 			<div id="chartspecs" ng-show="formStatus.id===1">
 				<canvas id="lineChart"></canvas>
+				<div class="columnContainer">
+					<div class="twoColumn" style="padding-bottom:10px">
+						<md-button big class="md-accent md-raised" ng-click="moveYAxis(1)">Increase Y</md-button>
+					</div>
+					<div class="twoColumn" style="padding-bottom:10px">
+						<md-button big class="md-accent md-raised" ng-click="moveYAxis(-1)">Decrease Y</md-button>
+					</div>
+				</div>
+				<br>
 				<md-button big class="md-accent md-raised" ng-click="printChart()">Print Chart</md-button>
 			</div>
 		</div>

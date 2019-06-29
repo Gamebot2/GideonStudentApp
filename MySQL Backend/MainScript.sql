@@ -16,7 +16,7 @@ DESCRIBE students;
 DESCRIBE internationaldata;
 
 -- table select
-SELECT * FROM books ORDER BY Subject, Category, SequenceLarge;
+SELECT * FROM books ORDER BY Subject, Category, SequenceLarge LIMIT 1000;
 SELECT * FROM records ORDER BY StartDate DESC LIMIT 10000;
 SELECT * FROM students ORDER BY LastUsed DESC;
 SELECT * FROM internationaldata;
