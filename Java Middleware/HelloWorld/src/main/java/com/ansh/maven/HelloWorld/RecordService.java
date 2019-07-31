@@ -1,6 +1,5 @@
 package com.ansh.maven.HelloWorld;
 
-import java.util.Date;
 import java.util.List;
 
 public interface RecordService {

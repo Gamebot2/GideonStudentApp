@@ -2,7 +2,6 @@ package com.ansh.maven.HelloWorld;
 
 import java.util.*;
 
-
 public interface BookService {
 	List<Book> getAllBooks();
 	Book getBookById(int bookId);

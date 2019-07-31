@@ -1,10 +1,8 @@
 package com.ansh.maven.HelloWorld;
 
 import java.util.List;
-import java.util.Set;
 
 public interface StudentService {
-
 	List<Student> getAllStudents();
 	Student getStudentById(int StudentId);
 	int getGrade(int StudentId);

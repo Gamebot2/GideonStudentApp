@@ -1,6 +1,5 @@
 package com.ansh.maven.HelloWorld;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.transaction.Transactional;
@@ -18,8 +17,6 @@ public class RecordDaoImpl implements RecordDao{
 	@Autowired
 	@Qualifier("gideon")
 	private JdbcTemplate jdbcTemplate;
-
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 	//Retrieves all records from every student in the database
 	@Override

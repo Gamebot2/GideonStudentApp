@@ -1,13 +1,13 @@
 package com.ansh.maven.HelloWorld;
 
 import java.util.*;
+import java.lang.RuntimeException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -212,9 +212,7 @@ public class HelloController {
 		try {
 			return studentService.updateStudent(student, true);
 		} catch (java.lang.RuntimeException e) {
-			System.out.println("Method insertStudent() failed:");
-			e.printStackTrace();
-			return -1;
+			return printError(e, "insertStudent");
 		}
 	}
 	
@@ -226,9 +224,7 @@ public class HelloController {
 		try {
 			return studentService.updateStudent(student, false);
 		} catch (java.lang.RuntimeException e) {
-			System.out.println("Method editStudent() failed:");
-			e.printStackTrace();
-			return -1;
+			return printError(e, "editStudent");
 		}
 	}
 	
@@ -240,9 +236,7 @@ public class HelloController {
 		try {
 			return studentService.removeStudent(id);
 		} catch (java.lang.RuntimeException e) {
-			System.out.println("Method removeStudent() failed:");
-			e.printStackTrace();
-			return -1;
+			return printError(e, "removeStudent");
 		}
 	}
 	
@@ -254,9 +248,7 @@ public class HelloController {
 		try {
 			return studentService.shiftGrades(isInc);
 		} catch (java.lang.RuntimeException e) {
-			System.out.println("Method shiftGrades() failed:");
-			e.printStackTrace();
-			return -1;
+			return printError(e, "shiftGrades");
 		}
 	}
 	
@@ -300,9 +292,7 @@ public class HelloController {
 		try {
 			return recordService.updateRecord(record, true);
 		} catch (java.lang.RuntimeException e) {
-			System.out.println("Method insertRecord() failed:");
-			e.printStackTrace();
-			return -1;
+			return printError(e, "insertRecord");
 		}
 	}
 	
@@ -314,9 +304,7 @@ public class HelloController {
 		try {
 			return recordService.updateRecord(record, false);
 		} catch (java.lang.RuntimeException e) {
-			System.out.println("Method editRecord() failed:");
-			e.printStackTrace();
-			return -1;
+			return printError(e, "editRecord");
 		}
 	}
 	
@@ -328,9 +316,7 @@ public class HelloController {
 		try {
 			return recordService.removeRecord(id);
 		} catch (java.lang.RuntimeException e) {
-			System.out.println("Method removeRecord() failed:");
-			e.printStackTrace();
-			return -1;
+			return printError(e, "removeRecord");
 		}
 	}
 	
@@ -341,5 +327,12 @@ public class HelloController {
 	public List<Data> getInternationalData(@RequestParam("Category") String category) {
 		System.out.println("Method getInternationalData() called for category " + category);
 		return recordService.getInternationalData(category);
+	}
+	
+	
+	int printError(RuntimeException e, String method) {
+		System.out.println("Method " + method + "() failed:");
+		e.printStackTrace();
+		return -1;
 	}
 }
